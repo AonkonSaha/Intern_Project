@@ -7,6 +7,9 @@ import com.example.crud_intern.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class UserServiceImp implements UserService {
     @Autowired
@@ -28,7 +31,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserDTO fetchUserByID(String identity) {
+    public UserDTO fetchUserById(String identity) {
         long id = 0;
         try {
             id = Long.parseLong(identity);
@@ -40,5 +43,31 @@ public class UserServiceImp implements UserService {
         User user = userRepo.findById(id).orElseThrow();
 
         return customMapper.toUserDTO(user);
+    }
+
+    @Override
+    public String updateUserById(UserDTO userDTO,Long id) {
+        User user=userRepo.findById(id).orElseThrow();
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setContact(userDTO.getContact());
+        userRepo.save(user);
+        return "User "+id+" : Update Successfull..!!";
+    }
+
+    @Override
+    public String deleteUserById( Long id) {
+        userRepo.deleteById(id);
+        return "Remove "+id+" : Successfull...!";
+    }
+
+    @Override
+    public List<UserDTO> fetchAllUser() {
+        List<UserDTO>users=new ArrayList<>();
+        for(User user:userRepo.findAll())
+        {
+            users.add(customMapper.toUserDTO(user));
+        }
+        return users;
     }
 }

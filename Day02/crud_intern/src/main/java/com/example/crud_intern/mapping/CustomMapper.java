@@ -18,9 +18,13 @@ public class CustomMapper {
 
     public UserDTO toUserDTO(User user) {
         UserDTO userDTO=new UserDTO();
-        userDTO.setName(userDTO.getName());
-        userDTO.setEmail(userDTO.getEmail());
-        userDTO.setContact(userDTO.getContact());
+        userDTO.setName(user.getName());
+//        System.out.println(user.getName());
+        userDTO.setEmail(user.getEmail());
+//        System.out.println(user.getEmail());
+        userDTO.setContact(user.getContact());
+//        System.out.println(user.getContact());
+
         return userDTO;
     }
 }
