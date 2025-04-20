@@ -27,7 +27,7 @@ public class BlogController {
 
         return ResponseEntity.ok(blogService.fetchBlogById(id));
     }
-    @DeleteMapping("blog/delete/{id")
+    @DeleteMapping("blog/delete/{id}")
     public ResponseEntity<?> deleteBlog(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(blogService.deleteBlogById(id));
