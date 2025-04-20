@@ -25,7 +25,8 @@ public class UserComment {
 
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "userComment", cascade=CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     User user;
 
     @ManyToOne

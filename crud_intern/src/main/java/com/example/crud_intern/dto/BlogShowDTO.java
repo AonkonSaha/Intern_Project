@@ -20,6 +20,6 @@ public class BlogShowDTO {
     String content;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    List<String> authors;
+    String author;
     List<String>comments;
 }

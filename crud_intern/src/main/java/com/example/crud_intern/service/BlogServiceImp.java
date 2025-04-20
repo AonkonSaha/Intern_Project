@@ -34,7 +34,7 @@ public class BlogServiceImp implements BlogService{
             Blog blog = customMapper.toBlog(blogDTO);
             User user=userRepo.findByUserName(userName);
             UserComment userComment=userCommentRepo.findByAuthor(userName);
-            blog.setAuthors(user != null ? List.of(user) : new ArrayList<>());
+            blog.setAuthor(user);
             blog.setUserComments(userComment != null ? List.of(userComment) : new ArrayList<>());
             blogRepo.save(blog);
             return "Blog Create Successfully...!!";
@@ -49,7 +49,8 @@ public class BlogServiceImp implements BlogService{
 
     @Override
     public BlogShowDTO fetchBlogById(Long id) {
-        Blog blog=blogRepo.findById(id).get();
+        Blog blog=blogRepo.findById(id).orElseThrow();
+//       System.out.println(blog.getAuthor());
         return customMapper.toBlogShowDTO(blog);
     }
 
@@ -61,12 +62,11 @@ public class BlogServiceImp implements BlogService{
 
     @Override
     public String updateBlogById(Long id, BlogDTO blogDTO) {
-        Blog blog=customMapper.toBlog(blogDTO);
-        User user=userRepo.findById(id).orElseThrow();
-        UserComment userComment=userCommentRepo.findByAuthor(user.getUserName());
-        blog.setAuthors(user != null ? List.of(user) : new ArrayList<>());
-        blog.setUserComments(userComment != null ? List.of(userComment) : new ArrayList<>());
+        Blog blog=blogRepo.findById(id).orElseThrow();
+
+        blog.setTitle(blogDTO.getTitle());
+        blog.setContent(blogDTO.getContent());
         blogRepo.save(blog);
-        return "";
+        return "Update Successfully...!!";
     }
 }

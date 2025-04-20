@@ -49,28 +49,22 @@ public class CustomMapper {
     }
 
     public BlogShowDTO toBlogShowDTO(Blog blog) {
+        User user=blog.getAuthor();
+        List<UserComment> userComments=blog.getUserComments();
+        List<String>userCommentContents=new ArrayList<>();
+        for(UserComment userComment:userComments)
+        {
+            userCommentContents.add(userComment.getContent());
+        }
 
         BlogShowDTO blogShowDTO=BlogShowDTO.builder()
                 .blogTitle(blog.getTitle())
                 .content(blog.getContent())
                 .createdAt(blog.getCreatedAt())
                 .updatedAt(blog.getUpdatedAt())
+                .author(user.getUserName())
+                .comments(userCommentContents)
                 .build();
-        List<User>users=blog.getAuthors();
-        List<UserComment> userComments=blog.getUserComments();
-
-        List<String>authorNames=new ArrayList<>();
-        List<String>userCommentContents=new ArrayList<>();
-        for(User user:users)
-        {
-            authorNames.add(user.getUserName());
-        }
-        for(UserComment userComment:userComments)
-        {
-            userCommentContents.add(userComment.getContent());
-        }
-        blogShowDTO.setAuthors(authorNames);
-        blogShowDTO.setComments(userCommentContents);
         return blogShowDTO;
 
     }

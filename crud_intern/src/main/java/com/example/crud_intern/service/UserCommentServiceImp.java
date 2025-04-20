@@ -29,7 +29,7 @@ public class UserCommentServiceImp implements UserCommentService {
     public String addUserComment(String blogName,UserCommentDTO userCommentDTO) {
         UserComment userComment = customMapper.toUserComment(userCommentDTO);
         Blog blog=blogRepo.findByTitle(blogName);
-        User user=blog.getAuthors().getFirst();
+        User user=blog.getAuthor();
         userComment.setUser(user);
         userComment.setBlog(blog);
         userComment.setBlogName(blogName);

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @Builder
@@ -15,16 +17,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String userName;
-    String email;
-    String contact;
+    private Long id;
+    private String userName;
+    private String email;
+    private String contact;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "blog")
-    Blog blogPost;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Blog> blogPost;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="user_comment")
-    UserComment userComment;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserComment> comments;
 }

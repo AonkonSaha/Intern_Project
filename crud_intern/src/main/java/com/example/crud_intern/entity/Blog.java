@@ -25,8 +25,9 @@ public class Blog {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL)
-    private List<User>authors;
+    @ManyToOne
+    @JoinColumn(name="author_id")
+    private User author;
 
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
     private List<UserComment> userComments;
