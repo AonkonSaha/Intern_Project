@@ -48,7 +48,7 @@ public class UserServiceImp implements UserService {
     @Override
     public String updateUserById(UserDTO userDTO,Long id) {
         User user=userRepo.findById(id).orElseThrow();
-        user.setName(userDTO.getName());
+        user.setUserName(userDTO.getUserName());
         user.setEmail(userDTO.getEmail());
         user.setContact(userDTO.getContact());
         userRepo.save(user);
