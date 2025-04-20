@@ -1,1 +1,1 @@
-Practice the Object Oriented Programming(OOP) Concept and Create a project for CRUD Operations 
+<h2>Practice Object-Oriented Programming (OOP) concepts by creating a project that performs CRUD (Create, Read, Update, Delete) operations.</h2>
