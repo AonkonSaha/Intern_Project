@@ -1,6 +1,10 @@
+<h1>CRUD Operations for Blog and BlogComment</h1>
 <h3>
-1.Create BlogDTO<br>
-2.Create BlogCommentDTO<br>
-3.Create Service for Blog and Comment<br>
-4.Create controller for both Blog and BlogComment<br>
+  <li>
+Create BlogDTO
+Create BlogCommentDTO
+Create Service for Blog and Comment
+Create controller for both Blog and BlogComment
+  </li>
+
 </h3>
