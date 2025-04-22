@@ -1,16 +1,16 @@
-<h1>CRUD Operations for Blog and BlogComment</h1>
+<h1>Features Implemented</h1>
 <h3>
   <li>
-Create BlogDTO
+Performed full CRUD operations for Blog and BlogComment entities
   </li>
   <li>
-Create BlogCommentDTO
+Designed and implemented `BlogDTO` and `BlogCommentDTO` for data transfer and abstraction
 </li>
 <li>
-Create Service for Blog and Comment
+Developed service layers for Blog and BlogComment to handle business logic
 </li>
 <li>
-Create controller for both Blog and BlogComment
+Created REST controllers for Blog and BlogComment to expose endpoints for frontend or API consumers
 </li>
       
 
