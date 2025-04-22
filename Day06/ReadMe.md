@@ -2,9 +2,8 @@
 <h3>
   <li>
 Create BlogDTO
-     
+  </li>
   <li>
-    
 Create BlogCommentDTO
 </li>
 <li>
