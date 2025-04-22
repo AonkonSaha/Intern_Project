@@ -8,24 +8,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/blog/comment")
 public class BlogCommentController {
     @Autowired
     BlogService blogService;
     @Autowired
     UserCommentService userCommentService;
-    @PostMapping("/blog/comment/{blog_post_name}")
+    @PostMapping("/{blog_post_name}")
     public ResponseEntity<?> createCommentBlog(@PathVariable("blog_post_name") String blogName, @RequestBody UserCommentDTO userCommentDTO) {
         return ResponseEntity.ok(userCommentService.addUserComment (blogName,userCommentDTO));
     }
-    @GetMapping("/blog/comment/fetch/{id}")
+    @GetMapping("/fetch/{id}")
     public ResponseEntity<?> fetchCommentBlog(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userCommentService.fetchCommentById(id));
     }
-    @DeleteMapping("/blog/comment/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteCommentBlog(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userCommentService.deleteCommentById(id));
     }
-    @PutMapping("/blog/comment/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> deleteCommentBlog(@PathVariable("id") Long id, @RequestBody UserCommentDTO userCommentDTO) {
         return ResponseEntity.ok(userCommentService.updateCommentById(id,userCommentDTO));
     }
