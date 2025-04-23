@@ -30,7 +30,7 @@ public class RoleController {
     @GetMapping("/fetch/{admin_id}/{role_id}")
     public ResponseEntity<?> fetchRoleById(@PathVariable("admin_id") Long adminId,
                                            @PathVariable("role_id") Long roleId) throws AccessDeniedException {
-        if(roleService.isAccessCreateRole(adminId))
+        if(!roleService.isAccessCreateRole(adminId))
         {
             throw new AccessDeniedException("You do not have permission to set user role.");
 
@@ -40,7 +40,7 @@ public class RoleController {
     @DeleteMapping("/delete/{admin_id}/{role_id}")
     public ResponseEntity<?> deleteRoleById(@PathVariable("admin_id") Long adminId,
                                             @PathVariable("role_id") Long roleId) throws AccessDeniedException {
-        if(roleService.isAccessCreateRole(adminId))
+        if(!roleService.isAccessCreateRole(adminId))
         {
             throw new AccessDeniedException("You do not have permission to delete user role.");
 
@@ -52,7 +52,7 @@ public class RoleController {
     public ResponseEntity<?> deleteRoleById(@PathVariable("admin_id") Long adminId,
                                             @PathVariable("role_id") Long roleId,
                                             @RequestBody RoleDTO roleDTO) throws AccessDeniedException {
-        if(roleService.isAccessCreateRole(adminId))
+        if(!roleService.isAccessCreateRole(adminId))
         {
             throw new AccessDeniedException("You do not have permission to update user role.");
 

@@ -29,6 +29,6 @@ public class User {
     private List<UserComment> comments;
 
     @ManyToMany(mappedBy = "users",fetch = FetchType.EAGER)
-    private Set<UserRole> userRole;
+    private List<UserRole> userRole;
 }
 

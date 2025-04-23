@@ -25,7 +25,7 @@ public class BlogController {
 
    @PostMapping("/save")
     public ResponseEntity<?> createBlog(@RequestBody BlogDTO blogDTO) throws AccessDeniedException {
-       if(roleService.isAccessCreateBlog(blogDTO.getAuthorUserId()))
+       if(!roleService.isAccessCreateBlog(blogDTO.getAuthorUserId()))
        {
            System.out.println("Author Id: "+blogDTO.getAuthorUserId());
            throw new AccessDeniedException("You do not have permission to create this blog.");
@@ -40,7 +40,7 @@ public class BlogController {
     @DeleteMapping("/delete/{blog_id}/{user_id}")
     public ResponseEntity<String> deleteBlog(@PathVariable("blog_id") Long blogId, @PathVariable("user_id") Long userId) throws AccessDeniedException {
 
-        if(roleService.isAccessDeleteBLog(userId))
+        if(!roleService.isAccessDeleteBLog(userId))
         {
             throw new AccessDeniedException("You do not have permission to create this blog.");
         }
@@ -51,7 +51,7 @@ public class BlogController {
     public ResponseEntity<?> updateBlog(@PathVariable("blog_id") Long blogId,
                                         @PathVariable("user_id") Long userId,
                                         @RequestBody BlogDTO blogDTO) throws AccessDeniedException {
-        if(roleService.isAccessUpdateBlog(userId))
+        if(!roleService.isAccessUpdateBlog(userId))
         {
             throw new AccessDeniedException("You do not have permission to create this blog.");
         }

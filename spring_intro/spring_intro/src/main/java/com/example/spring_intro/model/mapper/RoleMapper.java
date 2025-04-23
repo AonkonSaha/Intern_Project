@@ -16,7 +16,7 @@ public class RoleMapper {
         return userRole;
     }
 
-    public RoleDTO toUserDTO(UserRole userRole) {
+    public RoleDTO toRoleDTO(UserRole userRole) {
         RoleDTO roleDTO=new RoleDTO();
         roleDTO.setRole(userRole.getRole());
         return roleDTO;

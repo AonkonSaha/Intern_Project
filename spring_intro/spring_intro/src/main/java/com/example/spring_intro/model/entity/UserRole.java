@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,7 +31,7 @@ public class UserRole {
             inverseJoinColumns = @JoinColumn(name="user_id")
     )
     @JsonIgnore
-    private Set<User> users;
+    private List<User> users;
     private String description;
 
 

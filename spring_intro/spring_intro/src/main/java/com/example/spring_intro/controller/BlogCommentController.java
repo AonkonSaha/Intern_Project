@@ -24,7 +24,7 @@ public class BlogCommentController {
     public ResponseEntity<?> createCommentBlog(@PathVariable("user_id")Long userId,
                                                @PathVariable("blog_id")Long blogId,
                                                @RequestBody UserCommentDTO userCommentDTO) throws AccessDeniedException {
-        if(roleService.isAccessCreateComment(userId))
+        if(!roleService.isAccessCreateComment(userId))
         {
             throw new AccessDeniedException("You do not have permission to create comment this blog.");
 
@@ -39,7 +39,7 @@ public class BlogCommentController {
     @DeleteMapping("/delete/{user_id}/{blog_id}")
     public ResponseEntity<?> deleteCommentBlog(@PathVariable("user_id") Long userId,
                                                @PathVariable("blog_id") Long blogId) throws AccessDeniedException {
-        if(roleService.isAccessDeleteComment(userId))
+        if(!roleService.isAccessDeleteComment(userId))
         {
             throw new AccessDeniedException("You do not have permission to delete comment this blog.");
         }
@@ -51,7 +51,7 @@ public class BlogCommentController {
                                                @PathVariable("blog_id") Long blogId,
                                                @PathVariable("comment_id") Long commentId,
                                                @RequestBody UserCommentDTO userCommentDTO) throws AccessDeniedException {
-        if(roleService.isAccessUpdateComment(userId))
+        if(!roleService.isAccessUpdateComment(userId))
         {
             throw new AccessDeniedException("You do not have permission to update comment this blog.");
 

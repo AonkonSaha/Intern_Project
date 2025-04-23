@@ -41,7 +41,7 @@ public class UserController {
                                             @PathVariable("admin_id") Long adminId,
                                             @PathVariable("user_id") Long userId
                                             ) throws AccessDeniedException {
-        if(roleService.isAccessUpdateUser(adminId))
+        if(!roleService.isAccessUpdateUser(adminId))
         {
             throw new AccessDeniedException("You do not have permission to update user.");
 
@@ -52,7 +52,7 @@ public class UserController {
     @DeleteMapping("/remove/{admin_id}/{user_id}")
     public ResponseEntity<?> deleteUserById(@PathVariable("admin_id") Long adminId,
                                             @PathVariable("user_id") Long userId) throws AccessDeniedException {
-        if(roleService.isAccessDeleteUser(adminId))
+        if(!roleService.isAccessDeleteUser(adminId))
         {
             throw new AccessDeniedException("You do not have permission to delete user.");
 

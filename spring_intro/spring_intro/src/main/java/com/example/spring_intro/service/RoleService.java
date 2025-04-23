@@ -10,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +21,9 @@ public class RoleService {
     private final UserRepo userRepo;
     private final RoleMapper roleMapper;
 
-    public UserRole saveRole(RoleDTO roleDTO) {
+    public RoleDTO saveRole(RoleDTO roleDTO) {
        UserRole userRole=roleMapper.toUserRole(roleDTO);
-        Set<User> users= new HashSet<>();
+        List<User> users= new ArrayList<>();
         for(Long id:roleDTO.getUserId())
         {
             Optional<User> user=userRepo.findById(id);
@@ -41,13 +39,13 @@ public class RoleService {
         roleRepo.save(userRole);
         for(User user:users)
         {
-            Set<UserRole> userRoles=user.getUserRole();
+            List<UserRole> userRoles=new ArrayList<>(user.getUserRole());
             userRoles.add(userRole);
             user.setUserRole(userRoles);
             userRepo.save(user);
         }
-        roleRepo.save(userRole);
-        return userRole;
+//        System.out.println("User Role: "+userRole.getUsers().stream().map(User::getUserRole).toList());
+        return roleMapper.toRoleDTO(userRole);
     }
 
     public  RoleDTO getRoleById(Long id) {
@@ -56,7 +54,7 @@ public class RoleService {
         {
             return null;
         }
-        return roleMapper.toUserDTO(userRole.get());
+        return roleMapper.toRoleDTO(userRole.get());
     }
 
     public void deleteRoleById(Long id) {
@@ -76,7 +74,7 @@ public class RoleService {
         }
             role.get().setRole(roleDTO.getRole());
             roleRepo.save(role.get());
-        return roleMapper.toUserDTO(role.get());
+        return roleMapper.toRoleDTO(role.get());
     }
 
 
@@ -87,7 +85,8 @@ public class RoleService {
         User user1=user.get();
         for(UserRole userRole:user1.getUserRole())
         {
-            if(userRole.equals("Author") || userRole.equals("ADMIN") || userRole.equals("MODERATOR") )
+            System.out.println("User Role: "+userRole.getRole() );
+            if(userRole.getRole().equals("AUTHOR") || userRole.getRole().equals("ADMIN") || userRole.getRole().equals("MODERATOR") )
             {
                 return true;
             }
@@ -100,7 +99,9 @@ public class RoleService {
         User user=userRepo.findById(userId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("Author") || userRole.equals("ADMIN") || userRole.equals("MODERATOR") )
+            if(userRole.getRole().equals("AUTHOR") ||
+                    userRole.getRole().equals("ADMIN") ||
+                    userRole.getRole().equals("MODERATOR") )
             {
                 return true;
             }
@@ -112,7 +113,10 @@ public class RoleService {
         User user=userRepo.findById(userId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("Author") || userRole.equals("ADMIN") || userRole.equals("MODERATOR") || userRole.equals("USER") )
+            if(userRole.getRole().equals("AUTHOR") ||
+                    userRole.getRole().equals("ADMIN") ||
+                    userRole.getRole().equals("MODERATOR") ||
+                    userRole.getRole().equals("USER") )
             {
                 return true;
             }
@@ -124,7 +128,9 @@ public class RoleService {
         User user=userRepo.findById(adminId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("Author") || userRole.equals("ADMIN") || userRole.equals("MODERATOR") )
+            if(userRole.getRole().equals("AUTHOR") ||
+                    userRole.getRole().equals("ADMIN") ||
+                    userRole.getRole().equals("MODERATOR") )
             {
                 return true;
             }
@@ -136,7 +142,9 @@ public class RoleService {
         User user=userRepo.findById(adminId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("Author") || userRole.equals("ADMIN") || userRole.equals("MODERATOR") )
+            if(userRole.getRole().equals("AUTHOR") ||
+                    userRole.getRole().equals("ADMIN") ||
+                    userRole.getRole().equals("MODERATOR") )
             {
                 return true;
             }
@@ -149,10 +157,10 @@ public class RoleService {
         User user=userRepo.findById(userId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("Author") ||
-                    userRole.equals("ADMIN") ||
-                    userRole.equals("MODERATOR") ||
-                    userRole.equals("USER") )
+            if(userRole.getRole().equals("AUTHOR") ||
+                    userRole.getRole().equals("ADMIN") ||
+                    userRole.getRole().equals("MODERATOR") ||
+                    userRole.getRole().equals("USER") )
             {
                 return true;
             }
@@ -164,7 +172,10 @@ public class RoleService {
         User user=userRepo.findById(userId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("Author") || userRole.equals("ADMIN") || userRole.equals("MODERATOR") || userRole.equals("USER") )
+            if(userRole.getRole().equals("AUTHOR") ||
+                    userRole.getRole().equals("ADMIN") ||
+                    userRole.getRole().equals("MODERATOR") ||
+                    userRole.getRole().equals("USER") )
             {
                 return true;
             }
@@ -176,7 +187,10 @@ public class RoleService {
         User user=userRepo.findById(userId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("Author") || userRole.equals("ADMIN") || userRole.equals("MODERATOR") || userRole.equals("USER") )
+            if(userRole.getRole().equals("Author") ||
+                    userRole.getRole().equals("ADMIN") ||
+                    userRole.getRole().equals("MODERATOR") ||
+                    userRole.getRole().equals("USER") )
             {
                 return true;
             }
@@ -188,7 +202,7 @@ public class RoleService {
         User user=userRepo.findById(adminId).get();
         for(UserRole userRole:user.getUserRole())
         {
-            if(userRole.equals("ADMIN") )
+            if(userRole.getRole().equals("ADMIN") )
             {
                 return true;
             }
