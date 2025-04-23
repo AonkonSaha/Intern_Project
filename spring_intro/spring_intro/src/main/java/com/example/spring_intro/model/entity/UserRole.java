@@ -22,6 +22,7 @@ public class UserRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     Long id;
     private String role;
     @ManyToMany
@@ -31,7 +32,7 @@ public class UserRole {
             inverseJoinColumns = @JoinColumn(name="user_id")
     )
     @JsonIgnore
-    private List<User> users;
+    private Set<User> users;
     private String description;
 
 

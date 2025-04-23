@@ -23,7 +23,7 @@ public class RoleService {
 
     public RoleDTO saveRole(RoleDTO roleDTO) {
        UserRole userRole=roleMapper.toUserRole(roleDTO);
-        List<User> users= new ArrayList<>();
+        Set<User> users= new HashSet<>();
         for(Long id:roleDTO.getUserId())
         {
             Optional<User> user=userRepo.findById(id);
@@ -39,7 +39,7 @@ public class RoleService {
         roleRepo.save(userRole);
         for(User user:users)
         {
-            List<UserRole> userRoles=new ArrayList<>(user.getUserRole());
+            Set<UserRole> userRoles=new HashSet<>(user.getUserRole());
             userRoles.add(userRole);
             user.setUserRole(userRoles);
             userRepo.save(user);

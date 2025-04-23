@@ -17,6 +17,8 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
+
     private Long id;
     private String userName;
     private String email;
@@ -29,6 +31,6 @@ public class User {
     private List<UserComment> comments;
 
     @ManyToMany(mappedBy = "users",fetch = FetchType.EAGER)
-    private List<UserRole> userRole;
+    private Set<UserRole> userRole;
 }
 
