@@ -1,104 +1,71 @@
 package com.example.spring_intro.service;
 
 import com.example.spring_intro.model.dto.BlogDTO;
-import com.example.spring_intro.model.dto.BlogShowDTO;
 import com.example.spring_intro.model.entity.Blog;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.entity.UserComment;
-import com.example.spring_intro.model.mapping.CustomMapper;
+import com.example.spring_intro.model.mapper.BlogMapper;
 import com.example.spring_intro.repository.BlogRepo;
 import com.example.spring_intro.repository.UserCommentRepo;
 import com.example.spring_intro.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BlogService{
 
-    private final CustomMapper customMapper;
+    private final BlogMapper blogMapper;
     private final UserRepo userRepo;
     private final BlogRepo blogRepo;
     private final UserCommentRepo userCommentRepo;
+    private final RoleService roleService;
 
-    public String addBlog(String userName, BlogDTO blogDTO) {
-        try
-        {
-            User user=userRepo.findByUserName(userName);
-            boolean isAuthorized = user.getUserRole().stream()
-                    .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
-                    || role.getRole().equalsIgnoreCase("Author"));
-            if (!isAuthorized) {
-                return "You aren't authorized to create a blog...!";
+    public BlogDTO addBlog(BlogDTO blogDTO) {
+
+            Optional<User> user=userRepo.findById(blogDTO.getAuthorUserId());
+            if(user.isEmpty())
+            {
+                return null;
             }
-
-            Blog blog = customMapper.toBlog(blogDTO);
-
-
-            UserComment userComment=userCommentRepo.findByAuthor(userName);
-            blog.setAuthor(user);
+            Blog blog = blogMapper.toBlog(blogDTO);
+            blog.setAuthor(user.get());
+            UserComment userComment=userCommentRepo.findByAuthor(user.get().getUserName());
             blog.setUserComments(userComment != null ? List.of(userComment) : new ArrayList<>());
             blogRepo.save(blog);
-            return "Blog Create Successfully...!!";
-        }catch (Exception e)
+            return blogMapper.toBlogDTO(blog);
+    }
+    public BlogDTO fetchBlogById(Long id) {
+
+        Optional<Blog> blog=blogRepo.findById(id);
+        if(blog.isEmpty())
         {
-            e.printStackTrace();
-            return "error: "+e.getMessage();
+            return null;
         }
-
-
+        return blogMapper.toBlogDTO(blog.get());
     }
-
-
-    public ResponseEntity<?> fetchBlogById(Long id) {
-
-        Blog blog=blogRepo.findById(id).orElseThrow();
-        User user=blog.getAuthor();
-
-        boolean isAuthorized = user.getUserRole().stream()
-                .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
-                || role.getRole().equalsIgnoreCase("USER") || role.getRole().equalsIgnoreCase("AUTHOR"));
-        if (!isAuthorized) {
-            return ResponseEntity.ok("You aren't authorized to access the blog...!");
+    public void deleteBlogById(Long blogId,Long userId) {
+        Optional<Blog> blog=blogRepo.findById(blogId);
+        Optional<User> user=userRepo.findById(userId);
+        if(user.isEmpty())
+        {
+            return;
         }
-//       System.out.println(blog.getAuthor());
-        return ResponseEntity.ok(customMapper.toBlogShowDTO(blog));
+        blogRepo.deleteById(blogId);
     }
-
-
-    public ResponseEntity<?> deleteBlogById(Long id) {
-        Blog blog=blogRepo.findById(id).orElseThrow();
-        User user=blog.getAuthor();
-        boolean isAuthorized = user.getUserRole().stream()
-                .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
-                        || role.getRole().equalsIgnoreCase("Author"));
-        if (!isAuthorized) {
-            return ResponseEntity.ok("You aren't authorized to delete the blog...!");
+    public BlogDTO updateBlogById(Long blogId,Long userId, BlogDTO blogDTO) {
+        Optional<Blog> blog=blogRepo.findById(blogId);
+        if(blog.isEmpty())
+        {
+            return null;
         }
-        blogRepo.deleteById(id);
-        return ResponseEntity.ok("Blog Delete Successfully...!!");
-    }
-
-
-    public ResponseEntity<?> updateBlogById(Long id, BlogDTO blogDTO) {
-        Blog blog=blogRepo.findById(id).orElseThrow();
-        User user=blog.getAuthor();
-        boolean isAuthorized = user.getUserRole().stream()
-                .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
-                        || role.getRole().equalsIgnoreCase("Author"));
-        if (!isAuthorized) {
-            return ResponseEntity.ok("You aren't authorized to update the blog...!");
-        }
-
-        blog.setTitle(blogDTO.getTitle());
-        blog.setContent(blogDTO.getContent());
-        blogRepo.save(blog);
-        return ResponseEntity.ok("Update Successfully...!!");
+        blog.get().setTitle(blogDTO.getTitle());
+        blog.get().setContent(blogDTO.getContent());
+        blogRepo.save(blog.get());
+        return blogMapper.toBlogDTO(blog.get());
     }
 }

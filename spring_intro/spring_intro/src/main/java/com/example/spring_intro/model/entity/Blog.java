@@ -41,4 +41,7 @@ public class Blog {
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+   private Double rating;
+
 }

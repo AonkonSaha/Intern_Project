@@ -31,5 +31,7 @@ public class UserRole {
     )
     @JsonIgnore
     private Set<User> users;
+    private String description;
+
 
 }

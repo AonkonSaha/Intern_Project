@@ -14,5 +14,6 @@ public class RoleDTO {
     private String role;
     @JsonProperty(value = "user_id",required = true)
     private List<Long> userId;
+
 }
 
