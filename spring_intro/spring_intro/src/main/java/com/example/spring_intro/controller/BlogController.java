@@ -4,18 +4,19 @@ package com.example.spring_intro.controller;
 import com.example.spring_intro.model.dto.BlogDTO;
 import com.example.spring_intro.service.BlogService;
 import com.example.spring_intro.service.UserCommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/blog")
+@RequiredArgsConstructor
 public class BlogController {
 
-    @Autowired
-    BlogService blogService;
-    @Autowired
-    UserCommentService userCommentService;
+    private final BlogService blogService;
+    private final UserCommentService userCommentService;
+
     @PostMapping("/save/{user_name}")
     public ResponseEntity<?> createBlog(@PathVariable("user_name") String userName, @RequestBody BlogDTO blog) {
 //       System.out.println("Name: "+userName);

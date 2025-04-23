@@ -3,17 +3,19 @@ package com.example.spring_intro.controller;
 import com.example.spring_intro.model.dto.UserCommentDTO;
 import com.example.spring_intro.service.BlogService;
 import com.example.spring_intro.service.UserCommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/blog/comment")
+@RequiredArgsConstructor
 public class BlogCommentController {
-    @Autowired
-    BlogService blogService;
-    @Autowired
-    UserCommentService userCommentService;
+
+    private final BlogService blogService;
+    private final UserCommentService userCommentService;
+
     @PostMapping("/{blog_post_name}")
     public ResponseEntity<?> createCommentBlog(@PathVariable("blog_post_name") String blogName, @RequestBody UserCommentDTO userCommentDTO) {
         return ResponseEntity.ok(userCommentService.addUserComment (blogName,userCommentDTO));

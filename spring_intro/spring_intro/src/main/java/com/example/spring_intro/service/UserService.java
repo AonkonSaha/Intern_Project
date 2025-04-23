@@ -2,8 +2,10 @@ package com.example.spring_intro.service;
 
 import com.example.spring_intro.model.dto.UserDTO;
 import com.example.spring_intro.model.entity.User;
+import com.example.spring_intro.model.entity.UserRole;
 import com.example.spring_intro.model.mapping.CustomMapper;
 import com.example.spring_intro.repository.UserRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +14,10 @@ import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-
-    @Autowired
-    UserRepo userRepo;
-    @Autowired
-    CustomMapper customMapper;
-
+    private final UserRepo userRepo;
+    private final CustomMapper customMapper;
 
     public String saveUser(UserDTO userDTO) {
         try {
@@ -42,7 +41,7 @@ public class UserService {
         }
         System.out.println("ID:: "+id);
         User user = userRepo.findById(id).orElseThrow();
-
+        user.getUserRole().forEach(role -> System.out.println("Role: "+role.getRole()));
         return customMapper.toUserDTO(user);
     }
 

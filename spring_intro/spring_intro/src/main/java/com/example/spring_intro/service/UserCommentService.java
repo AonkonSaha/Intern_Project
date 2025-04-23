@@ -8,24 +8,30 @@ import com.example.spring_intro.model.mapping.CustomMapper;
 import com.example.spring_intro.repository.BlogRepo;
 import com.example.spring_intro.repository.UserCommentRepo;
 import com.example.spring_intro.repository.UserRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserCommentService {
 
-    @Autowired
-    CustomMapper customMapper;
-    @Autowired
-    UserRepo userRepo;
-    @Autowired
-    BlogRepo blogRepo;
-    @Autowired
-    UserCommentRepo userCommentRepo;
+    private final CustomMapper customMapper;
+    private final UserRepo userRepo;
+    private final BlogRepo blogRepo;
+    private final UserCommentRepo userCommentRepo;
+
     public String addUserComment(String blogName, UserCommentDTO userCommentDTO) {
         UserComment userComment = customMapper.toUserComment(userCommentDTO);
         Blog blog=blogRepo.findByTitle(blogName);
         User user=blog.getAuthor();
+        boolean isAuthorized = user.getUserRole().stream()
+                .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
+                        || role.getRole().equalsIgnoreCase("Author") || role.getRole().equalsIgnoreCase("USER"));
+        if (!isAuthorized) {
+            return "You aren't authorized to write comment...!";
+        }
         userComment.setUser(user);
         userComment.setBlog(blog);
         userComment.setBlogName(blogName);
@@ -34,23 +40,50 @@ public class UserCommentService {
         return "Comment added successfully...!";
     }
 
-    public UserCommentDTO fetchCommentById(Long id) {
+    public ResponseEntity<?> fetchCommentById(Long id) {
         UserComment userComment=userCommentRepo.findById(id).orElseThrow();
+        Blog blog=blogRepo.findByTitle(userComment.getBlogName() );
+        User user=blog.getAuthor();
+        boolean isAuthorized = user.getUserRole().stream()
+                .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
+                        || role.getRole().equalsIgnoreCase("Author"));
+        if (!isAuthorized) {
+            return ResponseEntity.ok("You aren't authorized to see the comment...!");
+        }
+
         UserCommentDTO userCommentDTO=customMapper.toUserCommentDTO(userComment);
-        return userCommentDTO;
+        return ResponseEntity.ok(userCommentDTO);
     }
 
-    public String deleteCommentById(Long id) {
-        userCommentRepo.deleteById(id);
-        return "Comment deleted successfully...";
-    }
+    public ResponseEntity<?> deleteCommentById(Long id) {
 
-
-    public String updateCommentById(Long id,UserCommentDTO userCommentDTO) {
         UserComment userComment=userCommentRepo.findById(id).orElseThrow();
+        Blog blog=blogRepo.findByTitle(userComment.getBlogName());
+        User user=blog.getAuthor();
+        boolean isAuthorized = user.getUserRole().stream()
+                .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
+                        || role.getRole().equalsIgnoreCase("Author"));
+        if (!isAuthorized) {
+            return ResponseEntity.ok("You aren't authorized to delete the comment...!");
+        }
+        userCommentRepo.deleteById(id);
+        return ResponseEntity.ok("Comment deleted successfully...");
+    }
+
+
+    public ResponseEntity<?> updateCommentById(Long id,UserCommentDTO userCommentDTO) {
+        UserComment userComment=userCommentRepo.findById(id).orElseThrow();
+        Blog blog=blogRepo.findByTitle(userComment.getBlogName());
+        User user=blog.getAuthor();
+        boolean isAuthorized = user.getUserRole().stream()
+                .anyMatch(role -> role.getRole().equalsIgnoreCase("ADMIN") || role.getRole().equalsIgnoreCase("MODERATOR")
+                        || role.getRole().equalsIgnoreCase("Author"));
+        if (!isAuthorized) {
+            return ResponseEntity.ok("You aren't authorized to create a blog...!");
+        }
         userComment.setContent(userCommentDTO.getContent());
         userCommentRepo.save(userComment);
-        return "";
+        return ResponseEntity.ok("Comment Update Successfully...");
     }
 
 

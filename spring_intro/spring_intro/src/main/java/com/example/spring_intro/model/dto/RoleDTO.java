@@ -8,6 +8,7 @@ import java.util.List;
 
 @Component
 @Data
+
 public class RoleDTO {
     @JsonProperty(value = "role",required = true)
     private String role;

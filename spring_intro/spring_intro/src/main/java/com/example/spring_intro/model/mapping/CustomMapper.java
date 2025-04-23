@@ -1,16 +1,15 @@
 package com.example.spring_intro.model.mapping;
 
-import com.example.spring_intro.model.dto.BlogDTO;
-import com.example.spring_intro.model.dto.BlogShowDTO;
-import com.example.spring_intro.model.dto.UserCommentDTO;
-import com.example.spring_intro.model.dto.UserDTO;
+import com.example.spring_intro.model.dto.*;
 import com.example.spring_intro.model.entity.Blog;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.entity.UserComment;
+import com.example.spring_intro.model.entity.UserRole;
+import com.example.spring_intro.repository.UserRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class CustomMapper {
@@ -20,7 +19,6 @@ public class CustomMapper {
         user.setEmail(userDTO.getEmail());
         user.setUserName(userDTO.getUserName());
         user.setContact(userDTO.getContact());
-
         return user;
     }
 
@@ -73,6 +71,12 @@ public class CustomMapper {
         UserCommentDTO userCommentDTO=new UserCommentDTO();
         userCommentDTO.setContent(userComment.getContent());
         return userCommentDTO;
+    }
+
+    public UserRole toUserRole(RoleDTO roleDTO) {
+        UserRole userRole=new UserRole();
+        userRole.setRole(roleDTO.getRole());
+        return userRole;
     }
 }
 

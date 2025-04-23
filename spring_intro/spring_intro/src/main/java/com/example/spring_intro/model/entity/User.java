@@ -1,19 +1,18 @@
 package com.example.spring_intro.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
@@ -29,7 +28,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserComment> comments;
 
-    @ManyToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "users",fetch = FetchType.EAGER)
     private Set<UserRole> userRole;
 }
 
