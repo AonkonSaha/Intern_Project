@@ -5,6 +5,8 @@ import com.example.spring_intro.model.dto.BlogShowDTO;
 import com.example.spring_intro.model.entity.Blog;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.entity.UserComment;
+import com.example.spring_intro.repository.UserCommentRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;
@@ -13,22 +15,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class BlogMapper {
-    public Blog toBlog(BlogDTO blogDTO) {
-
-        Blog blog=Blog.builder()
+    private final UserCommentRepo userCommentRepo;
+    public Blog toBlog(User user,BlogDTO blogDTO) {
+        UserComment userComment=userCommentRepo.findByAuthor(user.getUserName());
+        return Blog.builder()
                 .title(blogDTO.getTitle())
                 .content(blogDTO.getContent())
+                .author(user)
+                .userComments(userComment != null ? List.of(userComment) : new ArrayList<>())
                 .build();
-        return blog;
     }
     public BlogDTO toBlogDTO(Blog blog) {
-        BlogDTO blogDTO=new BlogDTO();
-        blogDTO.setId(blog.getId());
-        blogDTO.setTitle(blog.getTitle());
-        blogDTO.setContent(blog.getContent());
-        blogDTO.setCreatedAt(blog.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        blogDTO.setUpdatedAt(blog.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        return blogDTO;
+        return BlogDTO.builder()
+                .id(blog.getId())
+                .title(blog.getTitle())
+                .authorUserId(blog.getId())
+                .content(blog.getContent())
+                .createdAt(blog.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli())
+                .updatedAt(blog.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli())
+                .build();
+
     }
 }

@@ -1,5 +1,7 @@
 package com.example.spring_intro.service;
 
+import com.example.spring_intro.exception.BlogNotFoundException;
+import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.BlogDTO;
 import com.example.spring_intro.model.entity.Blog;
 import com.example.spring_intro.model.entity.User;
@@ -25,43 +27,39 @@ public class BlogService{
     private final UserCommentRepo userCommentRepo;
     private final RoleService roleService;
 
-    public BlogDTO addBlog(BlogDTO blogDTO) {
+    public BlogDTO addBlog(BlogDTO blogDTO) throws UserNotFoundException {
 
             Optional<User> user=userRepo.findById(blogDTO.getAuthorUserId());
             if(user.isEmpty())
             {
-                return null;
+                throw new UserNotFoundException("User doesn't exit..!!..!...!");
             }
-            Blog blog = blogMapper.toBlog(blogDTO);
-            blog.setAuthor(user.get());
-            UserComment userComment=userCommentRepo.findByAuthor(user.get().getUserName());
-            blog.setUserComments(userComment != null ? List.of(userComment) : new ArrayList<>());
+            Blog blog = blogMapper.toBlog(user.get(),blogDTO);
             blogRepo.save(blog);
             return blogMapper.toBlogDTO(blog);
     }
-    public BlogDTO fetchBlogById(Long id) {
+    public BlogDTO fetchBlogById(Long id) throws BlogNotFoundException {
 
         Optional<Blog> blog=blogRepo.findById(id);
         if(blog.isEmpty())
         {
-            return null;
+           throw new BlogNotFoundException("Blog doesn't exit..!!..!");
         }
         return blogMapper.toBlogDTO(blog.get());
     }
-    public void deleteBlogById(Long blogId,Long userId) {
-        Optional<Blog> blog=blogRepo.findById(blogId);
-        Optional<User> user=userRepo.findById(userId);
-        if(user.isEmpty())
-        {
-            return;
-        }
-        blogRepo.deleteById(blogId);
-    }
-    public BlogDTO updateBlogById(Long blogId,Long userId, BlogDTO blogDTO) {
+    public void deleteBlogById(Long blogId) throws BlogNotFoundException {
         Optional<Blog> blog=blogRepo.findById(blogId);
         if(blog.isEmpty())
         {
-            return null;
+            throw new BlogNotFoundException("Blog doesn't exit..!!..!");
+        }
+        blogRepo.deleteById(blogId);
+    }
+    public BlogDTO updateBlogById(Long blogId,BlogDTO blogDTO) throws BlogNotFoundException {
+        Optional<Blog> blog=blogRepo.findById(blogId);
+        if(blog.isEmpty())
+        {
+            throw new BlogNotFoundException("Blog doesn't exit..!!..!");
         }
         blog.get().setTitle(blogDTO.getTitle());
         blog.get().setContent(blogDTO.getContent());

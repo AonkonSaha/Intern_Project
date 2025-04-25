@@ -1,5 +1,6 @@
 package com.example.spring_intro.service;
 
+import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.UserDTO;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.mapper.UserMapper;
@@ -23,34 +24,37 @@ public class UserService {
             return userMapper.toUserDTO(user);
     }
 
-    public UserDTO fetchUserById(Long id) {
+    public UserDTO fetchUserById(Long id) throws UserNotFoundException {
 
         Optional<User> user = userRepo.findById(id);
         if(user.isEmpty())
         {
-            return null;
+            throw new UserNotFoundException("User doesn't exit..!");
         }
         return userMapper.toUserDTO(user.get());
     }
 
-    public void updateUserById(Long adminId,Long userId,UserDTO userDTO) {
-        User user=userRepo.findById(userId).orElseThrow();
-        user.setUserName(userDTO.getUserName());
-        user.setEmail(userDTO.getEmail());
-        user.setContact(userDTO.getContact());
-        userRepo.save(user);
+    public UserDTO updateUserById(Long userId,UserDTO userDTO) throws UserNotFoundException {
+        Optional<User> user=userRepo.findById(userId);
+        if(user.isEmpty())
+        {
+            throw new UserNotFoundException("User doesn't exit..!");
+        }
+        user.get().setUserName(userDTO.getUserName());
+        user.get().setEmail(userDTO.getEmail());
+        user.get().setContact(userDTO.getContact());
+        userRepo.save(user.get());
+        return userMapper.toUserDTO(user.get());
     }
 
-    public void deleteUserById( Long userId) {
+    public void deleteUserById(Long userId) throws UserNotFoundException {
+        Optional<User> user=userRepo.findById(userId);
+        if(user.isEmpty())
+        {
+            throw new UserNotFoundException("User doesn't exit..!!");
+        }
         userRepo.deleteById(userId);
     }
 
-    public List<UserDTO> fetchAllUser() {
-        List<UserDTO>users=new ArrayList<>();
-        for(User user:userRepo.findAll())
-        {
-            users.add(userMapper.toUserDTO(user));
-        }
-        return users;
-    }
+
 }

@@ -1,11 +1,13 @@
 package com.example.spring_intro.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class BlogDTO {
     @JsonProperty(value = "id")
     private Long id;

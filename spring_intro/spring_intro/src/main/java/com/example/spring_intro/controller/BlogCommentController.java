@@ -1,15 +1,17 @@
 package com.example.spring_intro.controller;
 
+import com.example.spring_intro.exception.BlogNotFoundException;
+import com.example.spring_intro.exception.CommentNotFoundException;
+import com.example.spring_intro.exception.UnAuthorizedActionException;
+import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.UserCommentDTO;
+import com.example.spring_intro.model.mapper.CommentMapper;
 import com.example.spring_intro.service.BlogService;
 import com.example.spring_intro.service.RoleService;
 import com.example.spring_intro.service.UserCommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.AccessDeniedException;
 
 @RestController
 @RequestMapping("/api/blog/comment")
@@ -19,48 +21,41 @@ public class BlogCommentController {
     private final BlogService blogService;
     private final UserCommentService userCommentService;
     private final RoleService roleService;
+    private final CommentMapper commentMapper;
 
-    @PostMapping("/{user_id}/{blog_id}")
-    public ResponseEntity<?> createCommentBlog(@PathVariable("user_id")Long userId,
-                                               @PathVariable("blog_id")Long blogId,
-                                               @RequestBody UserCommentDTO userCommentDTO) throws AccessDeniedException {
+    @PostMapping("/create")
+    public ResponseEntity<UserCommentDTO> createCommentBlog(@RequestParam(value = "user_id",defaultValue = "1") Long userId,
+                                               @RequestParam(value="blog_id",defaultValue = "1")Long blogId,
+                                               @RequestBody UserCommentDTO userCommentDTO) throws UnAuthorizedActionException, BlogNotFoundException, UserNotFoundException {
         if(!roleService.isAccessCreateComment(userId))
         {
-            throw new AccessDeniedException("You do not have permission to create comment this blog.");
-
+            throw new UnAuthorizedActionException("You do not have permission to create comment this blog..!");
         }
         return ResponseEntity.ok(userCommentService.addUserComment(userId,blogId,userCommentDTO));
     }
-    @GetMapping("/fetch/{user_id}/{blog_id}")
-    public ResponseEntity<?> fetchCommentBlog(@PathVariable("user_id") Long userId,
-                                              @PathVariable("blog_id") Long blogId) {
-        return ResponseEntity.ok(userCommentService.fetchCommentById(userId,blogId));
+    @GetMapping("/fetch/{comment_id}")
+    public ResponseEntity<UserCommentDTO> fetchCommentBlogById(@PathVariable("comment_id") Long commentId) throws CommentNotFoundException {
+        return ResponseEntity.ok(userCommentService.fetchCommentById(commentId));
     }
-    @DeleteMapping("/delete/{user_id}/{blog_id}")
-    public ResponseEntity<?> deleteCommentBlog(@PathVariable("user_id") Long userId,
-                                               @PathVariable("blog_id") Long blogId) throws AccessDeniedException {
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteCommentBlogById(@RequestParam("user_id") Long userId,
+                                               @RequestParam("comment_id") Long commentId) throws UnAuthorizedActionException, CommentNotFoundException {
         if(!roleService.isAccessDeleteComment(userId))
         {
-            throw new AccessDeniedException("You do not have permission to delete comment this blog.");
+            throw new UnAuthorizedActionException("You do not have permission to delete comment this blog.");
         }
-        userCommentService.deleteCommentById(userId,blogId);
+        userCommentService.deleteCommentById(commentId);
         return ResponseEntity.ok("Delete Comment Blog Successfully.");
     }
-    @PutMapping("/update/{user_id}/{blog_id}/{comment_id}")
-    public ResponseEntity<?> updateCommentBlog(@PathVariable("user_id") Long userId,
-                                               @PathVariable("blog_id") Long blogId,
-                                               @PathVariable("comment_id") Long commentId,
-                                               @RequestBody UserCommentDTO userCommentDTO) throws AccessDeniedException {
+    @PutMapping("/update")
+    public ResponseEntity<UserCommentDTO> updateCommentBlogById(@RequestParam("user_id") Long userId,
+                                               @RequestParam("comment_id") Long commentId,
+                                               @RequestBody UserCommentDTO userCommentDTO) throws UnAuthorizedActionException, CommentNotFoundException {
         if(!roleService.isAccessUpdateComment(userId))
         {
-            throw new AccessDeniedException("You do not have permission to update comment this blog.");
-
+            throw new UnAuthorizedActionException("You do not have permission to update comment this blog.");
         }
-        return ResponseEntity.ok(userCommentService.updateCommentById(
-                userId,
-                blogId,
-                commentId,
-                userCommentDTO));
+        return ResponseEntity.ok(userCommentService.updateCommentById(commentId,userCommentDTO));
     }
 }
 

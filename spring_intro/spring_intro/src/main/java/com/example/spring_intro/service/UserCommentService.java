@@ -1,5 +1,8 @@
 package com.example.spring_intro.service;
 
+import com.example.spring_intro.exception.BlogNotFoundException;
+import com.example.spring_intro.exception.CommentNotFoundException;
+import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.UserCommentDTO;
 import com.example.spring_intro.model.entity.Blog;
 import com.example.spring_intro.model.entity.User;
@@ -9,13 +12,9 @@ import com.example.spring_intro.repository.BlogRepo;
 import com.example.spring_intro.repository.UserCommentRepo;
 import com.example.spring_intro.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Service
 @RequiredArgsConstructor
@@ -26,60 +25,46 @@ public class UserCommentService {
     private final UserCommentRepo userCommentRepo;
     private final CommentMapper commentMapper;
 
-    public UserCommentDTO addUserComment(Long authorId, Long blogId, UserCommentDTO userCommentDTO) {
+    public UserCommentDTO addUserComment(Long authorId, Long blogId, UserCommentDTO userCommentDTO) throws BlogNotFoundException, UserNotFoundException {
         Optional<Blog> blog = blogRepo.findById(blogId);
         Optional<User> user = userRepo.findById(authorId);
-        if (blog.isEmpty() || user.isEmpty()) {
-            return null;
+        if (blog.isEmpty()) {
+            throw new BlogNotFoundException("Blog doesn't exit..!");
         }
-        UserComment userComment = commentMapper.toUserComment(userCommentDTO);
-        userComment.setUser(user.get());
-        userComment.setBlog(blog.get());
-        userComment.setBlogName(blog.get().getTitle());
-        userComment.setAuthor(user.get().getUserName());
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User doesn't exit..!");
+        }
+        UserComment userComment=commentMapper.toUserComment(blog.get(),user.get(),userCommentDTO);
         userCommentRepo.save(userComment);
         return commentMapper.toUserCommentDTO(userComment);
     }
 
-    public List<UserCommentDTO> fetchCommentById(Long authorId, Long blogId) {
-        Optional<Blog> blog = blogRepo.findById(blogId);
-        if (blog.isEmpty()) {
-            return null;
-        }
-        List<UserComment> userComments = blog.get().getUserComments();
-        List<UserCommentDTO> userCommentDTOS = new ArrayList<>();
-        for (UserComment userComment : userComments) {
-            userCommentDTOS.add(commentMapper.toUserCommentDTO(userComment));
-        }
-        return userCommentDTOS;
+    public UserCommentDTO fetchCommentById(Long id) throws CommentNotFoundException {
+         Optional<UserComment> userComment=userCommentRepo.findById(id);
+         if(userComment.isEmpty())
+         {
+             throw new CommentNotFoundException("Comment doesn't exit..!");
+         }
+        return commentMapper.toUserCommentDTO(userComment.get());
     }
 
-    public void deleteCommentById(Long authorId, Long blogId) {
-
-        Optional<Blog> blog = blogRepo.findById(blogId);
-        if (blog.isEmpty()) {
-            System.out.println("Blog doesnot exist...");
-            return;
-        }
-        List<UserComment> userComments = blog.get().getUserComments();
-        for (UserComment userComment : userComments) {
-            userCommentRepo.delete(userComment);
-        }
-    }
-
-
-    public UserCommentDTO updateCommentById(Long userId, Long blogId, Long commentId, UserCommentDTO userCommentDTO) {
+    public void deleteCommentById(Long commentId) throws CommentNotFoundException {
 
         Optional<UserComment> userComment = userCommentRepo.findById(commentId);
-        Optional<Blog> blog = blogRepo.findById(blogId);
-        Optional<User> user = userRepo.findById(userId);
-        if (userComment.isEmpty() || blog.isEmpty() || user.isEmpty()) {
-            return null;
+        if (userComment.isEmpty()) {
+            throw new CommentNotFoundException("Comment doesn't exit..!");
+        }
+        userCommentRepo.deleteById(commentId);
+    }
+
+
+    public UserCommentDTO updateCommentById(Long commentId, UserCommentDTO userCommentDTO) throws CommentNotFoundException {
+        Optional<UserComment> userComment = userCommentRepo.findById(commentId);
+        if (userComment.isEmpty()) {
+            throw new CommentNotFoundException("Comment doesn't exit..!");
         }
         userComment.get().setContent(userCommentDTO.getContent());
         userCommentRepo.save(userComment.get());
         return commentMapper.toUserCommentDTO(userComment.get());
-
-
     }
 }

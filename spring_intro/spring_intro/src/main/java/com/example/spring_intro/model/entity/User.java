@@ -13,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name="users")
 public class User {
 
     @Id
@@ -20,6 +21,7 @@ public class User {
     @EqualsAndHashCode.Include
 
     private Long id;
+    @Column(name = "user_name")
     private String userName;
     private String email;
     private String contact;

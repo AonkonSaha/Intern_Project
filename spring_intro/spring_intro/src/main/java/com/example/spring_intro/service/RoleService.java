@@ -1,5 +1,6 @@
 package com.example.spring_intro.service;
 
+import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.RoleDTO;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.entity.UserRole;
@@ -124,13 +125,20 @@ public class RoleService {
         return false;
     }
 
-    public boolean isAccessUpdateUser(Long adminId) {
-        User user=userRepo.findById(adminId).get();
-        for(UserRole userRole:user.getUserRole())
+    public boolean isAccessUpdateUser(Long userId) throws UserNotFoundException {
+
+        Optional<User> user=userRepo.findById(userId);
+        if(user.isEmpty())
+        {
+            throw new UserNotFoundException("User not found...");
+        }
+        for(UserRole userRole:user.get().getUserRole())
         {
             if(userRole.getRole().equals("AUTHOR") ||
                     userRole.getRole().equals("ADMIN") ||
-                    userRole.getRole().equals("MODERATOR") )
+                    userRole.getRole().equals("MODERATOR") ||
+                    userRole.getRole().equals("USER")
+            )
             {
                 return true;
             }
@@ -198,9 +206,14 @@ public class RoleService {
         return false;
     }
 
-    public boolean isAccessCreateRole(Long adminId) {
-        User user=userRepo.findById(adminId).get();
-        for(UserRole userRole:user.getUserRole())
+    public boolean isAccessCreateRole(Long adminId) throws UserNotFoundException {
+        Optional<User> user=userRepo.findById(adminId);
+        if(user.isEmpty())
+        {
+            throw new UserNotFoundException("User doesn't exit..!");
+        }
+        System.out.println("USEr Role: "+user.get().getUserRole().stream().map(UserRole::getRole).toList());
+        for(UserRole userRole:user.get().getUserRole())
         {
             if(userRole.getRole().equals("ADMIN") )
             {

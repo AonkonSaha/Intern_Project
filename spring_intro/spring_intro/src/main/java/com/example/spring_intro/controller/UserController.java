@@ -1,5 +1,6 @@
 package com.example.spring_intro.controller;
 
+import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.UserDTO;
 import com.example.spring_intro.service.RoleService;
 import com.example.spring_intro.service.UserService;
@@ -32,38 +33,31 @@ public class UserController {
     }
 
     @GetMapping("/fetch/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable("id") Long id)
-    {
+    public ResponseEntity<?> getUserById(@PathVariable("id") Long id) throws UserNotFoundException {
         return  ResponseEntity.ok(userService.fetchUserById(id));
     }
-    @PutMapping("/update/{admin_id}/{user_id}")
+    @PutMapping("/update/{user_id}")
     public ResponseEntity<?> updateUserById(@RequestBody UserDTO userDTO,
-                                            @PathVariable("admin_id") Long adminId,
                                             @PathVariable("user_id") Long userId
-                                            ) throws AccessDeniedException {
-        if(!roleService.isAccessUpdateUser(adminId))
+                                            ) throws AccessDeniedException, UserNotFoundException {
+        if(!roleService.isAccessUpdateUser(userId))
         {
             throw new AccessDeniedException("You do not have permission to update user.");
 
         }
-        userService.updateUserById(adminId,userId,userDTO);
+        userService.updateUserById(userId,userDTO);
         return  ResponseEntity.ok("User updated successfully.");
     }
     @DeleteMapping("/remove/{admin_id}/{user_id}")
     public ResponseEntity<?> deleteUserById(@PathVariable("admin_id") Long adminId,
-                                            @PathVariable("user_id") Long userId) throws AccessDeniedException {
+                                            @PathVariable("user_id") Long userId) throws AccessDeniedException, UserNotFoundException {
         if(!roleService.isAccessDeleteUser(adminId))
         {
             throw new AccessDeniedException("You do not have permission to delete user.");
-
         }
         userService.deleteUserById(userId);
         return  ResponseEntity.ok("User deleted successfully.");
     }
-    @GetMapping("/fetch/all")
-    public ResponseEntity<?> fetchAllUser()
-    {
-        return  ResponseEntity.ok(userService.fetchAllUser());
-    }
+
 
 }

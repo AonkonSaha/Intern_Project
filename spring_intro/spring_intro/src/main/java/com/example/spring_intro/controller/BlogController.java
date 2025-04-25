@@ -1,6 +1,8 @@
 package com.example.spring_intro.controller;
 
 
+import com.example.spring_intro.exception.BlogNotFoundException;
+import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.BlogDTO;
 import com.example.spring_intro.model.mapper.BlogMapper;
 import com.example.spring_intro.service.BlogService;
@@ -24,38 +26,38 @@ public class BlogController {
     private final RoleService roleService;
 
    @PostMapping("/save")
-    public ResponseEntity<?> createBlog(@RequestBody BlogDTO blogDTO) throws AccessDeniedException {
+    public ResponseEntity<BlogDTO> createBlog(@RequestBody BlogDTO blogDTO) throws AccessDeniedException, UserNotFoundException {
        if(!roleService.isAccessCreateBlog(blogDTO.getAuthorUserId()))
        {
-           System.out.println("Author Id: "+blogDTO.getAuthorUserId());
            throw new AccessDeniedException("You do not have permission to create this blog.");
        }
         return ResponseEntity.ok(blogService.addBlog(blogDTO));
     }
     @GetMapping("/fetch/{id}")
-    public ResponseEntity<?> fetchBlog(@PathVariable("id") Long id) {
+    public ResponseEntity<BlogDTO> fetchBlogById(@PathVariable("id") Long id) throws BlogNotFoundException {
 
         return ResponseEntity.ok(blogService.fetchBlogById(id));
     }
-    @DeleteMapping("/delete/{blog_id}/{user_id}")
-    public ResponseEntity<String> deleteBlog(@PathVariable("blog_id") Long blogId, @PathVariable("user_id") Long userId) throws AccessDeniedException {
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteBlogById(@RequestParam("user_id") Long userId,
+                                             @RequestParam("blog_id") Long blogId) throws AccessDeniedException, BlogNotFoundException {
 
         if(!roleService.isAccessDeleteBLog(userId))
         {
-            throw new AccessDeniedException("You do not have permission to create this blog.");
+            throw new AccessDeniedException("You do not have permission to delete this blog.");
         }
-        blogService.deleteBlogById(blogId,userId);
+        blogService.deleteBlogById(blogId);
         return ResponseEntity.ok("Deleted blog successfully.");
     }
-    @PutMapping("/update/{blog_id}/{user_id}")
-    public ResponseEntity<?> updateBlog(@PathVariable("blog_id") Long blogId,
-                                        @PathVariable("user_id") Long userId,
-                                        @RequestBody BlogDTO blogDTO) throws AccessDeniedException {
+    @PutMapping("/update")
+    public ResponseEntity<?> updateBlogById(@RequestParam("user_id") Long userId,
+                                        @RequestParam("blog_id") Long blogId,
+                                        @RequestBody BlogDTO blogDTO) throws AccessDeniedException, BlogNotFoundException {
         if(!roleService.isAccessUpdateBlog(userId))
         {
-            throw new AccessDeniedException("You do not have permission to create this blog.");
+            throw new AccessDeniedException("You do not have permission to update this blog.");
         }
-        return ResponseEntity.ok(blogService.updateBlogById(blogId,userId,blogDTO));
+        return ResponseEntity.ok(blogService.updateBlogById(blogId,blogDTO));
     }
 
 
