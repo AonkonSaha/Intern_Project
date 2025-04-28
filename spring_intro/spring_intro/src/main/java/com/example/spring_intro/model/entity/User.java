@@ -25,6 +25,7 @@ public class User {
     private String userName;
     private String email;
     private String contact;
+    private String password;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Blog> blogPost;

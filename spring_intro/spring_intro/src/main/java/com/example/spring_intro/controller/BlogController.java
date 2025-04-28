@@ -12,19 +12,24 @@ import com.example.spring_intro.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
 
 @RestController
-@RequestMapping("/api/blog")
+@RequestMapping("/blog")
 @RequiredArgsConstructor
 public class BlogController {
 
     private final BlogService blogService;
     private final UserCommentService userCommentService;
     private final RoleService roleService;
+    @GetMapping("/")
+    public ResponseEntity<String> blogCheck() {
+       return ResponseEntity.ok("Blog is here....!");
 
+    }
    @PostMapping("/save")
     public ResponseEntity<BlogDTO> createBlog(@RequestBody BlogDTO blogDTO) throws AccessDeniedException, UserNotFoundException {
        if(!roleService.isAccessCreateBlog(blogDTO.getAuthorUserId()))

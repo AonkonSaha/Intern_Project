@@ -8,6 +8,8 @@ public class UserDTO {
     @JsonProperty(value="user_name", required=true,defaultValue = "Default UserName")
     String userName;
     String email;
+    String password;
     String contact;
+
 
 }

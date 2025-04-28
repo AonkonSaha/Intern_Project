@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/blog/comment")
+@RequestMapping("blog/comment")
 @RequiredArgsConstructor
 public class BlogCommentController {
 
