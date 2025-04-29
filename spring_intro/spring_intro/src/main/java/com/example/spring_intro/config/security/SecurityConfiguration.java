@@ -38,7 +38,8 @@ public class SecurityConfiguration {
             "/user/**",
             "/swagger-ui/**",
            "/v3/api-docs/**",
-           "/swagger-ui.html"
+           "/swagger-ui.html",
+            "/**"
     };
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -57,8 +58,7 @@ public class SecurityConfiguration {
             .requestMatchers(ADMIN_AUTHOR_MODERATOR_URLS).hasAnyRole("AUTHOR","ADMIN","MODERATOR")
             .requestMatchers(PUBLIC_URLS).permitAll()
             .anyRequest().authenticated()
-    ).formLogin(form -> form.permitAll())
-                .logout(logout -> logout.permitAll())
+    )
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 

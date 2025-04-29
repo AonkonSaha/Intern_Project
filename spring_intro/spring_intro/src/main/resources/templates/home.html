@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* Base styling */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+
+        /* Navbar styling */
+        nav {
+            background-color: #333;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background-color: #575757;
+        }
+
+        /* Centered content container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 60px); /* account for navbar */
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .container p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a th:href="@{/}">Home</a>
+    <a th:href="@{/blog}">Blog</a>
+    <a th:href="@{/login}">Login</a>
+    <a th:href="@{/register}">Register</a>
+</nav>
+
+<div class="container">
+    <h1 th:text="${message}">Welcome to Our Platform</h1>
+    <h1>CMED Health Ltd.</h1>
+    <p>Your trusted partner in modern digital healthcare services. We provide integrated solutions for a healthier tomorrow.</p>
+</div>
+
+</body>
+</html>

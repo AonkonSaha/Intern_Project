@@ -5,12 +5,11 @@ import com.example.spring_intro.model.dto.UserDTO;
 import com.example.spring_intro.service.RoleService;
 import com.example.spring_intro.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -27,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO)
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO)
     {
         return ResponseEntity.ok(userService.saveUser(userDTO));
     }
