@@ -25,44 +25,34 @@ public class BlogController {
     private final BlogService blogService;
     private final UserCommentService userCommentService;
     private final RoleService roleService;
+    private final BlogMapper blogMapper;
     @GetMapping("/")
     public ResponseEntity<String> blogCheck() {
        return ResponseEntity.ok("Blog is here....!");
 
     }
    @PostMapping("/save")
-    public ResponseEntity<BlogDTO> createBlog(@RequestBody BlogDTO blogDTO) throws AccessDeniedException, UserNotFoundException {
-       if(!roleService.isAccessCreateBlog(blogDTO.getAuthorUserId()))
-       {
-           throw new AccessDeniedException("You do not have permission to create this blog.");
-       }
-        return ResponseEntity.ok(blogService.addBlog(blogDTO));
+    public ResponseEntity<BlogDTO> createBlog(@RequestBody BlogDTO blogDTO) throws UserNotFoundException {
+        return ResponseEntity.ok(blogMapper.toBlogDTO(blogService.addBlog(blogDTO)));
     }
     @GetMapping("/fetch/{id}")
     public ResponseEntity<BlogDTO> fetchBlogById(@PathVariable("id") Long id) throws BlogNotFoundException {
 
-        return ResponseEntity.ok(blogService.fetchBlogById(id));
+        return ResponseEntity.ok(blogMapper.toBlogDTO(blogService.fetchBlogById(id)));
     }
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteBlogById(@RequestParam("user_id") Long userId,
-                                             @RequestParam("blog_id") Long blogId) throws AccessDeniedException, BlogNotFoundException {
-
-        if(!roleService.isAccessDeleteBLog(userId))
-        {
-            throw new AccessDeniedException("You do not have permission to delete this blog.");
-        }
+                                             @RequestParam("blog_id") Long blogId) throws BlogNotFoundException {
         blogService.deleteBlogById(blogId);
         return ResponseEntity.ok("Deleted blog successfully.");
     }
     @PutMapping("/update")
-    public ResponseEntity<?> updateBlogById(@RequestParam("user_id") Long userId,
+    public ResponseEntity<BlogDTO> updateBlogById(@RequestParam("user_id") Long userId,
                                         @RequestParam("blog_id") Long blogId,
-                                        @RequestBody BlogDTO blogDTO) throws AccessDeniedException, BlogNotFoundException {
-        if(!roleService.isAccessUpdateBlog(userId))
-        {
-            throw new AccessDeniedException("You do not have permission to update this blog.");
-        }
-        return ResponseEntity.ok(blogService.updateBlogById(blogId,blogDTO));
+                                        @RequestBody BlogDTO blogDTO) throws BlogNotFoundException {
+
+        blogService.updateBlogById(blogId,blogDTO);
+        return ResponseEntity.ok(blogDTO);
     }
 
 

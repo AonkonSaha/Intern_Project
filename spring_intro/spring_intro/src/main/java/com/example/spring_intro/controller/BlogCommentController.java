@@ -26,36 +26,27 @@ public class BlogCommentController {
     @PostMapping("/create")
     public ResponseEntity<UserCommentDTO> createCommentBlog(@RequestParam(value = "user_id",defaultValue = "1") Long userId,
                                                @RequestParam(value="blog_id",defaultValue = "1")Long blogId,
-                                               @RequestBody UserCommentDTO userCommentDTO) throws UnAuthorizedActionException, BlogNotFoundException, UserNotFoundException {
-        if(!roleService.isAccessCreateComment(userId))
-        {
-            throw new UnAuthorizedActionException("You do not have permission to create comment this blog..!");
-        }
-        return ResponseEntity.ok(userCommentService.addUserComment(userId,blogId,userCommentDTO));
+                                               @RequestBody UserCommentDTO userCommentDTO) throws BlogNotFoundException, UserNotFoundException {
+        userCommentService.addUserComment(userId,blogId,userCommentDTO);
+        return ResponseEntity.ok(userCommentDTO);
     }
     @GetMapping("/fetch/{comment_id}")
     public ResponseEntity<UserCommentDTO> fetchCommentBlogById(@PathVariable("comment_id") Long commentId) throws CommentNotFoundException {
-        return ResponseEntity.ok(userCommentService.fetchCommentById(commentId));
+        return ResponseEntity.ok(commentMapper.toUserCommentDTO(userCommentService.fetchCommentById(commentId)));
     }
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteCommentBlogById(@RequestParam("user_id") Long userId,
-                                               @RequestParam("comment_id") Long commentId) throws UnAuthorizedActionException, CommentNotFoundException {
-        if(!roleService.isAccessDeleteComment(userId))
-        {
-            throw new UnAuthorizedActionException("You do not have permission to delete comment this blog.");
-        }
+                                               @RequestParam("comment_id") Long commentId) throws CommentNotFoundException {
         userCommentService.deleteCommentById(commentId);
         return ResponseEntity.ok("Delete Comment Blog Successfully.");
     }
     @PutMapping("/update")
     public ResponseEntity<UserCommentDTO> updateCommentBlogById(@RequestParam("user_id") Long userId,
                                                @RequestParam("comment_id") Long commentId,
-                                               @RequestBody UserCommentDTO userCommentDTO) throws UnAuthorizedActionException, CommentNotFoundException {
-        if(!roleService.isAccessUpdateComment(userId))
-        {
-            throw new UnAuthorizedActionException("You do not have permission to update comment this blog.");
-        }
-        return ResponseEntity.ok(userCommentService.updateCommentById(commentId,userCommentDTO));
+                                               @RequestBody UserCommentDTO userCommentDTO) throws CommentNotFoundException {
+        return ResponseEntity.ok(commentMapper.
+                toUserCommentDTO(userCommentService.updateCommentById(commentId,userCommentDTO))
+        );
     }
 }
 

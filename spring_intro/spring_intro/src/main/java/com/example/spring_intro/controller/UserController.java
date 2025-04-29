@@ -2,6 +2,7 @@ package com.example.spring_intro.controller;
 
 import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.UserDTO;
+import com.example.spring_intro.model.mapper.UserMapper;
 import com.example.spring_intro.service.RoleService;
 import com.example.spring_intro.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class UserController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final UserMapper userMapper;
 
     @GetMapping("/")
     public String testMyProject()
@@ -28,32 +30,23 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO)
     {
-        return ResponseEntity.ok(userService.saveUser(userDTO));
+        return ResponseEntity.ok(userMapper.toUserDTO(userService.saveUser(userDTO)));
     }
 
     @GetMapping("/fetch/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable("id") Long id) throws UserNotFoundException {
-        return  ResponseEntity.ok(userService.fetchUserById(id));
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) throws UserNotFoundException {
+        return  ResponseEntity.ok(userMapper.toUserDTO(userService.fetchUserById(id)));
     }
     @PutMapping("/update/{user_id}")
-    public ResponseEntity<?> updateUserById(@RequestBody UserDTO userDTO,
+    public ResponseEntity<UserDTO> updateUserById(@RequestBody UserDTO userDTO,
                                             @PathVariable("user_id") Long userId
-                                            ) throws AccessDeniedException, UserNotFoundException {
-        if(!roleService.isAccessUpdateUser(userId))
-        {
-            throw new AccessDeniedException("You do not have permission to update user.");
-
-        }
-        userService.updateUserById(userId,userDTO);
-        return  ResponseEntity.ok("User updated successfully.");
+                                            ) throws UserNotFoundException {
+        return  ResponseEntity.ok(userMapper.toUserDTO(userService.updateUserById(userId,userDTO)));
     }
     @DeleteMapping("/remove/{admin_id}/{user_id}")
     public ResponseEntity<?> deleteUserById(@PathVariable("admin_id") Long adminId,
-                                            @PathVariable("user_id") Long userId) throws AccessDeniedException, UserNotFoundException {
-        if(!roleService.isAccessDeleteUser(adminId))
-        {
-            throw new AccessDeniedException("You do not have permission to delete user.");
-        }
+                                            @PathVariable("user_id") Long userId) throws UserNotFoundException {
+
         userService.deleteUserById(userId);
         return  ResponseEntity.ok("User deleted successfully.");
     }

@@ -18,23 +18,23 @@ import java.util.Optional;
 public class UserService {
     private final UserRepo userRepo;
     private final UserMapper userMapper;
-    public UserDTO saveUser(UserDTO userDTO) {
+    public User saveUser(UserDTO userDTO) {
             User user = userMapper.toUser(userDTO);
             userRepo.save(user);
-            return userMapper.toUserDTO(user);
+            return user;
     }
 
-    public UserDTO fetchUserById(Long id) throws UserNotFoundException {
+    public User fetchUserById(Long id) throws UserNotFoundException {
 
         Optional<User> user = userRepo.findById(id);
         if(user.isEmpty())
         {
             throw new UserNotFoundException("User doesn't exit..!");
         }
-        return userMapper.toUserDTO(user.get());
+        return user.get();
     }
 
-    public UserDTO updateUserById(Long userId,UserDTO userDTO) throws UserNotFoundException {
+    public User updateUserById(Long userId,UserDTO userDTO) throws UserNotFoundException {
         Optional<User> user=userRepo.findById(userId);
         if(user.isEmpty())
         {
@@ -44,7 +44,7 @@ public class UserService {
         user.get().setEmail(userDTO.getEmail());
         user.get().setContact(userDTO.getContact());
         userRepo.save(user.get());
-        return userMapper.toUserDTO(user.get());
+        return user.get();
     }
 
     public void deleteUserById(Long userId) throws UserNotFoundException {

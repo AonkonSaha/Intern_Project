@@ -27,7 +27,7 @@ public class BlogService{
     private final UserCommentRepo userCommentRepo;
     private final RoleService roleService;
 
-    public BlogDTO addBlog(BlogDTO blogDTO) throws UserNotFoundException {
+    public Blog addBlog(BlogDTO blogDTO) throws UserNotFoundException {
 
             Optional<User> user=userRepo.findById(blogDTO.getAuthorUserId());
             if(user.isEmpty())
@@ -36,16 +36,16 @@ public class BlogService{
             }
             Blog blog = blogMapper.toBlog(user.get(),blogDTO);
             blogRepo.save(blog);
-            return blogMapper.toBlogDTO(blog);
+            return blog;
     }
-    public BlogDTO fetchBlogById(Long id) throws BlogNotFoundException {
+    public Blog fetchBlogById(Long id) throws BlogNotFoundException {
 
         Optional<Blog> blog=blogRepo.findById(id);
         if(blog.isEmpty())
         {
            throw new BlogNotFoundException("Blog doesn't exit..!!..!");
         }
-        return blogMapper.toBlogDTO(blog.get());
+        return blog.get();
     }
     public void deleteBlogById(Long blogId) throws BlogNotFoundException {
         Optional<Blog> blog=blogRepo.findById(blogId);
@@ -55,7 +55,7 @@ public class BlogService{
         }
         blogRepo.deleteById(blogId);
     }
-    public BlogDTO updateBlogById(Long blogId,BlogDTO blogDTO) throws BlogNotFoundException {
+    public void updateBlogById(Long blogId,BlogDTO blogDTO) throws BlogNotFoundException {
         Optional<Blog> blog=blogRepo.findById(blogId);
         if(blog.isEmpty())
         {
@@ -64,6 +64,5 @@ public class BlogService{
         blog.get().setTitle(blogDTO.getTitle());
         blog.get().setContent(blogDTO.getContent());
         blogRepo.save(blog.get());
-        return blogMapper.toBlogDTO(blog.get());
     }
 }

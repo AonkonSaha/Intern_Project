@@ -25,7 +25,7 @@ public class UserCommentService {
     private final UserCommentRepo userCommentRepo;
     private final CommentMapper commentMapper;
 
-    public UserCommentDTO addUserComment(Long authorId, Long blogId, UserCommentDTO userCommentDTO) throws BlogNotFoundException, UserNotFoundException {
+    public void addUserComment(Long authorId, Long blogId, UserCommentDTO userCommentDTO) throws BlogNotFoundException, UserNotFoundException {
         Optional<Blog> blog = blogRepo.findById(blogId);
         Optional<User> user = userRepo.findById(authorId);
         if (blog.isEmpty()) {
@@ -36,16 +36,15 @@ public class UserCommentService {
         }
         UserComment userComment=commentMapper.toUserComment(blog.get(),user.get(),userCommentDTO);
         userCommentRepo.save(userComment);
-        return commentMapper.toUserCommentDTO(userComment);
     }
 
-    public UserCommentDTO fetchCommentById(Long id) throws CommentNotFoundException {
+    public UserComment fetchCommentById(Long id) throws CommentNotFoundException {
          Optional<UserComment> userComment=userCommentRepo.findById(id);
          if(userComment.isEmpty())
          {
              throw new CommentNotFoundException("Comment doesn't exit..!");
          }
-        return commentMapper.toUserCommentDTO(userComment.get());
+        return userComment.get();
     }
 
     public void deleteCommentById(Long commentId) throws CommentNotFoundException {
@@ -58,13 +57,13 @@ public class UserCommentService {
     }
 
 
-    public UserCommentDTO updateCommentById(Long commentId, UserCommentDTO userCommentDTO) throws CommentNotFoundException {
+    public UserComment updateCommentById(Long commentId, UserCommentDTO userCommentDTO) throws CommentNotFoundException {
         Optional<UserComment> userComment = userCommentRepo.findById(commentId);
         if (userComment.isEmpty()) {
             throw new CommentNotFoundException("Comment doesn't exit..!");
         }
         userComment.get().setContent(userCommentDTO.getContent());
         userCommentRepo.save(userComment.get());
-        return commentMapper.toUserCommentDTO(userComment.get());
+        return userComment.get();
     }
 }

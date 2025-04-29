@@ -1,5 +1,6 @@
 package com.example.spring_intro.service;
 
+import com.example.spring_intro.exception.RoleNotFoundException;
 import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.RoleDTO;
 import com.example.spring_intro.model.entity.User;
@@ -22,7 +23,7 @@ public class RoleService {
     private final UserRepo userRepo;
     private final RoleMapper roleMapper;
 
-    public RoleDTO saveRole(RoleDTO roleDTO) {
+    public UserRole saveRole(RoleDTO roleDTO) throws UserNotFoundException {
        UserRole userRole=roleMapper.toUserRole(roleDTO);
         Set<User> users= new HashSet<>();
         for(Long id:roleDTO.getUserId())
@@ -33,7 +34,7 @@ public class RoleService {
                 users.add(user.get());
             }
             else {
-                return null;
+                throw new UserNotFoundException("User doesn't exit..!");
             }
         }
         userRole.setUsers(users);
@@ -45,48 +46,44 @@ public class RoleService {
             user.setUserRole(userRoles);
             userRepo.save(user);
         }
-//        System.out.println("User Role: "+userRole.getUsers().stream().map(User::getUserRole).toList());
-        return roleMapper.toRoleDTO(userRole);
+        return userRole;
     }
 
-    public  RoleDTO getRoleById(Long id) {
+    public UserRole getRoleById(Long id) throws RoleNotFoundException {
         Optional<UserRole> userRole=roleRepo.findById(id);
         if(userRole.isEmpty())
         {
-            return null;
+            throw new RoleNotFoundException("Role doesn't exit..!");
         }
-        return roleMapper.toRoleDTO(userRole.get());
+        return userRole.get();
     }
 
-    public void deleteRoleById(Long id) {
+    public void deleteRoleById(Long id) throws RoleNotFoundException {
         Optional<UserRole> userRole=roleRepo.findById(id);
         if(userRole.isEmpty())
         {
-            return;
+            throw new RoleNotFoundException("Role doesn't exit..!");
         }
          roleRepo.deleteById(id);
     }
 
-    public RoleDTO updateRoleById(Long id,RoleDTO roleDTO) {
+    public UserRole updateRoleById(Long id,RoleDTO roleDTO) throws RoleNotFoundException {
         Optional<UserRole> role=roleRepo.findById(id);
         if(role.isEmpty())
         {
-            return null;
+           throw new RoleNotFoundException("Role doesn't exit..!");
         }
             role.get().setRole(roleDTO.getRole());
             roleRepo.save(role.get());
-        return roleMapper.toRoleDTO(role.get());
+            return role.get();
     }
 
 
     public boolean isAccessCreateBlog(Long authorUserId) {
-//        System.out.println("I am in RoleService");
         Optional<User> user=userRepo.findById(authorUserId);
-//        System.out.println("User Role: "+user.get().getUserRole().stream().map(UserRole::getRole).toList());
         User user1=user.get();
         for(UserRole userRole:user1.getUserRole())
         {
-            System.out.println("User Role: "+userRole.getRole() );
             if(userRole.getRole().equals("AUTHOR") || userRole.getRole().equals("ADMIN") || userRole.getRole().equals("MODERATOR") )
             {
                 return true;
@@ -212,7 +209,6 @@ public class RoleService {
         {
             throw new UserNotFoundException("User doesn't exit..!");
         }
-        System.out.println("USEr Role: "+user.get().getUserRole().stream().map(UserRole::getRole).toList());
         for(UserRole userRole:user.get().getUserRole())
         {
             if(userRole.getRole().equals("ADMIN") )
