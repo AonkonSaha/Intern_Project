@@ -25,19 +25,10 @@ public class UserCommentService {
     private final UserCommentRepo userCommentRepo;
     private final CommentMapper commentMapper;
 
-    public void addUserComment(Long authorId, Long blogId, UserCommentDTO userCommentDTO) throws BlogNotFoundException, UserNotFoundException {
-        Optional<Blog> blog = blogRepo.findById(blogId);
-        Optional<User> user = userRepo.findById(authorId);
-        if (blog.isEmpty()) {
-            throw new BlogNotFoundException("Blog doesn't exit..!");
-        }
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User doesn't exit..!");
-        }
-        UserComment userComment=commentMapper.toUserComment(blog.get(),user.get(),userCommentDTO);
+    public UserComment addUserComment(UserComment userComment){
         userCommentRepo.save(userComment);
+        return userComment;
     }
-
     public UserComment fetchCommentById(Long id) throws CommentNotFoundException {
          Optional<UserComment> userComment=userCommentRepo.findById(id);
          if(userComment.isEmpty())
@@ -64,6 +55,15 @@ public class UserCommentService {
         }
         userComment.get().setContent(userCommentDTO.getContent());
         userCommentRepo.save(userComment.get());
+        return userComment.get();
+    }
+
+    public UserComment findByAuthorName(String userName) throws CommentNotFoundException {
+        Optional<UserComment> userComment= Optional.ofNullable(userCommentRepo.findByAuthor(userName));
+        if(userComment.isEmpty())
+        {
+            throw new CommentNotFoundException("UserComment doesn't exit..");
+        }
         return userComment.get();
     }
 }

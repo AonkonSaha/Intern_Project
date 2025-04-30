@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("blog/comment")
+@RequestMapping("api/v3/blog/comment")
 @RequiredArgsConstructor
 public class BlogCommentController {
 
@@ -27,8 +27,10 @@ public class BlogCommentController {
     public ResponseEntity<UserCommentDTO> createCommentBlog(@RequestParam(value = "user_id",defaultValue = "1") Long userId,
                                                @RequestParam(value="blog_id",defaultValue = "1")Long blogId,
                                                @RequestBody UserCommentDTO userCommentDTO) throws BlogNotFoundException, UserNotFoundException {
-        userCommentService.addUserComment(userId,blogId,userCommentDTO);
-        return ResponseEntity.ok(userCommentDTO);
+
+        return ResponseEntity.ok(commentMapper
+                .toUserCommentDTO(userCommentService
+                .addUserComment(commentMapper.toUserComment(userId,blogId,userCommentDTO))));
     }
     @GetMapping("/fetch/{comment_id}")
     public ResponseEntity<UserCommentDTO> fetchCommentBlogById(@PathVariable("comment_id") Long commentId) throws CommentNotFoundException {
@@ -44,8 +46,9 @@ public class BlogCommentController {
     public ResponseEntity<UserCommentDTO> updateCommentBlogById(@RequestParam("user_id") Long userId,
                                                @RequestParam("comment_id") Long commentId,
                                                @RequestBody UserCommentDTO userCommentDTO) throws CommentNotFoundException {
-        return ResponseEntity.ok(commentMapper.
-                toUserCommentDTO(userCommentService.updateCommentById(commentId,userCommentDTO))
+        return ResponseEntity.ok(commentMapper
+                .toUserCommentDTO(userCommentService
+                .updateCommentById(commentId,userCommentDTO))
         );
     }
 }

@@ -12,7 +12,6 @@ public class UserMapper {
 
     private final PasswordEncoder passwordEncoder;
 
-
     public User toUser(UserDTO userDTO)
     {
         User user=new User();
@@ -20,15 +19,16 @@ public class UserMapper {
         user.setUserName(userDTO.getUserName());
         user.setContact(userDTO.getContact());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setActiveStatus(userDTO.getIsActive());
         return user;
     }
-
     public UserDTO toUserDTO(User user) {
         UserDTO userDTO=new UserDTO();
         userDTO.setUserName(user.getUserName());
         userDTO.setEmail(user.getEmail());
         userDTO.setContact(user.getContact());
         userDTO.setPassword(user.getPassword());
+        userDTO.setIsActive(user.getActiveStatus());
         return userDTO;
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.AccessDeniedException;
 
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/api/v4/role")
 @RequiredArgsConstructor
 public class RoleController {
 

@@ -1,5 +1,4 @@
 package com.example.spring_intro.controller;
-
 import com.example.spring_intro.exception.UserNotFoundException;
 import com.example.spring_intro.model.dto.UserDTO;
 import com.example.spring_intro.model.mapper.UserMapper;
@@ -7,13 +6,10 @@ import com.example.spring_intro.service.RoleService;
 import com.example.spring_intro.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
-
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
 

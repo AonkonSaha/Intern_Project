@@ -57,4 +57,12 @@ public class UserService {
     }
 
 
+    public User findUserById(Long authorUserId) throws UserNotFoundException {
+        Optional<User> user=userRepo.findById(authorUserId);
+        if(user.isEmpty())
+        {
+            throw new UserNotFoundException("User doesn't exit..!");
+        }
+        return user.get();
+    }
 }

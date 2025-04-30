@@ -10,6 +10,8 @@ public class UserDTO {
     String email;
     String password;
     String contact;
+    @JsonProperty(value="is_active",defaultValue = "false")
+    Boolean isActive;
 
 
 }

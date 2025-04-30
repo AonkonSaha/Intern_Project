@@ -1,5 +1,6 @@
 package com.example.spring_intro.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class User {
     private String email;
     private String contact;
     private String password;
+    private Boolean activeStatus;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Blog> blogPost;
