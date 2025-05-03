@@ -1,11 +1,14 @@
 package com.example.spring_intro.service;
 
 import com.example.spring_intro.exception.UserNotFoundException;
+import com.example.spring_intro.model.dto.LoginDTO;
 import com.example.spring_intro.model.dto.UserDTO;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.mapper.UserMapper;
 import com.example.spring_intro.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,8 +21,8 @@ import java.util.Optional;
 public class UserService {
     private final UserRepo userRepo;
     private final UserMapper userMapper;
-    public User saveUser(UserDTO userDTO) {
-            User user = userMapper.toUser(userDTO);
+    private final AuthenticationManager authenticationManager;
+    public User saveUser(User user) {
             userRepo.save(user);
             return user;
     }
@@ -62,6 +65,26 @@ public class UserService {
         if(user.isEmpty())
         {
             throw new UserNotFoundException("User doesn't exit..!");
+        }
+        return user.get();
+    }
+
+    public boolean isUserNameExit(String userName) {
+        Optional<User> user=userRepo.findByUserName(userName);
+        return user.isPresent();
+    }
+
+    public boolean isUserEmailExit(String email) {
+        Optional<User> user=userRepo.findByEmail(email);
+        return user.isPresent();
+    }
+
+
+    public User getUserByName(String username) throws UserNotFoundException {
+        Optional<User> user=userRepo.findByUserName(username);
+        if(user.isEmpty())
+        {
+           throw new UserNotFoundException("User doesn't exit..!");
         }
         return user.get();
     }

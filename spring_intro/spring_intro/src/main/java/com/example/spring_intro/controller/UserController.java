@@ -26,7 +26,11 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO)
     {
-        return ResponseEntity.ok(userMapper.toUserDTO(userService.saveUser(userDTO)));
+        return ResponseEntity
+                .ok(userMapper
+                .toUserDTO(userService
+                .saveUser(userMapper
+                .toUser(userDTO))));
     }
 
     @GetMapping("/fetch/{id}")

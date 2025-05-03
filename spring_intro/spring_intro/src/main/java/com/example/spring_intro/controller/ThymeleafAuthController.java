@@ -1,9 +1,6 @@
 package com.example.spring_intro.controller;
 
-import com.example.spring_intro.config.filters.jwt.JWTUtils;
-import com.example.spring_intro.exception.UserNotFoundException;
-import com.example.spring_intro.model.dto.LoginDTO;
-import com.example.spring_intro.model.dto.UserDTO;
+import com.example.spring_intro.jwt.JWTUtils;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.entity.UserRole;
 import com.example.spring_intro.model.mapper.UserMapper;
@@ -11,21 +8,19 @@ import com.example.spring_intro.repository.UserRepo;
 import com.example.spring_intro.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-public class AuthController {
+public class ThymeleafAuthController {
     private final AuthService authService;
     private final UserMapper userMapper;
     private final UserRepo userRepo;
@@ -61,7 +56,7 @@ public class AuthController {
                 break;
             }
 
-            String token = jwtUtils.generateToken(username, userOptional.get().getActiveStatus(),role);
+            String token = jwtUtils.generateToken(username);
             userOptional.get().setActiveStatus(true);
             userRepo.save(userOptional.get());
             response.addHeader("Authorization", "Bearer " + token);

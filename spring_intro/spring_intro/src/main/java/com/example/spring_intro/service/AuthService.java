@@ -1,19 +1,19 @@
 package com.example.spring_intro.service;
 
-import com.example.spring_intro.config.filters.jwt.JWTUtils;
 import com.example.spring_intro.exception.UserNotFoundException;
+import com.example.spring_intro.jwt.JWTUtils;
 import com.example.spring_intro.model.dto.LoginDTO;
-import com.example.spring_intro.model.dto.UserDTO;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.model.mapper.UserMapper;
 import com.example.spring_intro.repository.UserRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,20 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
     private final UserMapper userMapper;
+    private final AuthenticationManager authenticationManager;
+
+    public void isAuthenticate(LoginDTO loginDTO) {
+        try
+        {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUserName(),loginDTO.getPassword()));
+        }catch (Exception e)
+        {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+
+
+
     public void register(User user) {
         userRepo.save(user);
     }
@@ -38,7 +52,7 @@ public class AuthService {
         }
         user.get().setActiveStatus(true);
         userRepo.save(user.get());
-        return jwtUtils.generateToken(user.get().getUserName(),user.get().getActiveStatus(),user.get().getUserRole().toString());
+        return jwtUtils.generateToken(user.get().getUserName());
     }
     public void logout(HttpServletRequest request)
     {

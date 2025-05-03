@@ -1,4 +1,4 @@
-package com.example.spring_intro.config.filters.jwt;
+package com.example.spring_intro.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -26,14 +26,11 @@ public class JWTUtils {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String username,boolean isActive,String role) {
-
-        Map<String,Object> claims=new HashMap<>();
-        claims.put("active",isActive);
-        claims.put("role",role);
-        return createToken(claims,username);
+    public String generateToken(String username) {
+        return createToken(username);
     }
-    private String createToken(Map<String, Object> claims, String username) {
+    private String createToken(String username) {
+        Map<String,Object> claims=new HashMap<>();
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -63,8 +60,8 @@ public class JWTUtils {
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
-    // Extract a custom claim (e.g., "active" field)
     public Boolean extractActiveStatus(String token) {
         return extractClaim(token, claims -> claims.get("active", Boolean.class));
     }
 }
+

@@ -1,14 +1,14 @@
-package com.example.spring_intro.config.filters.jwt;
+package com.example.spring_intro.jwt.filter;
 
+
+import com.example.spring_intro.jwt.JWTUtils;
 import com.example.spring_intro.model.entity.User;
 import com.example.spring_intro.repository.UserRepo;
-import com.example.spring_intro.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,27 +28,18 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException {
 
         String authHeader = request.getHeader("Authorization");
         String requestURI = request.getRequestURI();
-        System.out.println(" " + requestURI);
-//        if (requestURI.startsWith("/api/")) {
-//            filterChain.doFilter(request, response); // Skip JWT validation for public endpoints
-//            return;
-//        }
-        System.out.println("I am in Filter");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("ami khane");
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = authHeader.substring(7);
         String username = jwtUtils.extractUsername(token);
-        System.out.println("token: " + token);
-
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -63,8 +54,5 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-
-
     }
-
 }
