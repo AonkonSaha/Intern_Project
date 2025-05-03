@@ -12,7 +12,7 @@ public class BlogDTO {
     @JsonProperty(value = "id")
     private Long id;
 
-    @JsonProperty(value = "title",required = true,defaultValue = "Default Title")  //, access = JsonProperty.Access.WRITE_ONLY
+    @JsonProperty(value = "title",required = true,defaultValue = "Default Title")
     String title;
 
     @JsonProperty(value = "content",required = true,defaultValue = "Default Content")

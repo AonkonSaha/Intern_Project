@@ -32,7 +32,7 @@ public class UserService {
         Optional<User> user = userRepo.findById(id);
         if(user.isEmpty())
         {
-            throw new UserNotFoundException("User doesn't exit..!");
+            return null;
         }
         return user.get();
     }
@@ -41,7 +41,7 @@ public class UserService {
         Optional<User> user=userRepo.findById(userId);
         if(user.isEmpty())
         {
-            throw new UserNotFoundException("User doesn't exit..!");
+           return null;
         }
         user.get().setUserName(userDTO.getUserName());
         user.get().setEmail(userDTO.getEmail());
@@ -54,17 +54,17 @@ public class UserService {
         Optional<User> user=userRepo.findById(userId);
         if(user.isEmpty())
         {
-            throw new UserNotFoundException("User doesn't exit..!!");
+            throw new UserNotFoundException("User doesn't exit..!");
         }
         userRepo.deleteById(userId);
     }
 
 
-    public User findUserById(Long authorUserId) throws UserNotFoundException {
+    public User findUserById(Long authorUserId){
         Optional<User> user=userRepo.findById(authorUserId);
         if(user.isEmpty())
         {
-            throw new UserNotFoundException("User doesn't exit..!");
+            return null;
         }
         return user.get();
     }
@@ -80,12 +80,17 @@ public class UserService {
     }
 
 
-    public User getUserByName(String username) throws UserNotFoundException {
+    public User getUserByName(String username){
         Optional<User> user=userRepo.findByUserName(username);
         if(user.isEmpty())
         {
-           throw new UserNotFoundException("User doesn't exit..!");
+           return null;
         }
         return user.get();
+    }
+
+
+    public boolean isExitUserById(Long id) {
+        return userRepo.existsById(id);
     }
 }

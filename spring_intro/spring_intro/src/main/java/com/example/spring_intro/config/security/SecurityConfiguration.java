@@ -43,12 +43,15 @@ public class SecurityConfiguration {
             "/api/v1/user/**",
             "/swagger-ui/**",
            "/v3/api-docs/**",
-           "/swagger-ui.html"
+           "/swagger-ui.html",
+            "/api/v5/auth/jwt/signup",
+            "/api/v5/auth/jwt/signin"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
+        System.out.println("I am in Security Filer Chain");
         http.
                 csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth

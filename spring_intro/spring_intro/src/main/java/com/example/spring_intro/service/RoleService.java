@@ -34,7 +34,7 @@ public class RoleService {
                 users.add(user.get());
             }
             else {
-                throw new UserNotFoundException("User doesn't exit..!");
+               return null;
             }
         }
         userRole.setUsers(users);
@@ -51,27 +51,24 @@ public class RoleService {
 
     public UserRole getRoleById(Long id) throws RoleNotFoundException {
         Optional<UserRole> userRole=roleRepo.findById(id);
-        if(userRole.isEmpty())
-        {
-            throw new RoleNotFoundException("Role doesn't exit..!");
+        if(userRole.isEmpty()) {
+            return null;
         }
         return userRole.get();
     }
 
     public void deleteRoleById(Long id) throws RoleNotFoundException {
         Optional<UserRole> userRole=roleRepo.findById(id);
-        if(userRole.isEmpty())
-        {
+        if(userRole.isEmpty()) {
             throw new RoleNotFoundException("Role doesn't exit..!");
         }
          roleRepo.deleteById(id);
     }
 
-    public UserRole updateRoleById(Long id,RoleDTO roleDTO) throws RoleNotFoundException {
+    public UserRole updateRoleById(Long id,RoleDTO roleDTO) {
         Optional<UserRole> role=roleRepo.findById(id);
-        if(role.isEmpty())
-        {
-           throw new RoleNotFoundException("Role doesn't exit..!");
+        if(role.isEmpty()) {
+           return null;
         }
             role.get().setRole(roleDTO.getRole());
             roleRepo.save(role.get());
@@ -217,5 +214,9 @@ public class RoleService {
             }
         }
         return false;
+    }
+
+    public boolean isExitRoleById(Long roleId) {
+        return roleRepo.existsById(roleId);
     }
 }

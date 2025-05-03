@@ -62,8 +62,12 @@ public class UserCommentService {
         Optional<UserComment> userComment= Optional.ofNullable(userCommentRepo.findByAuthor(userName));
         if(userComment.isEmpty())
         {
-            throw new CommentNotFoundException("UserComment doesn't exit..");
+            return null;
         }
         return userComment.get();
+    }
+
+    public boolean isExitCommentById(Long commentId) {
+        return userCommentRepo.existsById(commentId);
     }
 }

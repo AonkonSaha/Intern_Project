@@ -11,6 +11,7 @@ import com.example.spring_intro.repository.UserCommentRepo;
 import com.example.spring_intro.service.UserCommentService;
 import com.example.spring_intro.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;
@@ -24,7 +25,8 @@ public class BlogMapper {
     private final UserService userService;
     private final UserCommentService userCommentService;
     public Blog toBlog(BlogDTO blogDTO) throws UserNotFoundException, CommentNotFoundException {
-        User user=userService.findUserById(blogDTO.getAuthorUserId());
+        String userName=SecurityContextHolder.getContext().getAuthentication().getName();
+        User user=userService.getUserByName(userName);
         UserComment userComment=userCommentService.findByAuthorName(user.getUserName());
         return Blog.builder()
                 .title(blogDTO.getTitle())
@@ -37,7 +39,7 @@ public class BlogMapper {
         return BlogDTO.builder()
                 .id(blog.getId())
                 .title(blog.getTitle())
-                .authorUserId(blog.getId())
+                .authorUserId(blog.getAuthor().getId())
                 .content(blog.getContent())
                 .createdAt(blog.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli())
                 .updatedAt(blog.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli())

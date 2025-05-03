@@ -11,6 +11,7 @@ import com.example.spring_intro.repository.UserRepo;
 import com.example.spring_intro.service.BlogService;
 import com.example.spring_intro.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -18,19 +19,19 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class CommentMapper {
+
     private final BlogRepo blogRepo;
     private final UserRepo userRepo;
-    public UserComment toUserComment(Long blogId, Long userId, UserCommentDTO userCommentDTO) throws UserNotFoundException, BlogNotFoundException {
+    public UserComment toUserComment(Long blogId,UserCommentDTO userCommentDTO) throws BlogNotFoundException, UserNotFoundException {
 
+        String userName=SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Blog> blog=blogRepo.findById(blogId);
-        Optional<User> user=userRepo.findById(userId);
-        if(blog.isEmpty())
-        {
-            throw new BlogNotFoundException("Blog doesn't exit..!!");
+        if(blog.isEmpty()){
+            throw new BlogNotFoundException("Blog doesn't exit..!");
         }
-        if(user.isEmpty())
-        {
-            throw new UserNotFoundException("User doesn't exit..!!");
+        Optional<User> user=userRepo.findById(blog.get().getAuthor().getId());
+        if(user.isEmpty()){
+            throw new UserNotFoundException("User doens't exit..!");
         }
         return UserComment.builder()
                 .content(userCommentDTO.getContent())

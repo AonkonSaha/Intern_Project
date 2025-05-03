@@ -27,38 +27,41 @@ public class BlogService{
     private final UserCommentRepo userCommentRepo;
     private final RoleService roleService;
 
-    public Blog addBlog(Blog blog) throws UserNotFoundException {
+    public Blog addBlog(Blog blog){
             blogRepo.save(blog);
             return blog;
     }
-    public Blog fetchBlogById(Long id) throws BlogNotFoundException {
+    public Blog fetchBlogById(Long id){
 
         Optional<Blog> blog=blogRepo.findById(id);
         if(blog.isEmpty())
         {
-           throw new BlogNotFoundException("Blog doesn't exit..!!..!");
+           return null;
         }
         return blog.get();
     }
-    public void deleteBlogById(Long blogId) throws BlogNotFoundException {
-        Optional<Blog> blog=blogRepo.findById(blogId);
-        if(blog.isEmpty())
-        {
-            throw new BlogNotFoundException("Blog doesn't exit..!!..!");
-        }
+    public void deleteBlogById(Long blogId) {
+        Blog blog=blogRepo.findById(blogId).get();
         blogRepo.deleteById(blogId);
     }
-    public Blog updateBlogById(Long blogId,Blog blog) throws BlogNotFoundException {
+    public Blog updateBlogById(Long blogId,Blog blog) {
+        if(!blogRepo.existsById(blogId)) {
+            return null;
+        }
         blogRepo.save(blog);
         return blog;
     }
 
-    public Blog findBlogById(Long blogId) throws BlogNotFoundException {
+    public Blog findBlogById(Long blogId) {
         Optional<Blog> blog=blogRepo.findById(blogId);
         if(blog.isEmpty())
         {
-            throw new BlogNotFoundException("Blog doesn't exit..!");
+            return null;
         }
         return blog.get();
+    }
+
+    public boolean isExitBlogById(Long blogId) {
+        return blogRepo.existsById(blogId);
     }
 }
