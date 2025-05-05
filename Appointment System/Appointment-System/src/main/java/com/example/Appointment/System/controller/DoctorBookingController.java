@@ -5,10 +5,7 @@ import com.example.Appointment.System.model.mapper.DoctorBookingMapper;
 import com.example.Appointment.System.service.DoctorBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/doctor/booking")
@@ -22,19 +19,20 @@ public class DoctorBookingController {
                 doctorBookingMapper.toDoctorBooking(doctorBookingDTO))));
 
     }
+    /********Under Development*********/
     @PostMapping("/update")
     public ResponseEntity<DoctorBookingDTO> updateDoctorBooking(){
         return null;
     }
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<DoctorBookingDTO> deleteDoctorBooking(){
         return null;
     }
-    @PostMapping("/fetch")
+    @GetMapping("/fetch/{id}")
     public ResponseEntity<DoctorBookingDTO> fetchDoctorBooking(){
         return null;
     }
-    @PostMapping("/fetch/all")
+    @GetMapping("/fetch/all")
     public ResponseEntity<DoctorBookingDTO> fetchAllDoctorBookings(){
         return null;
     }

@@ -38,11 +38,11 @@ public class DoctorService {
         doctor.get().setGender(doctorDTO.getGender());
         doctor.get().setLanguagesSpoken(doctorDTO.getLanguagesSpoken());
         doctor.get().setYearsOfExperience(doctorDTO.getYearsOfExperience());
-        doctor.get().setSpecialization(doctorDTO.getSpecialization());
+        doctor.get().setDesignation(doctorDTO.getDesignation());
         doctor.get().setLicenseNumber(doctorDTO.getLicenseNumber());
         doctor.get().setHospitalOrClinicName(doctorDTO.getHospitalOrClinicName());
         doctor.get().setAvailabilityStatus(doctorDTO.getAvailabilityStatus());
-        doctor.get().setEducation(doctorDTO.getEducation());
+        doctor.get().setDegrees(doctorDTO.getDegrees());
         doctorRepo.save(doctor.get());
         return doctor.get();
     }
