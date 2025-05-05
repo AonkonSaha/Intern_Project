@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -40,6 +42,9 @@ public class MUser {
     private Boolean availabilityStatus;
     private String address;
     private double rating;
+    private String role;
+    private String profilePictureUrl;
+    private List<String> degrees=new ArrayList<>();
     @ManyToMany(mappedBy = "users")
     private Set<UserRole> userRoles;
 

@@ -2,10 +2,13 @@ package com.example.Appointment.System.service;
 
 import com.example.Appointment.System.model.dto.DoctorDTO;
 import com.example.Appointment.System.model.entity.Doctor;
+import com.example.Appointment.System.model.mapper.DoctorMapper;
 import com.example.Appointment.System.repository.DoctorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +18,7 @@ public class DoctorService {
 
     public Doctor saveDoctor(Doctor doctor) {
         doctorRepo.save(doctor);
+        doctor.setRole("DOCTOR");
         return doctor;
     }
 
@@ -57,5 +61,13 @@ public class DoctorService {
             return;
         }
         doctorRepo.deleteById(id);
+    }
+
+    public List<Doctor> getAllDoctor() {
+        List<Doctor> doctors = doctorRepo.findAll();
+        if(doctors.isEmpty()){
+            return new ArrayList<>();
+        }
+        return doctorRepo.findAll();
     }
 }

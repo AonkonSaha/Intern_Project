@@ -20,4 +20,8 @@ public class PatientDTO {
     @JsonProperty(value = "date_of_birth")
     private LocalDate dateOfBirth;
     private String password;
+    private String role;
+    private String profilePictureUrl;
+    private String address;
+
 }

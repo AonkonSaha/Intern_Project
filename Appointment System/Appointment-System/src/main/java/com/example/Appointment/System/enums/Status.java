@@ -1,7 +1,7 @@
 package com.example.Appointment.System.enums;
 
 public enum Status {
-    Confirm,
+    Confirmed,
     Pending,
     Cancelled,
     Completed,

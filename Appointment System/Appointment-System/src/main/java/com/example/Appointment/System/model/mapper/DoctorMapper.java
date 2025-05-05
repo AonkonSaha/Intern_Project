@@ -4,6 +4,9 @@ import com.example.Appointment.System.model.dto.DoctorDTO;
 import com.example.Appointment.System.model.entity.Doctor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class DoctorMapper {
     public Doctor toDoctor(DoctorDTO doctorDTO) {
@@ -15,11 +18,11 @@ public class DoctorMapper {
                 .gender(doctorDTO.getGender())
                 .languagesSpoken(doctorDTO.getLanguagesSpoken())
                 .yearsOfExperience(doctorDTO.getYearsOfExperience())
-                .specialization(doctorDTO.getSpecialization())
+                .designation(doctorDTO.getDesignation())
                 .licenseNumber(doctorDTO.getLicenseNumber())
                 .hospitalOrClinicName(doctorDTO.getHospitalOrClinicName())
                 .availabilityStatus(doctorDTO.getAvailabilityStatus())
-                .education(doctorDTO.getEducation())
+                .degrees(doctorDTO.getDegrees())
                 .build();
     }
 
@@ -31,12 +34,20 @@ public class DoctorMapper {
                 .gender(doctor.getGender())
                 .languagesSpoken(doctor.getLanguagesSpoken())
                 .yearsOfExperience(doctor.getYearsOfExperience())
-                .specialization(doctor.getSpecialization())
+                .designation(doctor.getDesignation())
                 .licenseNumber(doctor.getLicenseNumber())
                 .hospitalOrClinicName(doctor.getHospitalOrClinicName())
                 .availabilityStatus(doctor.getAvailabilityStatus())
-                .education(doctor.getEducation())
+                .degrees(doctor.getDegrees())
                 .contactNumber(doctor.getContactNumber())
                 .build();
+    }
+
+    public List<DoctorDTO> toDoctorDTOs(List<Doctor> all) {
+        List<DoctorDTO>doctorDTOS=new ArrayList<>();
+        for (Doctor doctor:all){
+            doctorDTOS.add(toDoctorDTO(doctor));
+        }
+        return doctorDTOS;
     }
 }

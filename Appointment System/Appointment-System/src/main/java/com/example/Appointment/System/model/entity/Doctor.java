@@ -3,7 +3,9 @@ package com.example.Appointment.System.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,7 +20,7 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String doctorName;
-    private String specialization;
+    private String designation;
     private String contactNumber;
     private String email;
     private String licenseNumber;
@@ -27,11 +29,14 @@ public class Doctor {
     private String address;
     private String profilePictureUrl;
     private String languagesSpoken;
-    private String education;
+    private List<String> degrees=new ArrayList<>();
     private Double rating;
     private String gender;
+    private String password;
     private Boolean availabilityStatus;
     private String role;
+
+
     @ManyToMany(mappedBy = "doctors",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Patient> patients=new HashSet<>();
     @OneToMany(mappedBy = "doctor",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api/v2/doctor")
+@RequestMapping("api/doctor")
 @RequiredArgsConstructor
 public class DoctorController {
     private final DoctorService doctorService;
@@ -22,14 +24,14 @@ public class DoctorController {
         ));}
     @GetMapping("/fetch/{id}")
     public ResponseEntity<DoctorDTO>fetchDoctorById(@PathVariable("id") Long id) throws DoctorNotFoundException {
-        if(doctorService.isExitDoctorById(id)){
+        if(!doctorService.isExitDoctorById(id)){
             throw new DoctorNotFoundException("Doctor doesn't exit");
         }
         return ResponseEntity.ok(doctorMapper.toDoctorDTO(
                 doctorService.getDoctorById(id)));
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<DoctorDTO> updateDoctorById(@PathVariable("id") Long id,@RequestBody DoctorDTO doctorDTO) throws DoctorNotFoundException {
+    public ResponseEntity<DoctorDTO> updateDoctorById(@PathVariable("id") Long id,@RequestBody DoctorDTO doctorDTO) throws DoctorNotFoundException{
         if(!doctorService.isExitDoctorById(id)){
             throw new DoctorNotFoundException("Doctor doesn't exit");
         }
@@ -37,11 +39,18 @@ public class DoctorController {
                 doctorService.updateDoctorById(id,doctorDTO)));
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteDoctorById(@PathVariable("id") Long id) throws DoctorNotFoundException {
-        if(doctorService.isExitDoctorById(id)){
+    public ResponseEntity<String> deleteDoctorById(@PathVariable("id") Long id) throws DoctorNotFoundException{
+        if(!doctorService.isExitDoctorById(id)){
             throw new DoctorNotFoundException("Doctor doesn't exit");
         }
         doctorService.deleteDoctorByDoctorId(id);
         return ResponseEntity.ok("Doctor deleted successfully");
+    }
+    @GetMapping("/fetch/all")
+    public ResponseEntity<List<DoctorDTO>> fetchAllDoctors() throws DoctorNotFoundException {
+        if(doctorService.getAllDoctor().isEmpty()){
+            throw new DoctorNotFoundException("Doctor doesn't exit");
+        }
+        return ResponseEntity.ok(doctorMapper.toDoctorDTOs(doctorService.getAllDoctor()));
     }
 }

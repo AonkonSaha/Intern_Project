@@ -3,11 +3,13 @@ package com.example.Appointment.System.model.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class DoctorDTO {
     private String doctorName;
-    private String specialization;
+    private String designation;
     private String contactNumber;
     private String email;
     private String licenseNumber;
@@ -15,7 +17,11 @@ public class DoctorDTO {
     private String hospitalOrClinicName;
     private String address;
     private String languagesSpoken;
-    private String education;
+    private List<String> degrees;
     private String gender;
     private Boolean availabilityStatus;
+    private String profilePictureUrl;
+    private Double rating;
+    private String password;
+
 }

@@ -7,6 +7,8 @@ import com.example.Appointment.System.repository.PatientRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +17,7 @@ public class PatientService {
     private final PatientRepo patientRepo;
     public Patient savePatient(Patient patient) {
         patientRepo.save(patient);
+        patient.setRole("PATIENT");
         return patient;
     }
     public boolean isExitPatientById(Long id) {
@@ -46,5 +49,13 @@ public class PatientService {
         patient.get().setPassword(patientDTO.getPassword());
         patientRepo.save(patient.get());
         return patient.get();
+    }
+
+    public List<Patient> getAllPatient() {
+        List<Patient> patients = patientRepo.findAll();
+        if(patients.isEmpty()){
+            return new ArrayList<>();
+        }
+        return patientRepo.findAll();
     }
 }

@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api/v1/patient")
+@RequestMapping("api/patient")
 @RequiredArgsConstructor
 public class PatientController {
     private final PatientService patientService;
@@ -43,6 +45,11 @@ public class PatientController {
         return ResponseEntity.ok(patientMapper.toPatientDTO(
                 patientService.updatePatientByPatientId(id,patientDTO)));
    }
-
-
+   @GetMapping("fetch/all")
+    public ResponseEntity<List<PatientDTO>> fetchAllPatients() throws PatientNotFoundException {
+        if(patientService.getAllPatient().isEmpty()){
+            throw new PatientNotFoundException("Patient doesn't exit");
+        }
+        return ResponseEntity.ok(patientMapper.toPatientDTOS(patientService.getAllPatient()));
+   }
 }
