@@ -58,4 +58,12 @@ public class PatientService {
         }
         return patientRepo.findAll();
     }
+
+    public Patient getPatientByName(String name) {
+        Optional<Patient> patient=patientRepo.findByPatientName(name);
+        if(patient.isEmpty()){
+            return null;
+        }
+        return patient.get();
+    }
 }

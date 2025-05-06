@@ -37,6 +37,7 @@ public class Patient {
     private String role;
     private String profilePictureUrl;
     private String address;
+    private Boolean isActive;
 
     @ManyToMany
     @JoinTable(name="patient_doctor",

@@ -1,29 +1,19 @@
-package com.example.Appointment.System.model.entity;
+package com.example.Appointment.System.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Transient;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-@Entity
-@Table(name = "users")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class MUser{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class UserDTO {
+
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -35,12 +25,9 @@ public class MUser{
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
-    @Transient
-    private Integer age;
     private String profilePictureUrl;
     private String address;
     private String profession;
-    private String doctorName;
     private String designation;
     private String contactNumber;
     private String licenseNumber;
@@ -50,13 +37,4 @@ public class MUser{
     private List<String> degrees=new ArrayList<>();
     private Double rating;
     private Boolean availabilityStatus;
-    private Boolean isActive;
-    @ManyToMany(mappedBy = "users",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<UserRole> userRoles=new HashSet<>();
-
-    public Integer getAge() {
-        if (this.dateOfBirth == null) return null;
-        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-    }
-
 }

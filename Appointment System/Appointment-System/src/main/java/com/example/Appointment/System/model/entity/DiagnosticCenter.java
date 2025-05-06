@@ -15,13 +15,19 @@ public class DiagnosticCenter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String diagnosticCenterName;
+    private String country;
+    private String city;
+    private String zipCode;
     private String address;
+    private String roadNo;
+    private String holdingNo;
+    private String profilePictureUrl;
     private String contactNumber;
     private String email;
     private String operatingHours;
     private String accreditation;
-    private String website;
+    private String websiteUrl;
     private Double rating;
     private Boolean isActive;
 

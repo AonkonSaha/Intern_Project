@@ -26,8 +26,6 @@ public class LabTestBooking {
     private Long id;
     @Column(nullable = false)
     private String labTestName;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateOfAppointment;
     private String note;
     private String status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")

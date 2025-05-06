@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class DoctorBookingMapper {
@@ -28,13 +31,15 @@ public class DoctorBookingMapper {
                 .degrees(doctorBooking.getDoctor().getDegrees() )
                 .hospitalOrClinicName(doctorBooking.getDoctor().getHospitalOrClinicName())
                 .licenseNumber(doctorBooking.getDoctor().getLicenseNumber())
-                .status( doctorBooking.getStatus())
+                .doctor(doctorBooking.getDoctor())
+                .patient(doctorBooking.getPatient())
+                .status(doctorBooking.getStatus())
                 .build();
     }
     public DoctorBooking toDoctorBooking(DoctorBookingDTO doctorBookingDTO) {
         String patientName= SecurityContextHolder.getContext().getAuthentication().getName();
-        Patient patient=patientRepo.findByPatientName(patientName);
-        Doctor doctor=doctorRepo.findByLicenseNumber(doctorBookingDTO.getLicenseNumber());
+        Optional<Patient> patient=patientRepo.findByPatientName(patientName);
+        Optional<Doctor> doctor=doctorRepo.findByLicenseNumber(doctorBookingDTO.getLicenseNumber());
 
         DoctorBooking doctorBooking= DoctorBooking.builder()
                 .bookingDate(doctorBookingDTO.getBookingDate())
@@ -42,17 +47,24 @@ public class DoctorBookingMapper {
                 .note(doctorBookingDTO.getNote())
                 .status(Status.Confirmed.name())
                 .build();
-        patient.getDoctorBookings().add(doctorBooking);
-        doctor.getDoctorBookings().add(doctorBooking);
-        patient.getDoctors().add(doctor);
-        doctor.getPatients().add(patient);
-        doctorBooking.setPatient(patient);
-        doctorBooking.setDoctor(doctor);
-        patientRepo.save(patient);
-        doctorRepo.save(doctor);
+        patient.get().getDoctorBookings().add(doctorBooking);
+        doctor.get().getDoctorBookings().add(doctorBooking);
+        patient.get().getDoctors().add(doctor.get());
+        doctor.get().getPatients().add(patient.get());
+        doctorBooking.setPatient(patient.get());
+        doctorBooking.setDoctor(doctor.get());
+        patientRepo.save(patient.get());
+        doctorRepo.save(doctor.get());
         return doctorBooking;
 
     }
 
 
+    public List<DoctorBookingDTO> toDoctorBookingDTOS(List<DoctorBooking> doctorBookings) {
+        List<DoctorBookingDTO>doctorBookingDTOS=new java.util.ArrayList<>();
+        for (DoctorBooking doctorBooking:doctorBookings){
+            doctorBookingDTOS.add(toDoctorBookingDTO(doctorBooking));
+        }
+        return doctorBookingDTOS;
+    }
 }
