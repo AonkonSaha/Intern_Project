@@ -4,6 +4,7 @@ import com.example.Appointment.System.exception.PatientNotFoundException;
 import com.example.Appointment.System.model.dto.PatientDTO;
 import com.example.Appointment.System.model.mapper.PatientMapper;
 import com.example.Appointment.System.service.PatientService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,8 @@ public class PatientController {
                 patientService.savePatient(patientMapper.toPatient(patientDTO))));
     }
    @GetMapping("/fetch/{id}")
-    public ResponseEntity<PatientDTO> fetchPatientById(@PathVariable("id") Long id) throws PatientNotFoundException {
+   @SecurityRequirement(name = "bearerAuth")
+   public ResponseEntity<PatientDTO> fetchPatientById(@PathVariable("id") Long id) throws PatientNotFoundException {
        if(!patientService.isExitPatientById(id)){
             throw new PatientNotFoundException("Patient doesn't exit");
        }
@@ -30,7 +32,8 @@ public class PatientController {
                patientService.getPatientById(id)));
    }
    @PostMapping("/delete/{id}")
-    public ResponseEntity<String> deletePatientById(@PathVariable("id") Long id) throws PatientNotFoundException {
+   @SecurityRequirement(name = "bearerAuth")
+   public ResponseEntity<String> deletePatientById(@PathVariable("id") Long id) throws PatientNotFoundException {
        if(!patientService.isExitPatientById(id)){
            throw new PatientNotFoundException("Patient doesn't exit");
        }
@@ -38,7 +41,8 @@ public class PatientController {
        return ResponseEntity.ok("Patient deleted successfully");
    }
    @PutMapping("/update/{id}")
-    public ResponseEntity<PatientDTO> updatePatientById(@PathVariable("id") Long id,PatientDTO patientDTO) throws PatientNotFoundException {
+   @SecurityRequirement(name = "bearerAuth")
+   public ResponseEntity<PatientDTO> updatePatientById(@PathVariable("id") Long id,PatientDTO patientDTO) throws PatientNotFoundException {
         if(!patientService.isExitPatientById(id)){
             throw new PatientNotFoundException("Patient doesn't exit");
         }
@@ -46,7 +50,8 @@ public class PatientController {
                 patientService.updatePatientByPatientId(id,patientDTO)));
    }
    @GetMapping("fetch/all")
-    public ResponseEntity<List<PatientDTO>> fetchAllPatients() throws PatientNotFoundException {
+   @SecurityRequirement(name = "bearerAuth")
+   public ResponseEntity<List<PatientDTO>> fetchAllPatients() throws PatientNotFoundException {
         if(patientService.getAllPatient().isEmpty()){
             throw new PatientNotFoundException("Patient doesn't exit");
         }

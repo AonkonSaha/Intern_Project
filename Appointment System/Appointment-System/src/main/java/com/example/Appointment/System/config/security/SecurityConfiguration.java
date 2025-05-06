@@ -2,6 +2,7 @@ package com.example.Appointment.System.config.security;
 
 
 import com.example.Appointment.System.jwt.filter.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,34 +17,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+
     @Autowired
     JwtAuthFilter jwtAuthFilter;
     public static final String[] ADMIN_URLS = {
-            "/api/v3/blog/comment/create",
-            "/api/v3/blog/comment/update",
-            "/api/v3/blog/comment/delete",
-            "/api/v2/blog/save",
-            "/api/v2/blog/delete",
-            "/api/v2/blog/update",
-            "/api/v2/blog/"
+            "/api/user/role/**"
     };
     public static final String[] PATIENT_URLS = {
-            "/api/v4/role/**"
+            "/api/patient/**",
+            "/api/doctor/booking/**",
+            "/api/lab/test/booking"
+
     };
+    public static final String[] DOCTOR_URLS = {
+            "api/doctor"
+    };
+
     public static final String[] PUBLIC_URLS = {
-            "/api/v3/blog/comment/fetch",
-            "/api/v2/blog/fetch",
-            "/api/v1/user/**",
+            "/api/user/signup",
+            "/api/user/signin",
+            "/api/user/signout",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/swagger-ui.html",
-            "/api/v5/auth/jwt/signup",
-            "/api/v5/auth/jwt/signin"
+            "/swagger-ui.html"
     };
-
-
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
@@ -52,8 +49,9 @@ public class SecurityConfiguration {
         http.
                 csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PATIENT_URLS).hasRole("PATIENT")
+                        .requestMatchers(PATIENT_URLS).hasAnyRole("PATIENT","ADMIN")
                         .requestMatchers(ADMIN_URLS).hasAnyRole("ADMIN")
+                        .requestMatchers(DOCTOR_URLS).hasAnyRole("DOCTOR","ADMIN")
                         .requestMatchers(PUBLIC_URLS).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

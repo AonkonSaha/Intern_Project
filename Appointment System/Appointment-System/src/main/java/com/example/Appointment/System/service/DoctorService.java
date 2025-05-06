@@ -1,8 +1,7 @@
 package com.example.Appointment.System.service;
 
 import com.example.Appointment.System.model.dto.DoctorDTO;
-import com.example.Appointment.System.model.entity.Doctor;
-import com.example.Appointment.System.model.mapper.DoctorMapper;
+import com.example.Appointment.System.model.entity.DoctorProfile;
 import com.example.Appointment.System.repository.DoctorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,26 +15,20 @@ import java.util.Optional;
 public class DoctorService {
     private final DoctorRepo doctorRepo;
 
-    public Doctor saveDoctor(Doctor doctor) {
-        doctorRepo.save(doctor);
-        doctor.setRole("DOCTOR");
-        return doctor;
+    public DoctorProfile saveDoctor(DoctorProfile doctorProfile) {
+        doctorRepo.save(doctorProfile);
+        return doctorProfile;
     }
 
     public boolean isExitDoctorById(Long id) {
         return doctorRepo.existsById(id);
     }
 
-    public Doctor updateDoctorById(Long id, DoctorDTO doctorDTO) {
-        Optional<Doctor> doctor=doctorRepo.findById(id);
+    public DoctorProfile updateDoctorById(Long id, DoctorDTO doctorDTO) {
+        Optional<DoctorProfile> doctor=doctorRepo.findById(id);
         if(doctor.isEmpty()){
             return null;
         }
-        doctor.get().setDoctorName(doctorDTO.getDoctorName());
-        doctor.get().setEmail(doctorDTO.getEmail());
-        doctor.get().setAddress(doctorDTO.getAddress());
-        doctor.get().setContactNumber(doctorDTO.getContactNumber());
-        doctor.get().setGender(doctorDTO.getGender());
         doctor.get().setLanguagesSpoken(doctorDTO.getLanguagesSpoken());
         doctor.get().setYearsOfExperience(doctorDTO.getYearsOfExperience());
         doctor.get().setDesignation(doctorDTO.getDesignation());
@@ -47,8 +40,8 @@ public class DoctorService {
         return doctor.get();
     }
 
-    public Doctor getDoctorById(Long id) {
-        Optional<Doctor> doctor=doctorRepo.findById(id);
+    public DoctorProfile getDoctorById(Long id) {
+        Optional<DoctorProfile> doctor=doctorRepo.findById(id);
         if(doctor.isEmpty()){
             return null;
         }
@@ -56,16 +49,16 @@ public class DoctorService {
     }
 
     public void deleteDoctorByDoctorId(Long id) {
-        Optional<Doctor> doctor=doctorRepo.findById(id);
+        Optional<DoctorProfile> doctor=doctorRepo.findById(id);
         if(doctor.isEmpty()){
             return;
         }
         doctorRepo.deleteById(id);
     }
 
-    public List<Doctor> getAllDoctor() {
-        List<Doctor> doctors = doctorRepo.findAll();
-        if(doctors.isEmpty()){
+    public List<DoctorProfile> getAllDoctor() {
+        List<DoctorProfile> doctorProfiles = doctorRepo.findAll();
+        if(doctorProfiles.isEmpty()){
             return new ArrayList<>();
         }
         return doctorRepo.findAll();

@@ -28,11 +28,11 @@ public class DoctorBooking {
     private String note;
     private String status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="patient_id")
-    private Patient patient;
-    @ManyToOne
+    private PatientProfile patientProfile;
+    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
+    private DoctorProfile doctorProfile;
 
 }

@@ -17,7 +17,7 @@ public class UserDTO {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private String mobileNumber;
+    private String contact;
     private String gender;
     private String email;
     @Column(nullable = false)
@@ -29,7 +29,6 @@ public class UserDTO {
     private String address;
     private String profession;
     private String designation;
-    private String contactNumber;
     private String licenseNumber;
     private Integer yearsOfExperience;
     private String hospitalOrClinicName;

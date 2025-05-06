@@ -2,21 +2,16 @@ package com.example.Appointment.System.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -24,39 +19,21 @@ public class MUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String mobileNumber;
-    private String gender;
     private String email;
-    @Column(nullable = false)
+    private String contact;
     private String password;
-    @Column(nullable = false)
+    private String gender;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
-    @Transient
-    private Integer age;
-    private String profilePictureUrl;
-    private String address;
-    private String profession;
-    private String doctorName;
-    private String designation;
-    private String contactNumber;
-    private String licenseNumber;
-    private Integer yearsOfExperience;
-    private String hospitalOrClinicName;
-    private String languagesSpoken;
-    private List<String> degrees=new ArrayList<>();
-    private Double rating;
-    private Boolean availabilityStatus;
     private Boolean isActive;
-    @ManyToMany(mappedBy = "users",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "users",fetch=FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ToString.Exclude
     private Set<UserRole> userRoles=new HashSet<>();
 
-    public Integer getAge() {
-        if (this.dateOfBirth == null) return null;
-        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-    }
+    @OneToOne(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    PatientProfile patientProfile;
+    @OneToOne(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    DoctorProfile doctorProfile;
 
 }

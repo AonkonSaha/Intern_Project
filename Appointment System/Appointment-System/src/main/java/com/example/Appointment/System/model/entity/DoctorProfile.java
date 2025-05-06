@@ -14,32 +14,30 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Doctor {
+public class DoctorProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String doctorName;
     private String designation;
-    private String contactNumber;
-    private String email;
     private String licenseNumber;
     private Integer yearsOfExperience;
     private String hospitalOrClinicName;
-    private String address;
     private String profilePictureUrl;
     private String languagesSpoken;
     private List<String> degrees=new ArrayList<>();
     private Double rating;
-    private String gender;
-    private String password;
     private Boolean availabilityStatus;
-    private String role;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private MUser user;
 
-    @ManyToMany(mappedBy = "doctors",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Patient> patients=new HashSet<>();
-    @OneToMany(mappedBy = "doctor",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "doctorProfiles",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<PatientProfile> patientProfiles =new HashSet<>();
+
+    @OneToMany(mappedBy = "doctorProfile",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<DoctorBooking> doctorBookings=new HashSet<>();
 
 

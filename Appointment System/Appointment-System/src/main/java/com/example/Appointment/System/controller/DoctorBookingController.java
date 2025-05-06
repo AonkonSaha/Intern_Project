@@ -4,6 +4,7 @@ import com.example.Appointment.System.exception.DoctorBookNotFoundException;
 import com.example.Appointment.System.model.dto.DoctorBookingDTO;
 import com.example.Appointment.System.model.mapper.DoctorBookingMapper;
 import com.example.Appointment.System.service.DoctorBookingService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/doctor/booking")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class DoctorBookingController {
     private final DoctorBookingService doctorBookingService;
     private final DoctorBookingMapper doctorBookingMapper;

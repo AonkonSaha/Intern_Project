@@ -2,63 +2,46 @@ package com.example.Appointment.System.model.mapper;
 
 import com.example.Appointment.System.model.dto.UserDTO;
 import com.example.Appointment.System.model.entity.MUser;
-import com.example.Appointment.System.model.entity.Patient;
+import com.example.Appointment.System.model.entity.PatientProfile;
+import com.example.Appointment.System.model.entity.UserRole;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
+    private final PasswordEncoder passwordEncoder;
     public MUser toUser(UserDTO userDTO) {
-        return MUser.builder()
-                .degrees(userDTO.getDegrees())
+        MUser user= MUser.builder()
                 .email(userDTO.getEmail())
-                .address(userDTO.getAddress())
-                .contactNumber(userDTO.getContactNumber())
-                .designation(userDTO.getDesignation())
-                .availabilityStatus(userDTO.getAvailabilityStatus())
                 .dateOfBirth(userDTO.getDateOfBirth())
                 .gender(userDTO.getGender())
-                .hospitalOrClinicName(userDTO.getHospitalOrClinicName())
-                .languagesSpoken(userDTO.getLanguagesSpoken())
-                .licenseNumber(userDTO.getLicenseNumber())
-                .profession(userDTO.getProfession())
-                .rating(userDTO.getRating())
-                .yearsOfExperience(userDTO.getYearsOfExperience())
                 .name(userDTO.getName())
-                .password(userDTO.getPassword())
+                .password(passwordEncoder.encode(userDTO.getPassword()))
                 .build();
+        UserRole userRole=new UserRole();
+        userRole.setRole("PATIENT");
+        userRole.setUsers(Set.of(user));
+        user.setUserRoles(Set.of(userRole));
+        PatientProfile patientProfile=new PatientProfile();
+        patientProfile.setDateOfBirth(user.getDateOfBirth());
+        patientProfile.setPatientName(user.getName());
+        patientProfile.setUser(user);
+        user.setPatientProfile(patientProfile);
+        return user;
     }
 
     public UserDTO toUserDTO(MUser mUser) {
         return UserDTO.builder()
-                .degrees(mUser.getDegrees())
                 .dateOfBirth(mUser.getDateOfBirth())
                 .email(mUser.getEmail())
                 .name(mUser.getName())
-                .address(mUser.getAddress())
-                .profession(mUser.getProfession())
                 .gender(mUser.getGender())
-                .designation(mUser.getDesignation())
-                .availabilityStatus(mUser.getAvailabilityStatus())
-                .languagesSpoken(mUser.getLanguagesSpoken())
-                .licenseNumber(mUser.getLicenseNumber())
-                .hospitalOrClinicName(mUser.getHospitalOrClinicName())
-                .rating(mUser.getRating())
-                .yearsOfExperience(mUser.getYearsOfExperience())
-                .contactNumber(mUser.getContactNumber())
                 .build();
     }
 
-    public Patient toPatient(MUser user) {
-        return Patient.builder()
-                .patientName(user.getName())
-                .dateOfBirth(user.getDateOfBirth())
-                .password(user.getPassword())
-                .email(user.getEmail())
-                .gender(user.getGender())
-                .mobileNumber(user.getContactNumber())
-                .build();
-    }
+
 }

@@ -5,6 +5,7 @@ import com.example.Appointment.System.exception.PatientNotFoundException;
 import com.example.Appointment.System.model.dto.LabTestBookingDTO;
 import com.example.Appointment.System.model.mapper.LabTestBookingMapper;
 import com.example.Appointment.System.service.LabTestBookingService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,14 @@ import java.util.List;
 @RestController
 @RequestMapping("api/lab/test/booking")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class LabTestBookingController {
     private final LabTestBookingService labTestBookingService;
     private final LabTestBookingMapper labTestBookingMapper;
-
+    @GetMapping("/test")
+    public ResponseEntity<String> test()  {
+        return ResponseEntity.ok("End Point Test");
+    }
     @PostMapping("/register")
     public ResponseEntity<LabTestBookingDTO> registerLabTestBooking(@RequestBody LabTestBookingDTO labTestBookingDTO) throws PatientNotFoundException, LabTestBookingNotFoundException {
         return ResponseEntity.ok(labTestBookingMapper.toLabTestBookingDTO(

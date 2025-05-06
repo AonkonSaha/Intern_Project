@@ -1,27 +1,29 @@
 package com.example.Appointment.System.controller;
 
+import com.example.Appointment.System.exception.UserNotFoundException;
 import com.example.Appointment.System.jwt.JwtUtils;
 import com.example.Appointment.System.model.dto.LoginDTO;
 import com.example.Appointment.System.model.dto.PatientDTO;
 import com.example.Appointment.System.model.dto.UserDTO;
 import com.example.Appointment.System.model.entity.MUser;
-import com.example.Appointment.System.model.entity.Patient;
+import com.example.Appointment.System.model.entity.PatientProfile;
 import com.example.Appointment.System.model.mapper.PatientMapper;
 import com.example.Appointment.System.model.mapper.UserMapper;
-import com.example.Appointment.System.repository.PatientRepo;
 import com.example.Appointment.System.service.PatientService;
 import com.example.Appointment.System.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/user")
 @RequiredArgsConstructor
-public class UserController {
+public class UserAuthController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final PatientMapper patientMapper;
@@ -29,9 +31,9 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final PatientService patientService;
     @PostMapping("/signup")
-    public ResponseEntity<PatientDTO> registerUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO){
         return ResponseEntity.ok(
-               patientMapper.toPatientDTO(userService.saveUser(userMapper.toUser(userDTO)))
+               userMapper.toUserDTO(userService.saveUser(userMapper.toUser(userDTO)))
         );
     }
     @PostMapping("/signin")
@@ -40,13 +42,12 @@ public class UserController {
                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),loginDTO.getPassword()));
         String token=jwtUtils.generateToken(loginDTO.getUsername());
         MUser user=userService.getUserByName(loginDTO.getUsername());
-        Patient patient=patientService.getPatientByName(user.getName());
         user.setIsActive(true);
         userService.saveUser(user);
-        patientService.savePatient(patient);
         return ResponseEntity.ok(token);
     }
     @PostMapping("/signout")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<String> logoutUser(HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -56,11 +57,36 @@ public class UserController {
         String username=jwtUtils.extractUsername(token);
         MUser user=userService.getUserByName(username);
         user.setIsActive(false);
-        Patient patient=patientService.getPatientByName(username);
-        patient.setIsActive(false);
         userService.saveUser(user);
-        patientService.savePatient(patient);
         return ResponseEntity.ok("Logout successfully");
+    }
+    @PutMapping("/update/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UserDTO> updateUserById(@PathVariable Long id,@RequestBody UserDTO userDTO) throws UserNotFoundException {
+        if(!userService.isExitUserById(id)){
+            throw new UserNotFoundException("User doesn't exit");
+        }
+        return ResponseEntity.ok(
+                userMapper.toUserDTO(userService.updateUser(id,userDTO))
+        );
+    }
+    @DeleteMapping("/delete/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) throws UserNotFoundException {
+        if(!userService.isExitUserById(id)){
+            throw new UserNotFoundException("User doesn't exit");
+        }
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @GetMapping("/fetch/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UserDTO> fetchUserById(@PathVariable Long id) throws UserNotFoundException {
+        if(!userService.isExitUserById(id)){
+            throw new UserNotFoundException("User doesn't exit");
+        }
+        return ResponseEntity.ok(userMapper.toUserDTO(userService.getUserById(id)));
     }
 
 }

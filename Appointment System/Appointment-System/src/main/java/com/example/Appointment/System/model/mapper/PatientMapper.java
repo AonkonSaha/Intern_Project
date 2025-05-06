@@ -1,7 +1,7 @@
 package com.example.Appointment.System.model.mapper;
 
 import com.example.Appointment.System.model.dto.PatientDTO;
-import com.example.Appointment.System.model.entity.Patient;
+import com.example.Appointment.System.model.entity.PatientProfile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,32 +10,22 @@ import java.util.List;
 @Component
 public class PatientMapper {
 
-    public Patient toPatient(PatientDTO patientDTO) {
-        return Patient.builder()
-                .patientName(patientDTO.getPatientName())
-                .email(patientDTO.getEmail())
-                .gender(patientDTO.getGender())
-                .mobileNumber(patientDTO.getMobileNumber())
-                .password(patientDTO.getPassword())
+    public PatientProfile toPatient(PatientDTO patientDTO) {
+        return PatientProfile.builder()
                 .dateOfBirth(patientDTO.getDateOfBirth())
                 .build();
     }
 
-    public PatientDTO toPatientDTO(Patient patient) {
+    public PatientDTO toPatientDTO(PatientProfile patientProfile) {
         return PatientDTO.builder()
-                .patientName(patient.getPatientName())
-                .mobileNumber(patient.getMobileNumber())
-                .gender(patient.getGender())
-                .dateOfBirth(patient.getDateOfBirth())
-                .email(patient.getEmail())
-                .password(patient.getPassword())
+                .dateOfBirth(patientProfile.getDateOfBirth())
                 .build();
     }
 
-    public List<PatientDTO> toPatientDTOS(List<Patient> allPatient) {
+    public List<PatientDTO> toPatientDTOS(List<PatientProfile> allPatientProfile) {
         List<PatientDTO>patientDTOS=new ArrayList<>();
-        for (Patient patient:allPatient){
-            patientDTOS.add(toPatientDTO(patient));
+        for (PatientProfile patientProfile : allPatientProfile){
+            patientDTOS.add(toPatientDTO(patientProfile));
         }
         return patientDTOS;
     }

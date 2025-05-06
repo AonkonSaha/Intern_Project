@@ -2,9 +2,9 @@ package com.example.Appointment.System.model.mapper;
 
 import com.example.Appointment.System.enums.Status;
 import com.example.Appointment.System.model.dto.DoctorBookingDTO;
-import com.example.Appointment.System.model.entity.Doctor;
+import com.example.Appointment.System.model.entity.DoctorProfile;
 import com.example.Appointment.System.model.entity.DoctorBooking;
-import com.example.Appointment.System.model.entity.Patient;
+import com.example.Appointment.System.model.entity.PatientProfile;
 import com.example.Appointment.System.repository.DoctorRepo;
 import com.example.Appointment.System.repository.PatientRepo;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -26,20 +27,19 @@ public class DoctorBookingMapper {
                 .appointmentDate(doctorBooking.getAppointmentDate())
                 .note(doctorBooking.getNote())
                 .status(doctorBooking.getStatus())
-                .doctorName(doctorBooking.getDoctor().getDoctorName())
-                .designation(doctorBooking.getDoctor().getDesignation())
-                .degrees(doctorBooking.getDoctor().getDegrees() )
-                .hospitalOrClinicName(doctorBooking.getDoctor().getHospitalOrClinicName())
-                .licenseNumber(doctorBooking.getDoctor().getLicenseNumber())
-                .doctor(doctorBooking.getDoctor())
-                .patient(doctorBooking.getPatient())
+                .designation(doctorBooking.getDoctorProfile().getDesignation())
+                .degrees(doctorBooking.getDoctorProfile().getDegrees() )
+                .hospitalOrClinicName(doctorBooking.getDoctorProfile().getHospitalOrClinicName())
+                .licenseNumber(doctorBooking.getDoctorProfile().getLicenseNumber())
+                .doctorProfile(doctorBooking.getDoctorProfile())
+                .patientProfile(doctorBooking.getPatientProfile())
                 .status(doctorBooking.getStatus())
                 .build();
     }
     public DoctorBooking toDoctorBooking(DoctorBookingDTO doctorBookingDTO) {
         String patientName= SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<Patient> patient=patientRepo.findByPatientName(patientName);
-        Optional<Doctor> doctor=doctorRepo.findByLicenseNumber(doctorBookingDTO.getLicenseNumber());
+        Optional<PatientProfile> patient=patientRepo.findByPatientName(patientName);
+        Optional<DoctorProfile> doctor=doctorRepo.findByLicenseNumber(doctorBookingDTO.getLicenseNumber());
 
         DoctorBooking doctorBooking= DoctorBooking.builder()
                 .bookingDate(doctorBookingDTO.getBookingDate())
@@ -47,14 +47,12 @@ public class DoctorBookingMapper {
                 .note(doctorBookingDTO.getNote())
                 .status(Status.Confirmed.name())
                 .build();
-        patient.get().getDoctorBookings().add(doctorBooking);
-        doctor.get().getDoctorBookings().add(doctorBooking);
-        patient.get().getDoctors().add(doctor.get());
-        doctor.get().getPatients().add(patient.get());
-        doctorBooking.setPatient(patient.get());
-        doctorBooking.setDoctor(doctor.get());
-        patientRepo.save(patient.get());
-        doctorRepo.save(doctor.get());
+        patient.get().setDoctorBookings(Set.of(doctorBooking));
+        doctor.get().setDoctorBookings(Set.of(doctorBooking));
+        patient.get().setDoctorProfiles(Set.of(doctor.get()) );
+        doctor.get().setPatientProfiles(Set.of(patient.get()) );
+        doctorBooking.setPatientProfile(patient.get());
+        doctorBooking.setDoctorProfile(doctor.get());
         return doctorBooking;
 
     }

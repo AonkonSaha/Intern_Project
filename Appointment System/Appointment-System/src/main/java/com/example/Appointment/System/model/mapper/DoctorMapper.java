@@ -1,7 +1,7 @@
 package com.example.Appointment.System.model.mapper;
 
 import com.example.Appointment.System.model.dto.DoctorDTO;
-import com.example.Appointment.System.model.entity.Doctor;
+import com.example.Appointment.System.model.entity.DoctorProfile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -9,13 +9,8 @@ import java.util.List;
 
 @Component
 public class DoctorMapper {
-    public Doctor toDoctor(DoctorDTO doctorDTO) {
-        return Doctor.builder()
-                .doctorName(doctorDTO.getDoctorName())
-                .email(doctorDTO.getEmail())
-                .address(doctorDTO.getAddress())
-                .contactNumber(doctorDTO.getContactNumber())
-                .gender(doctorDTO.getGender())
+    public DoctorProfile toDoctor(DoctorDTO doctorDTO) {
+        return DoctorProfile.builder()
                 .languagesSpoken(doctorDTO.getLanguagesSpoken())
                 .yearsOfExperience(doctorDTO.getYearsOfExperience())
                 .designation(doctorDTO.getDesignation())
@@ -26,27 +21,22 @@ public class DoctorMapper {
                 .build();
     }
 
-    public DoctorDTO toDoctorDTO(Doctor doctor) {
+    public DoctorDTO toDoctorDTO(DoctorProfile doctorProfile) {
         return DoctorDTO.builder()
-                .doctorName(doctor.getDoctorName())
-                .email(doctor.getEmail())
-                .address(doctor.getAddress())
-                .gender(doctor.getGender())
-                .languagesSpoken(doctor.getLanguagesSpoken())
-                .yearsOfExperience(doctor.getYearsOfExperience())
-                .designation(doctor.getDesignation())
-                .licenseNumber(doctor.getLicenseNumber())
-                .hospitalOrClinicName(doctor.getHospitalOrClinicName())
-                .availabilityStatus(doctor.getAvailabilityStatus())
-                .degrees(doctor.getDegrees())
-                .contactNumber(doctor.getContactNumber())
+                .languagesSpoken(doctorProfile.getLanguagesSpoken())
+                .yearsOfExperience(doctorProfile.getYearsOfExperience())
+                .designation(doctorProfile.getDesignation())
+                .licenseNumber(doctorProfile.getLicenseNumber())
+                .hospitalOrClinicName(doctorProfile.getHospitalOrClinicName())
+                .availabilityStatus(doctorProfile.getAvailabilityStatus())
+                .degrees(doctorProfile.getDegrees())
                 .build();
     }
 
-    public List<DoctorDTO> toDoctorDTOs(List<Doctor> all) {
+    public List<DoctorDTO> toDoctorDTOs(List<DoctorProfile> all) {
         List<DoctorDTO>doctorDTOS=new ArrayList<>();
-        for (Doctor doctor:all){
-            doctorDTOS.add(toDoctorDTO(doctor));
+        for (DoctorProfile doctorProfile :all){
+            doctorDTOS.add(toDoctorDTO(doctorProfile));
         }
         return doctorDTOS;
     }

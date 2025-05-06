@@ -6,7 +6,7 @@ import com.example.Appointment.System.exception.PatientNotFoundException;
 import com.example.Appointment.System.model.dto.LabTestBookingDTO;
 import com.example.Appointment.System.model.entity.DiagnosticCenter;
 import com.example.Appointment.System.model.entity.LabTestBooking;
-import com.example.Appointment.System.model.entity.Patient;
+import com.example.Appointment.System.model.entity.PatientProfile;
 import com.example.Appointment.System.repository.DiagnosticCenterRepo;
 import com.example.Appointment.System.repository.LabTestBookingRepo;
 import com.example.Appointment.System.repository.PatientRepo;
@@ -27,7 +27,7 @@ public class LabTestBookingMapper {
     public LabTestBooking toLabTestBooking(LabTestBookingDTO labTestBookingDTO) throws LabTestBookingNotFoundException, PatientNotFoundException {
 //        CustomUserDetails customUserDetails= (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        Optional<Patient>patient=patientRepo.findPatient(customUserDetails.getUsername(),customUserDetails.getEmail(),customUserDetails.getMobileNumber());
-          Optional<Patient> patient=patientRepo.findByPatientName(SecurityContextHolder.getContext().getAuthentication().getName());
+          Optional<PatientProfile> patient=patientRepo.findByPatientName(SecurityContextHolder.getContext().getAuthentication().getName());
                 Optional<DiagnosticCenter> diagnosticCenter=diagnosticCenterRepo.findDiagnosticCenter(
                 labTestBookingDTO.getLabTestName(),
                 labTestBookingDTO.getCountry(),
@@ -52,7 +52,7 @@ public class LabTestBookingMapper {
                 .build();
        patient.get().getLabTestBookings().add(labTestBooking);
        diagnosticCenter.get().getLabTestBookings().add(labTestBooking);
-       labTestBooking.setPatient(patient.get());
+       labTestBooking.setPatientProfile(patient.get());
        labTestBooking.setDiagnosticCenter(diagnosticCenter.get());
        patientRepo.save(patient.get());
        diagnosticCenterRepo.save(diagnosticCenter.get());
