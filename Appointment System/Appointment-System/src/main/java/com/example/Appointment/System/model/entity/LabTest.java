@@ -19,6 +19,8 @@ public class LabTest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String LabTestName;
+    private String description;
+    private String labTestImageUrl;
 
     @ManyToMany(mappedBy = "labTests",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<DiagnosticCenter> diagnosticCenters;

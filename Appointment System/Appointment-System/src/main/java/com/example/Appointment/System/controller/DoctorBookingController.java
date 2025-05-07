@@ -26,7 +26,7 @@ public class DoctorBookingController {
     }
     @GetMapping("/fetch/{id}")
     public ResponseEntity<DoctorBookingDTO> fetchDoctorBookingById(@PathVariable("id") Long id) throws DoctorBookNotFoundException {
-        if(doctorBookingService.isExitDoctorBookById(id)){
+        if(!doctorBookingService.isExitDoctorBookById(id)){
             throw new DoctorBookNotFoundException("Doctor booking doesn't exit");
         }
         return ResponseEntity.ok(doctorBookingMapper.toDoctorBookingDTO(
@@ -43,7 +43,7 @@ public class DoctorBookingController {
     @PutMapping("/update/{id}")
     public ResponseEntity<DoctorBookingDTO> updateDoctorBookingById(
             @PathVariable("id") Long id,@RequestBody DoctorBookingDTO doctorBookingDTO) throws DoctorBookNotFoundException {
-        if(doctorBookingService.isExitDoctorBookById(id)){
+        if(!doctorBookingService.isExitDoctorBookById(id)){
             throw new DoctorBookNotFoundException("DoctorBook doesn't exit");
         }
         return ResponseEntity.ok(doctorBookingMapper.toDoctorBookingDTO(

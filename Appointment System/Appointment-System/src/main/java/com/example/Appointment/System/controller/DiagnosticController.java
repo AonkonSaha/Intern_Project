@@ -33,7 +33,7 @@ public class DiagnosticController {
     }
     @GetMapping("/fetch/{id}")
     public ResponseEntity<DiagnosticDTO> fetchDiagnosticCenterById(@PathVariable Long id) throws DiagnosticCenterNotFoundException {
-        if(diagnosticCenterService.isExitDianosticCenterById(id)){
+        if(!diagnosticCenterService.isExitDianosticCenterById(id)){
             throw new DiagnosticCenterNotFoundException("DiagnosticCenter doesn't exit");
         }
         return ResponseEntity.ok(
@@ -42,7 +42,7 @@ public class DiagnosticController {
     }
     @DeleteMapping("delete/{id}")
     public ResponseEntity<String> deleteDiagnosticCenterById(@PathVariable Long id) throws DiagnosticCenterNotFoundException {
-        if(diagnosticCenterService.isExitDianosticCenterById(id)){
+        if(!diagnosticCenterService.isExitDianosticCenterById(id)){
             throw new DiagnosticCenterNotFoundException("DiagnosticCenter doesn't exit");
         }
         diagnosticCenterService.removeDiagnosticCenter(id);
@@ -50,7 +50,7 @@ public class DiagnosticController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<DiagnosticDTO> updateDiagnosticCenterById(@PathVariable Long id,@RequestBody DiagnosticDTO diagnosticDTO) throws DiagnosticCenterNotFoundException {
-        if(diagnosticCenterService.isExitDianosticCenterById(id)){
+        if(!diagnosticCenterService.isExitDianosticCenterById(id)){
             throw new DiagnosticCenterNotFoundException("DiagnosticCenter doesn't exit");
         }
         return ResponseEntity.ok(
