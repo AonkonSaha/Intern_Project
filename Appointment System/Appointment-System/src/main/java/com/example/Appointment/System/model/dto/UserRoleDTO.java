@@ -14,5 +14,5 @@ import java.util.Set;
 public class UserRoleDTO {
     private String role;
     private List<Long> userIds=new ArrayList<>();
-    private Set<MUser> users=new HashSet<>();
+
 }

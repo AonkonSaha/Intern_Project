@@ -17,25 +17,24 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class LabTestBookingMapper {
     private final DiagnosticCenterRepo diagnosticCenterRepo;
     private final PatientRepo patientRepo;
-    private final LabTestBookingRepo labTestBookingRepo;
     public LabTestBooking toLabTestBooking(LabTestBookingDTO labTestBookingDTO) throws LabTestBookingNotFoundException, PatientNotFoundException {
-//        CustomUserDetails customUserDetails= (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        Optional<Patient>patient=patientRepo.findPatient(customUserDetails.getUsername(),customUserDetails.getEmail(),customUserDetails.getMobileNumber());
           Optional<PatientProfile> patient=patientRepo.findByPatientName(SecurityContextHolder.getContext().getAuthentication().getName());
-                Optional<DiagnosticCenter> diagnosticCenter=diagnosticCenterRepo.findDiagnosticCenter(
-                labTestBookingDTO.getLabTestName(),
-                labTestBookingDTO.getCountry(),
-                labTestBookingDTO.getCity(),
-                labTestBookingDTO.getAddress(),
-                labTestBookingDTO.getRoadNo(),
-                labTestBookingDTO.getHoldingNo()
-        );
+          Optional<DiagnosticCenter>diagnosticCenter=diagnosticCenterRepo.findByDiagnosticCenterName(labTestBookingDTO.getDiagnosticCenterName());
+//                Optional<DiagnosticCenter> diagnosticCenter=diagnosticCenterRepo.findDiagnosticCenter(
+//                labTestBookingDTO.getLabTestName(),
+//                labTestBookingDTO.getCountry(),
+//                labTestBookingDTO.getCity(),
+//                labTestBookingDTO.getAddress(),
+//                labTestBookingDTO.getRoadNo(),
+//                labTestBookingDTO.getHoldingNo()
+//        );
         if(diagnosticCenter.isEmpty()){
             throw new LabTestBookingNotFoundException("LabTestBooking doesn't exit");
         }
@@ -50,14 +49,11 @@ public class LabTestBookingMapper {
                 .deliveryDate(labTestBookingDTO.getDeliveryDate())
                 .note(labTestBookingDTO.getNote())
                 .build();
-       patient.get().getLabTestBookings().add(labTestBooking);
-       diagnosticCenter.get().getLabTestBookings().add(labTestBooking);
-       labTestBooking.setPatientProfile(patient.get());
-       labTestBooking.setDiagnosticCenter(diagnosticCenter.get());
-       patientRepo.save(patient.get());
-       diagnosticCenterRepo.save(diagnosticCenter.get());
-       labTestBookingRepo.save(labTestBooking);
-       return labTestBooking;
+        patient.get().setLabTestBookings(Set.of(labTestBooking));
+        diagnosticCenter.get().setLabTestBookings(Set.of(labTestBooking));
+        labTestBooking.setPatientProfile(patient.get());
+        labTestBooking.setDiagnosticCenter(diagnosticCenter.get());
+        return labTestBooking;
     }
 
     public LabTestBookingDTO toLabTestBookingDTO(LabTestBooking labTestBooking) {

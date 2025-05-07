@@ -35,7 +35,6 @@ public class UserRoleMapper {
     public UserRoleDTO toUserRoleDTO(UserRole userRole) {
         return UserRoleDTO.builder()
                 .role(userRole.getRole())
-                .users(userRole.getUsers())
                 .build();
     }
 }

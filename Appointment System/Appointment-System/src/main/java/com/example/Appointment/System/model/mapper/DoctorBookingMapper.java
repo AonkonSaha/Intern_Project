@@ -1,6 +1,7 @@
 package com.example.Appointment.System.model.mapper;
 
 import com.example.Appointment.System.enums.Status;
+import com.example.Appointment.System.exception.PatientNotFoundException;
 import com.example.Appointment.System.model.dto.DoctorBookingDTO;
 import com.example.Appointment.System.model.entity.DoctorProfile;
 import com.example.Appointment.System.model.entity.DoctorBooking;
@@ -31,15 +32,20 @@ public class DoctorBookingMapper {
                 .degrees(doctorBooking.getDoctorProfile().getDegrees() )
                 .hospitalOrClinicName(doctorBooking.getDoctorProfile().getHospitalOrClinicName())
                 .licenseNumber(doctorBooking.getDoctorProfile().getLicenseNumber())
-                .doctorProfile(doctorBooking.getDoctorProfile())
-                .patientProfile(doctorBooking.getPatientProfile())
                 .status(doctorBooking.getStatus())
+                .doctorName(doctorBooking.getDoctorProfile().getDoctorName())
                 .build();
     }
-    public DoctorBooking toDoctorBooking(DoctorBookingDTO doctorBookingDTO) {
+    public DoctorBooking toDoctorBooking(DoctorBookingDTO doctorBookingDTO)  {
         String patientName= SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<PatientProfile> patient=patientRepo.findByPatientName(patientName);
         Optional<DoctorProfile> doctor=doctorRepo.findByLicenseNumber(doctorBookingDTO.getLicenseNumber());
+        if(patient.isEmpty()){
+            throw new IllegalArgumentException("Patient doesn't found");
+        }
+        if(doctor.isEmpty()){
+            throw new IllegalArgumentException("Doctor doesn't exit");
+        }
 
         DoctorBooking doctorBooking= DoctorBooking.builder()
                 .bookingDate(doctorBookingDTO.getBookingDate())

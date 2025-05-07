@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,10 +22,8 @@ public class DoctorBooking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime bookingDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime appointmentDate;
+    private Instant bookingDate;
+    private Instant  appointmentDate;
     private String note;
     private String status;
 

@@ -20,4 +20,6 @@ public interface DiagnosticCenterRepo extends JpaRepository<DiagnosticCenter,Lon
                                              @Param("address") String address,
                                              @Param("roadNo") String roadNo,
                                              @Param("holdingNo") String holdingNo);
+
+    Optional<DiagnosticCenter> findByDiagnosticCenterName(String diagnosticCenterName);
 }

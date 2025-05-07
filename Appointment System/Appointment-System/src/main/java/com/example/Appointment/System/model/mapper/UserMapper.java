@@ -20,6 +20,7 @@ public class UserMapper {
                 .dateOfBirth(userDTO.getDateOfBirth())
                 .gender(userDTO.getGender())
                 .name(userDTO.getName())
+                .isActive(false)
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .build();
         UserRole userRole=new UserRole();

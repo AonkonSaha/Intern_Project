@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,11 +22,7 @@ public class DoctorBookingDTO {
     private String designation;
     private String note;
     private String status;
-    private DoctorProfile doctorProfile;
-    private PatientProfile patientProfile;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime bookingDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime appointmentDate;
+    private Instant  bookingDate;
+    private Instant appointmentDate;
 
 }

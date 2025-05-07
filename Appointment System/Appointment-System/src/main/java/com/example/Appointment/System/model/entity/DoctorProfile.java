@@ -14,10 +14,12 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class DoctorProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     private String doctorName;
     private String designation;
@@ -30,7 +32,7 @@ public class DoctorProfile {
     private Double rating;
     private Boolean availabilityStatus;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER,cascade={CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     private MUser user;
 

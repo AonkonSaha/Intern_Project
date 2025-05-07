@@ -1,8 +1,10 @@
 package com.example.Appointment.System.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -23,5 +25,8 @@ public class DoctorDTO {
     private String profilePictureUrl;
     private Double rating;
     private String password;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateOfBirth;
 
 }

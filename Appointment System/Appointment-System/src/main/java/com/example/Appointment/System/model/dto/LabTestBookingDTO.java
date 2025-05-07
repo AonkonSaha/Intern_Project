@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -16,10 +17,8 @@ public class LabTestBookingDTO {
     private String labTestName;
     private String note;
     private String status;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime oderDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime deliveryDate;
+    private Instant  oderDate;
+    private Instant deliveryDate;
     private String diagnosticCenterName;
     private String country;
     private String city;

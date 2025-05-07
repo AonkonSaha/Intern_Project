@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/patient")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class PatientController {
     private final PatientService patientService;
     private final PatientMapper patientMapper;

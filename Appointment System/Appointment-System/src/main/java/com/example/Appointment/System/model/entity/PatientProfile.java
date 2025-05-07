@@ -12,20 +12,21 @@ import java.util.Set;
 
 @Entity
 @Table(name = "patients")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class PatientProfile {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     private String patientName;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
-    @Transient
-    private Integer age;
     private String profilePictureUrl;
     private String address;
 
@@ -45,8 +46,4 @@ public class PatientProfile {
     @OneToMany(mappedBy = "patientProfile",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<DoctorBooking>doctorBookings=new HashSet<>();
 
-    public Integer getAge() {
-        if (this.dateOfBirth == null) return null;
-        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-    }
 }

@@ -2,11 +2,9 @@ package com.example.Appointment.System.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,24 +13,24 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class LabTestBooking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     @Column(nullable = false)
     private String labTestName;
     private String note;
     private String status;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime oderDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime deliveryDate;
+    private Instant oderDate;
+    private Instant  deliveryDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "diagnostic_center_id")
     private DiagnosticCenter diagnosticCenter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "patient_id")
     private PatientProfile patientProfile;
 }

@@ -33,7 +33,7 @@ public class UserDTO {
     private Integer yearsOfExperience;
     private String hospitalOrClinicName;
     private String languagesSpoken;
-    private List<String> degrees=new ArrayList<>();
+    private List<String> degrees;
     private Double rating;
     private Boolean availabilityStatus;
 }
