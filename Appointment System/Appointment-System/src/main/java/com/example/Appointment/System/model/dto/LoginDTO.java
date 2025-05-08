@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class LoginDTO {
-    @JsonProperty(value = "user_name")
     private String username;
     private String password;
 }

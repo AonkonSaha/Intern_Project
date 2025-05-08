@@ -27,7 +27,10 @@ public class SecurityConfiguration {
     public static final String[] PATIENT_URLS = {
             "/api/patient/**",
             "/api/doctor/booking/**",
-            "/api/lab/test/booking"
+            "/api/lab/test/booking",
+            "/home",
+            "/logout",
+
 
     };
     public static final String[] DOCTOR_URLS = {
@@ -41,6 +44,15 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-ui.html",
+            "/login",
+            "/register",
+            "/",
+            "/js/**",
+            "/css/**",
+            "/images/**",
+            "/favicon.ico",
+            "/home.html",
+
     };
 
     @Bean
