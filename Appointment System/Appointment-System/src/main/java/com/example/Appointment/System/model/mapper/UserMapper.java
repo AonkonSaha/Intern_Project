@@ -19,6 +19,7 @@ public class UserMapper {
                 .email(userDTO.getEmail())
                 .dateOfBirth(userDTO.getDateOfBirth())
                 .gender(userDTO.getGender())
+                .contact(userDTO.getContact())
                 .name(userDTO.getName())
                 .isActive(false)
                 .password(passwordEncoder.encode(userDTO.getPassword()))
@@ -40,6 +41,8 @@ public class UserMapper {
                 .dateOfBirth(mUser.getDateOfBirth())
                 .email(mUser.getEmail())
                 .name(mUser.getName())
+                .contact(mUser.getContact())
+                .firstName(mUser.getPatientProfile().getPatientName().split(" ")[0])
                 .gender(mUser.getGender())
                 .build();
     }

@@ -65,4 +65,16 @@ public class UserService {
         }
         return mUser.get();
     }
+
+    public boolean isExitUserByContact(String contact) {
+        return userRepo.existsByContact(contact);
+    }
+
+    public MUser findUserByContact(String contact) {
+        Optional<MUser> mUser= userRepo.findByContact(contact);
+        if(mUser.isEmpty()){
+            return null;
+        }
+        return mUser.get();
+    }
 }

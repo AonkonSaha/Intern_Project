@@ -5,11 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
 public class DoctorDTO {
+    private Long id;
     private String doctorName;
     private String designation;
     private String contactNumber;
@@ -19,13 +23,13 @@ public class DoctorDTO {
     private String hospitalOrClinicName;
     private String address;
     private String languagesSpoken;
-    private List<String> degrees;
+    private List<String> degrees=new ArrayList<>();
     private String gender;
     private Boolean availabilityStatus;
     private String profilePictureUrl;
     private Double rating;
     private String password;
-
+    private String degreesString;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 

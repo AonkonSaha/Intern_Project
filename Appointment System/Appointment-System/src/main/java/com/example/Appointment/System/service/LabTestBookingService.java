@@ -3,6 +3,7 @@ import com.example.Appointment.System.model.dto.LabTestBookingDTO;
 import com.example.Appointment.System.model.entity.LabTestBooking;
 import com.example.Appointment.System.repository.LabTestBookingRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -57,5 +58,14 @@ public class LabTestBookingService {
             return new ArrayList<>();
         }
         return labTestBookingRepo.findAll();
+    }
+
+    public List<LabTestBooking> getAllLabTestBookHistoryByUser() {
+        String patientContact = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<LabTestBooking> labTestBookings = labTestBookingRepo.findAllByUserContact(patientContact);
+        if(labTestBookings.isEmpty()){
+            return new ArrayList<>();
+        }
+        return labTestBookings;
     }
 }

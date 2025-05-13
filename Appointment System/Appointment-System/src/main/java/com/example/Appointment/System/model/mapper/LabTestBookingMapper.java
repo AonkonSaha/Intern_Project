@@ -5,10 +5,12 @@ import com.example.Appointment.System.exception.LabTestBookingNotFoundException;
 import com.example.Appointment.System.exception.PatientNotFoundException;
 import com.example.Appointment.System.model.dto.LabTestBookingDTO;
 import com.example.Appointment.System.model.entity.DiagnosticCenter;
+import com.example.Appointment.System.model.entity.LabTest;
 import com.example.Appointment.System.model.entity.LabTestBooking;
 import com.example.Appointment.System.model.entity.PatientProfile;
 import com.example.Appointment.System.repository.DiagnosticCenterRepo;
 import com.example.Appointment.System.repository.LabTestBookingRepo;
+import com.example.Appointment.System.repository.LabTestRepo;
 import com.example.Appointment.System.repository.PatientRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,35 +26,35 @@ import java.util.Set;
 public class LabTestBookingMapper {
     private final DiagnosticCenterRepo diagnosticCenterRepo;
     private final PatientRepo patientRepo;
+    private final LabTestRepo labTestRepo;
     public LabTestBooking toLabTestBooking(LabTestBookingDTO labTestBookingDTO) throws LabTestBookingNotFoundException, PatientNotFoundException {
-          Optional<PatientProfile> patient=patientRepo.findByPatientName(SecurityContextHolder.getContext().getAuthentication().getName());
-          Optional<DiagnosticCenter>diagnosticCenter=diagnosticCenterRepo.findByDiagnosticCenterName(labTestBookingDTO.getDiagnosticCenterName());
-//                Optional<DiagnosticCenter> diagnosticCenter=diagnosticCenterRepo.findDiagnosticCenter(
-//                labTestBookingDTO.getLabTestName(),
-//                labTestBookingDTO.getCountry(),
-//                labTestBookingDTO.getCity(),
-//                labTestBookingDTO.getAddress(),
-//                labTestBookingDTO.getRoadNo(),
-//                labTestBookingDTO.getHoldingNo()
-//        );
+        System.out.println("-------------------->labId: "+labTestBookingDTO.getLabId()+" labTestId: "+labTestBookingDTO.getLabTestId());
+          Optional<PatientProfile> patient=patientRepo.findByPatientContact(SecurityContextHolder.getContext().getAuthentication().getName());
+          Optional<DiagnosticCenter>diagnosticCenter=diagnosticCenterRepo.findById(labTestBookingDTO.getLabId());
+          Optional<LabTest> labTest=labTestRepo.findById(labTestBookingDTO.getLabTestId());
+
         if(diagnosticCenter.isEmpty()){
             throw new LabTestBookingNotFoundException("LabTestBooking doesn't exit");
         }
         if(patient.isEmpty()){
             throw new PatientNotFoundException("Patient doesn't exit");
         }
+        if(labTest.isEmpty()){
+            throw new IllegalArgumentException("LabTest dose not exist");
+        }
 
         LabTestBooking labTestBooking= LabTestBooking.builder()
-                .labTestName(labTestBookingDTO.getLabTestName())
+                .labTestName(labTest.get().getLabTestName())
                 .oderDate(labTestBookingDTO.getOderDate())
                 .status(Status.Confirmed.name())
-                .deliveryDate(labTestBookingDTO.getDeliveryDate())
+                .deliveryDate(labTestBookingDTO.getOderDate())
                 .note(labTestBookingDTO.getNote())
                 .build();
-        patient.get().setLabTestBookings(Set.of(labTestBooking));
-        diagnosticCenter.get().setLabTestBookings(Set.of(labTestBooking));
+        patient.get().getLabTestBookings().add(labTestBooking);
+        diagnosticCenter.get().getLabTestBookings().add(labTestBooking);
         labTestBooking.setPatientProfile(patient.get());
         labTestBooking.setDiagnosticCenter(diagnosticCenter.get());
+        labTestBooking.setLabTest(labTest.get());
         return labTestBooking;
     }
 
@@ -62,8 +64,12 @@ public class LabTestBookingMapper {
                 .oderDate(labTestBooking.getOderDate())
                 .deliveryDate(labTestBooking.getDeliveryDate())
                 .note(labTestBooking.getNote())
+                .id(labTestBooking.getId())
+                .labId(labTestBooking.getDiagnosticCenter().getId())
+                .labTestId(labTestBooking.getLabTest().getId())
                 .diagnosticCenterName(labTestBooking.getDiagnosticCenter().getDiagnosticCenterName())
                 .status(labTestBooking.getStatus())
+                .labTestImageUrl(labTestBooking.getLabTest().getLabTestImageUrl())
                 .build();
     }
 

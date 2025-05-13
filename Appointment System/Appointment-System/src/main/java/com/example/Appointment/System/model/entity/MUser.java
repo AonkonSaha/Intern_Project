@@ -2,6 +2,7 @@ package com.example.Appointment.System.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,9 +20,15 @@ public class MUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull(message = "Email cannot be null")
+    @Column(nullable = false)
     private String name;
     private String email;
+    @NotNull(message = "Contact cannot be null")
+    @Column(nullable = false,unique = true)
     private String contact;
+    @NotNull(message = "Password cannot be null")
+    @Column(nullable = false)
     private String password;
     private String gender;
     @JsonFormat(pattern = "yyyy-MM-dd")

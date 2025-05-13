@@ -36,4 +36,6 @@ public class UserDTO {
     private List<String> degrees;
     private Double rating;
     private Boolean availabilityStatus;
+    private String firstName;
+    private String lastName;
 }

@@ -10,9 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("api/lab/test/booking")
+@RequestMapping("/api/lab/test/booking")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class LabTestBookingController {
@@ -45,7 +46,7 @@ public class LabTestBookingController {
         return ResponseEntity.ok("LabTestBooking deleted successfully");
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<LabTestBookingDTO> updateLabTestBookingById(@PathVariable("id") Long id,@RequestBody LabTestBookingDTO labTestBookingDTO) throws LabTestBookingNotFoundException, PatientNotFoundException {
+    public ResponseEntity<LabTestBookingDTO> updateLabTestBookingById(@PathVariable("id") Long id,@RequestBody LabTestBookingDTO labTestBookingDTO) throws LabTestBookingNotFoundException {
         if(!labTestBookingService.isExitLabTestBookingById(id)){
             throw new LabTestBookingNotFoundException("LabTestBooking doesn't exit");
         }
@@ -60,5 +61,12 @@ public class LabTestBookingController {
         return ResponseEntity.ok(
                 labTestBookingMapper.toLabTestBookingDTOS(labTestBookingService.getAllLabTestBooking())
         );
+    }
+
+    @GetMapping("/fetch/all/history")
+    public ResponseEntity<Map<String,List<LabTestBookingDTO>>> fetchAllLabTestBookingHistoryByUser(){
+        return ResponseEntity.ok(Map.of("labTestsBook",labTestBookingMapper.toLabTestBookingDTOS(
+                labTestBookingService.getAllLabTestBookHistoryByUser()
+        )));
     }
 }

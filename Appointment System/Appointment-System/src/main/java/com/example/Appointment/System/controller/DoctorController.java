@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/doctor")
@@ -49,10 +50,14 @@ public class DoctorController {
         return ResponseEntity.ok("Doctor deleted successfully");
     }
     @GetMapping("/fetch/all")
-    public ResponseEntity<List<DoctorDTO>> fetchAllDoctors() throws DoctorNotFoundException {
+    public ResponseEntity<Map<String,List<DoctorDTO>>> fetchAllDoctors() throws DoctorNotFoundException {
         if(doctorService.getAllDoctor().isEmpty()){
             throw new DoctorNotFoundException("Doctor doesn't exit");
         }
-        return ResponseEntity.ok(doctorMapper.toDoctorDTOs(doctorService.getAllDoctor()));
+        List<DoctorDTO>doctorDTOS=doctorMapper.toDoctorDTOs(doctorService.getAllDoctor());
+        return ResponseEntity.ok(Map.of(
+                "doctors",doctorDTOS
+        ));
     }
+
 }

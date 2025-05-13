@@ -35,7 +35,7 @@ public class PatientProfile {
     private MUser user;
 
     @ManyToMany
-    @JoinTable(name="patient_doctor",
+    @JoinTable(name="patient_vs_doctor",
                joinColumns = @JoinColumn(name="patient_id"),
                inverseJoinColumns = @JoinColumn(name="doctor_id"))
     private Set<DoctorProfile> doctorProfiles =new HashSet<>();

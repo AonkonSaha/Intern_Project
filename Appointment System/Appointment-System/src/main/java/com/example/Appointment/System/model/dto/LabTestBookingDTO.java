@@ -13,12 +13,14 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class LabTestBookingDTO {
-    @Column(nullable = false)
+    private Long id;
+    private Long labTestId;
+    private Long labId;
     private String labTestName;
     private String note;
     private String status;
-    private Instant  oderDate;
-    private Instant deliveryDate;
+    private LocalDate  oderDate;
+    private LocalDate deliveryDate;
     private String diagnosticCenterName;
     private String country;
     private String city;
@@ -26,5 +28,14 @@ public class LabTestBookingDTO {
     private String address;
     private String roadNo;
     private String holdingNo;
+    private String contactNumber;
+    private String email;
+    private String operatingHours;
+    private String accreditation;
+    private String websiteUrl;
+    private Double rating;
+    private Boolean isActive;
+    private String labTestImageUrl;
+
 
 }

@@ -1,5 +1,5 @@
 function login() {
-    const username = document.getElementById("username").value;
+    const contact = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
     fetch('/login', {
@@ -7,46 +7,126 @@ function login() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ contact, password })
     })
         .then(response => response.json())
         .then(data => {
             if (data.token) {
                 localStorage.setItem('jwt', data.token);
-                alert("Login successful!");
-                window.location.href = '/home.html';
+                Toastify({
+                    text: "You are logged successfully!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#16a34a",
+                    stopOnFocus: true,
+                }).showToast();
 
-
+                setTimeout(() => {
+                    window.location.href = '/home.html';
+                }, 1000);
             } else {
-                alert("Invalid login credentials");
+                Toastify({
+                    text: "Invalid login credentials",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc2626",
+                    stopOnFocus: true,
+                }).showToast();
+
+
             }
         })
         .catch(error => {
             console.error("Error during login:", error);
-            alert("Error during login");
+            Toastify({
+                text: "Error during login",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
         });
 }
 
 function register() {
-    const username = document.getElementById("username").value;
+    const name = document.getElementById("fullName").value.trim();
+    const contact = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const gender = document.getElementById("gender").value;
+    const dateOfBirth = document.getElementById("dob").value;
     const password = document.getElementById("password").value;
-    const role = document.getElementById("role").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    // const role = document.getElementById("role").value;
+
+    // Basic password match check
+    if (password !== confirmPassword) {
+        Toastify({
+            text: "Passwords do not match!",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#dc2626",
+            stopOnFocus: true,
+        }).showToast();
+        return;
+    }
+
+    const userData = {
+        name,
+        contact,
+        email,
+        gender,
+        dateOfBirth,
+        password,
+        // role
+    };
 
     fetch('/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password, role })
+        body: JSON.stringify(userData)
     })
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(err => { throw new Error(err); });
+            }
+            return response.text();
+        })
         .then(data => {
-            alert(data);
-            window.location.href = '/login';
+            Toastify({
+                text: "Registration successful!!",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#16a34a",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/';
+            },1000);
         })
         .catch(error => {
             console.error("Error during registration:", error);
-            alert("Error during registration");
+            // alert("Registration failed: " + error.message);
+            Toastify({
+                text: "Reistration failed. Please try again later.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
         });
 }
 
@@ -54,8 +134,18 @@ function checkAuth() {
     const token = localStorage.getItem('jwt');
 
     if (!token) {
-        alert("You are not logged in!");
-        window.location.href = '/login'; // Redirect to login if no token
+        Toastify({
+            text: "You aren't logged in",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#dc2626",
+            stopOnFocus: true,
+        }).showToast();
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 1000);
     } else {
         fetch('/api', {
             method: 'GET',
@@ -75,13 +165,12 @@ function checkAuth() {
 
 function logout() {
     const token = localStorage.getItem('jwt');
-
     if (!token) {
-        window.location.href = '/login';
+        window.location.href = '/';
         return;
     }
 
-    fetch('/logout', {
+    fetch('/signout', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + token
@@ -91,6 +180,15 @@ function logout() {
             if (!response.ok) {
                 throw new Error("Logout failed");
             }
+            Toastify({
+                text: "Logged out successfully!",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#16a34a",
+                stopOnFocus: true,
+            }).showToast();
             return response.text();
         })
         .then(data => {
@@ -101,15 +199,26 @@ function logout() {
         })
         .finally(() => {
             localStorage.removeItem('jwt');
-            window.location.href = '/login';
+            window.location.href = '/';
         });
 }
+
 
 function loadHomeData() {
     const token = localStorage.getItem('jwt');
     if (!token) {
-        alert("You are not logged in");
-        window.location.href = '/login';
+        Toastify({
+            text: "You are not logged in",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#dc2626",
+            stopOnFocus: true,
+        }).showToast();
+        setTimeout(() => {
+            window.location.href = '/login';
+        },1000);
         return;
     }
 
@@ -130,7 +239,83 @@ function loadHomeData() {
         })
         .catch(error => {
             console.error("Error loading home content:", error);
-            alert("Failed to load home content. Please log in again.");
-            window.location.href = '/login';
+            Toastify({
+                text: "Failed to load home content. Redirecting to login page...",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            },1000);
         });
+}
+
+
+function loadHomeDataTwo() {
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+        Toastify({
+            text: "You are not logged in",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#dc2626",
+            stopOnFocus: true,
+        }).showToast();
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 1000);
+        return;
+    }
+    const profileIconName = document.getElementById("first-name").innerHTML =
+        `${parseJwt(token).userName}`;
+    const name = document.getElementById("name-heading").innerHTML =
+        `<h2>Welcome Back, ${parseJwt(token).userName}</h2>`;
+
+    fetch('/home', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+        .then(response => {
+            if (response.status === 403 || response.status === 401) {
+                throw new Error("Unauthorized");
+            }
+            return response.text();
+        })
+        // .then(html => {
+        //     document.getElementById('home-content').innerHTML = html;
+        // })
+        .catch(error => {
+            console.error("Error loading home content:", error);
+            Toastify({
+                text: "Failed to load home content. Please login again...",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            },1000);
+        });
+}
+function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+        atob(base64)
+            .split('')
+            .map(c => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`)
+            .join('')
+    );
+    return JSON.parse(jsonPayload);
 }

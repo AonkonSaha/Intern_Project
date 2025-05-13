@@ -19,8 +19,8 @@ import java.util.Set;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepo userRepo;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<MUser> user = userRepo.findByName(username);
+    public UserDetails loadUserByUsername(String contact) throws UsernameNotFoundException {
+        Optional<MUser> user = userRepo.findByContact(contact);
         if(user.isEmpty()) {
             throw new UsernameNotFoundException("User not found...");
         }
@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getRole()));
         }
         return new org.springframework.security.core.userdetails.User(
-                user.get().getName(),
+                user.get().getContact(),
                 user.get().getPassword(),
                 authorities
         );

@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
-@RequestMapping("api/lab/testing")
+@RequestMapping("/api/lab/testing")
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class LabTestController {
@@ -51,6 +54,11 @@ public class LabTestController {
         return ResponseEntity.ok(labTestMapper.toLabTestDTO(
                 labTestService.updateLabTest(id,labTestDTO)
         ));
+    }
+    @GetMapping("/fetch/all")
+    public ResponseEntity<Map<String, List<LabTestDTO>>> fetchAllLabTests(){
+
+        return ResponseEntity.ok(Map.of("labTests",labTestMapper.toLabTestDTOS(labTestService.getAllLabTest())));
     }
 
 }

@@ -5,6 +5,7 @@ import com.example.Appointment.System.model.entity.DiagnosticCenter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -30,6 +31,7 @@ public class DiagnosticMapper {
     }
     public  DiagnosticDTO toDiagnosticDTO(DiagnosticCenter diagnosticCenter) {
         return DiagnosticDTO.builder()
+                .labId(diagnosticCenter.getId())
                 .diagnosticCenterName(diagnosticCenter.getDiagnosticCenterName())
                 .contactNumber(diagnosticCenter.getContactNumber())
                 .operatingHours(diagnosticCenter.getOperatingHours())
@@ -44,7 +46,7 @@ public class DiagnosticMapper {
     }
 
     public List<DiagnosticDTO> toDiagnosticDTOS(List<DiagnosticCenter> allDiagnosticCenter) {
-        List<DiagnosticDTO>diagnosticDTOS=null;
+        List<DiagnosticDTO>diagnosticDTOS=new ArrayList<>();
         for (DiagnosticCenter diagnosticCenter :allDiagnosticCenter){
             diagnosticDTOS.add(toDiagnosticDTO(diagnosticCenter));
         }

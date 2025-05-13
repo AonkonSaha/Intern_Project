@@ -33,7 +33,7 @@ public class MainController {
     @GetMapping("/")
     public String startPage(HttpServletRequest request){
         if(SecurityContextHolder.getContext().getAuthentication().isAuthenticated()){
-            return "redirect:/home";
+            return "redirect:/home.html";
         }
         return "redirect:/login";
     }
@@ -46,15 +46,11 @@ public class MainController {
         return "login";
     }
 
-//    @GetMapping("/home")
-//    public String getHome(){
-//        return "home";
-//    }
     @GetMapping("/home")
     @ResponseBody
     public ResponseEntity<UserDTO> getHome(){
 
-        return ResponseEntity.ok(userMapper.toUserDTO(userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName())));
+        return ResponseEntity.ok(userMapper.toUserDTO(userService.findUserByContact(SecurityContextHolder.getContext().getAuthentication().getName())));
     }
 
 
@@ -69,19 +65,17 @@ public class MainController {
     @ResponseBody
     public ResponseEntity<Map<String,String>> loginUser(@RequestBody LoginDTO loginDTO){
 
-        System.out.println("UserName: "+loginDTO.getUsername());
-        System.out.println("Password: "+loginDTO.getPassword());
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),loginDTO.getPassword()));
-        String token=jwtUtils.generateToken(loginDTO.getUsername());
+                new UsernamePasswordAuthenticationToken(loginDTO.getContact(),loginDTO.getPassword()));
+        MUser user=userService.findUserByContact(loginDTO.getContact());
+        String token=jwtUtils.generateToken(user.getName(),loginDTO.getContact());
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
-        MUser user=userService.getUserByName(loginDTO.getUsername());
         user.setIsActive(true);
         userService.saveUser(user);
         return ResponseEntity.ok(response);
     }
-    @PostMapping("/logout")
+    @PostMapping("/signout")
     @ResponseBody
     public ResponseEntity<String> logoutUser(HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");
@@ -89,8 +83,8 @@ public class MainController {
             return ResponseEntity.ok("Invalid token");
         }
         String token = authHeader.substring(7);
-        String username=jwtUtils.extractUsername(token);
-        MUser user=userService.getUserByName(username);
+        String contact=jwtUtils.extractContact(token);
+        MUser user=userService.findUserByContact(contact);
         user.setIsActive(false);
         userService.saveUser(user);
         return ResponseEntity.ok("Logout successfully");

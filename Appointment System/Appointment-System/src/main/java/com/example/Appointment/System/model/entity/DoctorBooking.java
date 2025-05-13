@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,10 +23,13 @@ public class DoctorBooking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Instant bookingDate;
-    private Instant  appointmentDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate bookingDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate appointmentDate;
     private String note;
     private String status;
+    private String slotTime;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="patient_id")

@@ -43,16 +43,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        String username = jwtUtils.extractUsername(token);
+        String contact = jwtUtils.extractContact(token);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            Optional<MUser> user = userRepo.findByName(username);
+        if (contact != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(contact);
+            Optional<MUser> user = userRepo.findByContact(contact);
             if(user.isEmpty())
             {
                 throw new UserNotFoundException("User doesn't exit..");
             }
-            if (user.get().getIsActive() && jwtUtils.validateToken(token, username)) {
+            if (user.get().getIsActive() && jwtUtils.validateToken(token, contact)) {
                 System.out.println("Inner auth filter");
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

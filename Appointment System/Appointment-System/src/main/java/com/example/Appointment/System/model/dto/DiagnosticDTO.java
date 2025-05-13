@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class DiagnosticDTO {
+    private Long labId;
     private String diagnosticCenterName;
     private String country;
     private String city;

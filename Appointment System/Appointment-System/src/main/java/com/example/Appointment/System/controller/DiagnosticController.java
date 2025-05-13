@@ -10,9 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("api/diagnostic/center")
+@RequestMapping("/api/diagnostic/center")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class DiagnosticController {
@@ -57,13 +58,12 @@ public class DiagnosticController {
                 diagnosticMapper.toDiagnosticDTO(diagnosticCenterService.updateDiagnosticCenter(id,diagnosticDTO))
         );
     }
-    @GetMapping("fetch/all")
-    public ResponseEntity<List<DiagnosticDTO>> fetchAllDiagnosticCenter() throws DiagnosticCenterNotFoundException {
+    @GetMapping("/fetch/all")
+    public ResponseEntity<Map<String,List<DiagnosticDTO>>> fetchAllDiagnosticCenter() throws DiagnosticCenterNotFoundException {
         if(diagnosticCenterService.getAllDiagnosticCenter().isEmpty()){
             throw new DiagnosticCenterNotFoundException("DiagnosticCenter doesn't exit");
         }
         return ResponseEntity.ok(
-                diagnosticMapper.toDiagnosticDTOS(diagnosticCenterService.getAllDiagnosticCenter())
-        );
+                Map.of("clinics",diagnosticMapper.toDiagnosticDTOS(diagnosticCenterService.getAllDiagnosticCenter())));
     }
 }

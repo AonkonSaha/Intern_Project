@@ -32,10 +32,12 @@ public class DoctorService {
         doctor.get().setLanguagesSpoken(doctorDTO.getLanguagesSpoken());
         doctor.get().setYearsOfExperience(doctorDTO.getYearsOfExperience());
         doctor.get().setDesignation(doctorDTO.getDesignation());
+        doctor.get().setDegrees(doctorDTO.getDegrees());
         doctor.get().setLicenseNumber(doctorDTO.getLicenseNumber());
+        doctor.get().setDoctorName(doctorDTO.getDoctorName());
         doctor.get().setHospitalOrClinicName(doctorDTO.getHospitalOrClinicName());
         doctor.get().setAvailabilityStatus(doctorDTO.getAvailabilityStatus());
-        doctor.get().setDegrees(doctorDTO.getDegrees());
+        doctor.get().setProfilePictureUrl(doctorDTO.getProfilePictureUrl());
         doctorRepo.save(doctor.get());
         return doctor.get();
     }

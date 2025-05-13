@@ -26,22 +26,28 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String username) {
-        return createToken(username);
+    public String generateToken(String username,String contact) {
+        Map<String,Object>claims=new HashMap<>();
+        claims.put("userName",username);
+        return createToken(contact,claims);
     }
-    private String createToken(String username) {
-        Map<String,Object> claims=new HashMap<>();
+    private String createToken(String contact,Map<String, Object> claims) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(contact)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String extractUsername(String token) {
+
+    public String extractContact(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, claims -> claims.get("userName", String.class));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -53,8 +59,8 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
-    public boolean validateToken(String token, String username) {
-        return (username.equals(extractUsername(token))) && !isTokenExpired(token);
+    public boolean validateToken(String token, String contact) {
+        return (contact.equals(extractContact(token))) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

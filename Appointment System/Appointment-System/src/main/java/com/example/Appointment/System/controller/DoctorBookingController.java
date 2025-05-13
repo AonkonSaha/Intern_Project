@@ -1,18 +1,23 @@
 package com.example.Appointment.System.controller;
 
 import com.example.Appointment.System.exception.DoctorBookNotFoundException;
+import com.example.Appointment.System.exception.DoctorNotFoundException;
 import com.example.Appointment.System.model.dto.DoctorBookingDTO;
 import com.example.Appointment.System.model.mapper.DoctorBookingMapper;
 import com.example.Appointment.System.service.DoctorBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("api/doctor/booking")
+@RequestMapping("/api/doctor/booking")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class DoctorBookingController {
@@ -20,6 +25,8 @@ public class DoctorBookingController {
     private final DoctorBookingMapper doctorBookingMapper;
     @PostMapping("/register")
     public ResponseEntity<DoctorBookingDTO> registerDoctorBooking(@RequestBody DoctorBookingDTO doctorBookingDTO){
+//        System.out.println("---Register+++++++>>>DoctorDTO: "+doctorBookingDTO.getDoctorName());
+//        System.out.println("---Register+++++++>>>DoctorID: "+doctorBookingDTO.getDoctorId());
         return ResponseEntity.ok(doctorBookingMapper.toDoctorBookingDTO(doctorBookingService.saveDoctorBooking(
                 doctorBookingMapper.toDoctorBooking(doctorBookingDTO))));
 
@@ -57,5 +64,18 @@ public class DoctorBookingController {
         }
         return ResponseEntity.ok(
                 doctorBookingMapper.toDoctorBookingDTOS(doctorBookingService.fetchAllDoctorBooking()));
+    }
+
+
+    @GetMapping("/fetch/time/slot")
+    public ResponseEntity<Map<String,List<String>>> fetchTimeSlotDoctorBooking( @RequestParam Long doctorId,
+                                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) throws DoctorNotFoundException {
+        return ResponseEntity.ok(Map.of("bookedSlots",doctorBookingService.getTimeSlotDoctorBooking(doctorId, date)));
+    }
+    @GetMapping("/fetch/all/history")
+    public ResponseEntity<Map<String,List<DoctorBookingDTO>>> fetchDoctorBookingHistoryByUser(){
+        return ResponseEntity.ok(Map.of("doctorBookingHistories",doctorBookingMapper.toDoctorBookingDTOS(
+                doctorBookingService.getDoctorBookingHistory()
+        )));
     }
 }

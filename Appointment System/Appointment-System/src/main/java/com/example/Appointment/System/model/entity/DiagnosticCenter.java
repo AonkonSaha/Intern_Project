@@ -3,6 +3,7 @@ package com.example.Appointment.System.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -34,11 +35,11 @@ public class DiagnosticCenter {
     private Boolean isActive;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="clinic_lab_test",
+    @JoinTable(name="clinic_vs_lab_test",
             joinColumns = @JoinColumn(name="clinic_id"),
             inverseJoinColumns = @JoinColumn(name="lab_test_id"))
-    private Set<LabTest> labTests;
+    private Set<LabTest> labTests=new HashSet<>();
 
     @OneToMany(mappedBy = "diagnosticCenter",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<LabTestBooking> labTestBookings;
+    private Set<LabTestBooking> labTestBookings=new HashSet<>();
 }

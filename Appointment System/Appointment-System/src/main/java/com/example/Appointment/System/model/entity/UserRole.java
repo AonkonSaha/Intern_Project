@@ -21,7 +21,7 @@ public class UserRole {
     private String role;
     @ManyToMany
     @JoinTable(
-            name="user_role",
+            name="user_vs_role",
             joinColumns = @JoinColumn(name="role_id"),
             inverseJoinColumns = @JoinColumn(name="user_id")
     )

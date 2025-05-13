@@ -27,6 +27,7 @@ public class DoctorMapper {
                 .hospitalOrClinicName(doctorDTO.getHospitalOrClinicName())
                 .availabilityStatus(doctorDTO.getAvailabilityStatus())
                 .degrees(doctorDTO.getDegrees())
+                .profilePictureUrl(doctorDTO.getProfilePictureUrl())
                 .doctorName(doctorDTO.getDoctorName())
                 .build();
         MUser mUser=MUser.builder()
@@ -49,17 +50,24 @@ public class DoctorMapper {
 
     public DoctorDTO toDoctorDTO(DoctorProfile doctorProfile) {
         return DoctorDTO.builder()
+                .id(doctorProfile.getId())
                 .languagesSpoken(doctorProfile.getLanguagesSpoken())
                 .yearsOfExperience(doctorProfile.getYearsOfExperience())
                 .designation(doctorProfile.getDesignation())
                 .licenseNumber(doctorProfile.getLicenseNumber())
                 .hospitalOrClinicName(doctorProfile.getHospitalOrClinicName())
                 .availabilityStatus(doctorProfile.getAvailabilityStatus())
-                .degrees(doctorProfile.getDegrees())
+                .degreesString(doctorProfile.getDegrees().toString())
+                .doctorName(doctorProfile.getUser().getName())
+                .email(doctorProfile.getUser().getEmail())
+                .gender(doctorProfile.getUser().getGender())
+                .dateOfBirth(doctorProfile.getUser().getDateOfBirth())
+                .profilePictureUrl(doctorProfile.getProfilePictureUrl())
                 .build();
     }
 
     public List<DoctorDTO> toDoctorDTOs(List<DoctorProfile> all) {
+
         List<DoctorDTO>doctorDTOS=new ArrayList<>();
         for (DoctorProfile doctorProfile :all){
             doctorDTOS.add(toDoctorDTO(doctorProfile));

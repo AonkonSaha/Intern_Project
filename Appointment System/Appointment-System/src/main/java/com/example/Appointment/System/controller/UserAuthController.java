@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,9 @@ public class UserAuthController {
     private final PatientService patientService;
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO){
+        if(userService.isExitUserByContact(userDTO.getEmail())){
+            throw new IllegalArgumentException("This Contact Number is already exit..");
+        }
         return ResponseEntity.ok(
                userMapper.toUserDTO(userService.saveUser(userMapper.toUser(userDTO)))
         );
@@ -40,8 +44,8 @@ public class UserAuthController {
     public ResponseEntity<String> loginUser(@RequestBody LoginDTO loginDTO){
        authenticationManager.authenticate(
                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),loginDTO.getPassword()));
-        String token=jwtUtils.generateToken(loginDTO.getUsername());
-        MUser user=userService.getUserByName(loginDTO.getUsername());
+        MUser user=userService.findUserByContact(loginDTO.getContact());
+        String token=jwtUtils.generateToken(user.getName(),loginDTO.getContact());
         user.setIsActive(true);
         userService.saveUser(user);
         return ResponseEntity.ok(token);

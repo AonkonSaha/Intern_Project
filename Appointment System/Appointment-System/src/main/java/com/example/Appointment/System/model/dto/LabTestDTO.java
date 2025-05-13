@@ -6,7 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class LabTestDTO {
-    private String LabTestName;
+    private Long id;
+    private String labTestName;
     private String description;
     private String labTestImageUrl;
 }

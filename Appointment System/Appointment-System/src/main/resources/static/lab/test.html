@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AlphaHealth | Home</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/auth.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #f9fafb;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .sidebar h1 {
+            font-size: 22px;
+            color: #1d4ed8;
+            margin-bottom: 40px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            color: #1d4ed8;
+        }
+
+        .profile-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background-color: #f3f4f6;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .user-profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #4f46e5;
+            margin-right: 10px;
+        }
+
+        .logout-btn {
+            background: #fff;
+            border: none;
+            font-size: 15px;
+            color: #686363;
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .search-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .search-bar {
+            padding: 10px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            width: 60%;
+        }
+
+        .view-all-btn {
+            padding: 10px 24px;
+            background-color: #1d4ed8;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-all-btn:hover {
+            background-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .doctor-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            width: 240px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .specialty {
+            color: #4f46e5;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .card button {
+            margin-top: 10px;
+            padding: 8px 14px;
+            background-color: #4f46e5;
+            width: 70%;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #pagination2 button.active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+
+        #pagination2 span {
+            padding: 6px 10px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 6px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 6px 14px;
+            background-color: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .pagination button.active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .nav-btn {
+            font-weight: bold;
+        }
+
+        .history-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th,
+        .history-table td {
+            text-align: left;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .history-table th {
+            background-color: #f3f4f6;
+        }
+
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .modal-header img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid #3b82f6;
+        }
+
+        .modal-doctor-info h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #111827;
+        }
+
+        .modal-doctor-info p {
+            margin: 4px 0;
+            font-size: 0.95rem;
+            color: #4b5563;
+        }
+
+        .modal-doctor-info span {
+            font-size: 0.85rem;
+            color: #2563eb;
+        }
+
+        .modal-body label {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            color: #374151;
+            display: block;
+        }
+
+        .modal-body input,
+        .modal-body textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-top: 0.3rem;
+            resize: vertical;
+        }
+
+        .slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .slot-btn {
+            padding: 8px 12px;
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            flex: 1 1 48%;
+            text-align: center;
+        }
+
+        .slot-btn.selected {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .slot-btn:hover {
+            background-color: #e0e7ff;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .cancel-btn,
+        .confirm-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .confirm-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            background-color: #2563eb;
+        }
+
+        @media (max-width: 500px) {
+            .modal-box {
+                padding: 1rem;
+            }
+
+            .modal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .slot-btn {
+                flex: 1 1 100%;
+            }
+        }
+        #preferredLab {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+            appearance: none; /* removes default dropdown arrow styling in some browsers */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M1%201L6%206L11%201%22%20stroke%3D%22%23333%22%20stroke-width%3D%222%22/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+        }
+
+        #preferredLab:focus {
+            outline: none;
+            border-color: #5a67d8; /* Indigo */
+            box-shadow: 0 0 0 2px rgba(90, 103, 216, 0.2);
+        }
+
+/***********************Last Edition*************************/
+        /****Last Edition**********************/
+        .doctor-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .doctor-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            object-fit: cover;
+        }
+
+    </style>
+</head>
+<body onload="labTestBookings();">
+<div class="sidebar">
+    <h1>ALPHAHEALTH</h1>
+    <a href="/home.html" class="nav-item">🏠 Home</a>
+    <a href="/doctor/appointment.html" class="nav-item">🩺 Doctor Appointment</a>
+    <a href="/lab/test.html" class="nav-item">🧪 Lab Test Appointment</a>
+    <a href="/notifications" class="nav-item">🔔 Notifications</a>
+    <a href="/history/history.html" class="nav-item">📜 History</a>
+    <div class="profile-container">
+        <a href="/profile.html" class="user-profile">
+            <img src="/images/logo.jpg" alt="Profile">
+            <span id="first-name"></span>
+        </a>
+        <button class="logout-btn" onclick="logout()">[-></button>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <div id="name-heading"></div>
+        <p>Book a lab test to our lab</p>
+    </div>
+
+    <div class="search-section">
+        <input type="text" class="search-bar" id="searchInput" placeholder="🔍 Search labTest..." oninput="filterDoctors()">
+        <button class="view-all-btn" onclick="goToAllDoctors()">View All LabTest</button>
+    </div>
+
+    <div class="doctor-cards" id="doctor-cards"></div>
+    <div class="pagination" id="pagination"></div>
+
+    <div class="history-section">
+        <div class="history-header">
+            <h3>LabTest History</h3>
+            <a href="/history/history.html"><button>View all history</button></a>
+        </div>
+        <table class="history-table">
+            <thead >
+            <tr>
+                <th>Booking ID</th>
+                <th>Order Date</th>
+                <th>Deliver Date</th>
+                <th>Status</th>
+                <th>Preferred Lab</th>
+            </tr>
+            </thead>
+            <tbody id="home-content"></tbody>
+
+        </table>
+        <div class="pagination" id="pagination2"></div>
+    </div>
+
+</div>
+<!-- Modal -->
+<!-- Modern Responsive Modal -->
+<div class="modal" id="appointmentModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <img id="modalImage" src="" alt="Doctor Photo">
+            <div class="modal-doctor-info">
+                <h3 id="modalName">Doctor Name</h3>
+                <p id="modalDegree">Degree</p>
+                <span id="modalSpecialty">Specialty</span>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <label for="preferredLab">Preferred Lab</label>
+            <select id="preferredLab">
+                <option value="">Loading labs...</option>
+            </select>
+
+            <label for="appointmentDate">Booking Date</label>
+            <input type="date" id="appointmentDate">
+
+            <label for="note">Note</label>
+            <textarea id="note" rows="3" placeholder="Write any notes..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            <button class="confirm-btn" onclick="confirmAppointment()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const modal = document.getElementById("appointmentModal");
+    let allDoctors = [];
+    let currentPage = 1;
+    const doctorsPerPage = 4;
+    const maxVisiblePages = 5;
+    let selectedDoctor = null;
+    let selectedPreferredLab = null;
+    /***History****/
+    let appointmentsHistory = [];
+    let currentHistoryPage = 1;
+    const historyItemsPerPage = 5;
+
+    function fetchAppointmentsHistory() {
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            Toastify({
+                text: "You are not logged in",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+            return;
+        }
+        fetch(`/api/lab/test/booking/fetch/all/history`, {
+            headers: {
+                method: 'GET',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                appointmentsHistory = data.labTestsBook;
+                renderAppointmentsHistory();
+            })
+            .catch(() => {
+                Toastify({
+                    text: "Error fetching labTestsBooking data.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc2626",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1000);
+            });
+    }
+
+    function renderAppointmentsHistory() {
+        const tbody = document.getElementById("home-content");
+        tbody.innerHTML = "";
+
+        const start = (currentHistoryPage - 1) * historyItemsPerPage;
+        const end = start + historyItemsPerPage;
+        const pageData = appointmentsHistory.slice(start, end);
+
+        pageData.forEach(app => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td data-label="Booking ID">#${app.id}</td>
+        <td data-label="Order Date">${app.oderDate}</td>
+        <td data-label="Deliver Date">${app.deliveryDate}</td>
+        <td data-label="Status">${app.status}</td>
+        <td data-label="Preferred Lab">${app.diagnosticCenterName}</td>
+        <td data-label="Preferred Lab">
+         <div class="doctor-info">
+                        <img src="${app.labTestImageUrl}" class="doctor-img"/>
+                        <div>
+                            <div class="doctor-name">${app.labTestName}</div>
+                            <div class="doctor-specialty" style="font-size: 14px; color: #6b7280;">
+                                ${"Lab Test"}
+                            </div>
+                        </div>
+                    </div>
+
+        </td>
+      `;
+            tbody.appendChild(row);
+        });
+
+        renderPaginationTwo();
+    }
+
+    function renderPaginationTwo() {
+        const totalPages = Math.ceil(appointmentsHistory.length / historyItemsPerPage);
+        const paginationDiv = document.getElementById("pagination2");
+        paginationDiv.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        const maxPagesToShow = 5;
+        let startPage = Math.max(1, currentHistoryPage - Math.floor(maxPagesToShow / 2));
+        let endPage = startPage + maxPagesToShow - 1;
+
+        if (endPage > totalPages) {
+            endPage = totalPages;
+            startPage = Math.max(1, endPage - maxPagesToShow + 1);
+        }
+
+        const createButton = (label, page, isActive = false, isDisabled = false) => {
+            const btn = document.createElement("button");
+            btn.textContent = label;
+            btn.disabled = isDisabled;
+            if (isActive) btn.classList.add("active");
+            btn.onclick = () => {
+                currentHistoryPage = page;
+                renderAppointmentsHistory();
+            };
+            return btn;
+        };
+
+        // Previous button
+        paginationDiv.appendChild(createButton("←", currentHistoryPage - 1, false, currentHistoryPage === 1));
+
+        if (startPage > 1) {
+            paginationDiv.appendChild(createButton("1", 1));
+            if (startPage > 2) {
+                const dots = document.createElement("span");
+                dots.textContent = "...";
+                paginationDiv.appendChild(dots);
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationDiv.appendChild(createButton(i, i, i === currentHistoryPage));
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                const dots = document.createElement("span");
+                dots.textContent = "...";
+                paginationDiv.appendChild(dots);
+            }
+            paginationDiv.appendChild(createButton(totalPages, totalPages));
+        }
+
+        // Next button
+        paginationDiv.appendChild(createButton("→", currentHistoryPage + 1, false, currentHistoryPage === totalPages));
+    }
+
+
+    // // Call with a real user ID (e.g., from session)
+    // fetchAppointments(1);
+    /****finish**/
+    function loadPreferredLabs() {
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            Toastify({
+                text: "You are not logged in",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+            return;
+        }
+        const select = document.getElementById("preferredLab");
+        select.innerHTML = `<option value="">Loading labs...</option>`;
+
+        fetch('/api/diagnostic/center/fetch/all',{
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch labs');
+                }
+                return response.json();
+            })
+            .then(labs => {
+                select.innerHTML = `<option value="">Select preferred lab</option>`;
+                labs.clinics.forEach(lab => {
+                    const option = document.createElement("option");
+                    option.value = lab.labId;
+                    option.textContent = lab.diagnosticCenterName;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => {
+                select.innerHTML = `<option value="">Failed to load labs</option>`;
+                console.error("Error fetching labs:", error);
+            });
+    }
+
+
+    function labTestBookings() {
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            Toastify({
+                text: "You are not logged in",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+            return;
+        }
+        const profileIconName = document.getElementById("first-name").innerHTML =
+            `${parseJwt(token).userName}`;
+        const name = document.getElementById("name-heading").innerHTML =
+            `<h2>Welcome Back, ${parseJwt(token).userName}</h2>`;
+
+        fetch('/api/lab/testing/fetch/all', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                allDoctors = data.labTests;
+                displayDoctors();
+            })
+            .catch(() => {
+                Toastify({
+                    text: "Error labTest data.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc2626",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1000);
+            });
+
+
+         fetchAppointmentsHistory();
+    }
+
+    function filterList() {
+        const query = document.getElementById("searchInput").value.toLowerCase();
+        return allDoctors.filter(d =>
+            d.labTestName.toLowerCase().includes(query)
+        );
+    }
+
+    function filterDoctors() {
+        currentPage = 1;
+        displayDoctors();
+    }
+
+    function displayDoctors() {
+
+        const container = document.getElementById('doctor-cards');
+        container.innerHTML = "";
+        const doctors = filterList();
+
+        const start = (currentPage - 1) * doctorsPerPage;
+        const paginatedDoctors = doctors.slice(start, start + doctorsPerPage);
+
+        if (paginatedDoctors.length === 0) {
+            container.innerHTML = "<p>No LabTest found.</p>";
+        }
+        paginatedDoctors.forEach(((doctor,i) => {
+            selectedDoctor=null;
+            container.innerHTML += `
+        <div class="card">
+          <img src="${doctor.labTestImageUrl}" alt="${doctor.labTestName}">
+          <h3>${doctor.labTestName}</h3>
+          <button onclick="openModal(${i})">LabTest Book</button>
+        </div>`;
+        }));
+
+        renderPagination();
+    }
+
+    function openModal(index) {
+        const doctor = allDoctors[index];
+        selectedDoctor = doctor;
+        // alert(doctor);
+
+        document.getElementById("modalImage").src = doctor.labTestImageUrl;
+        document.getElementById("modalName").innerText = doctor.labTestName;
+        document.getElementById("modalDegree").innerText = doctor.labTestName;
+        document.getElementById("modalSpecialty").innerText = doctor.labTestName;
+        /***After***/
+        document.getElementById("appointmentDate").value = "";
+        document.getElementById("note").value = "";
+
+         loadPreferredLabs();
+        /******************Sesh*******************/
+        modal.style.display = "flex";
+    }
+
+
+    function closeModal() {
+        modal.style.display = "none";
+        document.getElementById("appointmentDate").value = "";
+        document.getElementById("note").value = "";
+    }
+    function confirmAppointment() {
+        const preferredLab = document.getElementById("preferredLab").value;
+        const bookingDate = document.getElementById("appointmentDate").value;
+        const note = document.getElementById("note").value;
+        if(!preferredLab) {
+            Toastify({
+                text: "Please select a preferred lab.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            return;
+        }
+        if (!bookingDate) {
+            Toastify({
+                text: "Please select a booking date.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+
+            return;
+        }
+       // alert(`${selectedDoctor.id}`);
+        const bookingData = {
+            labId: preferredLab,
+            oderDate: bookingDate,
+            note: note,
+            labTestId: selectedDoctor.id
+        };
+
+        const token = localStorage.getItem('jwt');
+        fetch('/api/lab/test/booking/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(bookingData)
+        })
+            .then(res => {
+                if (res.ok) return res.json();
+                throw new Error("Booking failed");
+            })
+            .then(data => {
+                Toastify({
+                    text: "Booking confirmed!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#0baf0d",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/lab/test.html';
+                }, 1000);
+            })
+            .catch(err => {
+                Toastify({
+                    text: "Booking failed! "+err.message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc2626",
+                    stopOnFocus: true,
+                }).showToast();
+            });
+        closeModal();
+    }
+
+    // Close modal on outside click
+    window.onclick = function(e) {
+        if (e.target == modal) closeModal();
+    }
+
+    function renderPagination() {
+        const doctors = filterList();
+        const totalPages = Math.ceil(doctors.length / doctorsPerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        const half = Math.floor(maxVisiblePages / 2);
+        let startPage = Math.max(1, currentPage - half);
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage < maxVisiblePages - 1) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        pagination.innerHTML += `
+      <button class="nav-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&laquo;</button>
+    `;
+
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.innerHTML += `
+        <button onclick="goToPage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>
+      `;
+        }
+
+        pagination.innerHTML += `
+      <button class="nav-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&raquo;</button>
+    `;
+    }
+
+    function goToPage(page) {
+        const totalPages = Math.ceil(filterList().length / doctorsPerPage);
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        displayDoctors();
+    }
+
+    function goToAllDoctors() {
+        document.getElementById("searchInput").value = "";
+        currentPage = 1;
+        displayDoctors();
+    }
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
