@@ -120,11 +120,19 @@ public class UserAuthController {
     }
 
     @PostMapping("/update/profile")
+    @ResponseBody
     public ResponseEntity<UserDTO> updateProfileWithOutPassword(@RequestBody PatientProfileDTO patientProfileDTO) throws IOException {
 
         return ResponseEntity.ok(
                 userMapper.toUserDTO(userService.updatePatientWithOutPassword(patientProfileDTO))
         );
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id){
+         userService.deleteUser(id);
+         return ResponseEntity.ok("Deleted successfully");
     }
 
 

@@ -684,7 +684,7 @@
                 stopOnFocus: true,
               }).showToast();
               setTimeout(() => {
-                window.location.href = '/doctor/appointment.html';
+                window.location.href = '/home.html';
               }, 1000);
             });
 
@@ -848,7 +848,6 @@
     // alert("Dd");
     // alert(`Appointment booked on ${bookingDate}!\nNote: ${note} !\n Timeslot: ${slotTime}`);
     // alert(selectedDoctor.doctorName);
-    alert(`DoctorId: ${selectedDoctor.id}`);
     const doctorId = selectedDoctor.id;
     const token = localStorage.getItem('jwt');
     const doctorName=selectedDoctor.doctorName;

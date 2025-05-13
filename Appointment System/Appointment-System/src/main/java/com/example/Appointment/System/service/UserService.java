@@ -9,6 +9,7 @@ import com.example.Appointment.System.model.entity.UserRole;
 import com.example.Appointment.System.model.mapper.UserMapper;
 import com.example.Appointment.System.repository.PatientRepo;
 import com.example.Appointment.System.repository.UserRepo;
+import com.example.Appointment.System.repository.UserRoleRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +32,7 @@ public class UserService {
     private final UserRepo userRepo;
     private final PatientRepo patientRepo;
     private final UserMapper userMapper;
+    private final UserRoleRepo userRoleRepo;
     public MUser saveUser(MUser user) {
         userRepo.save(user);
         return user;
@@ -66,6 +68,14 @@ public class UserService {
         if(!userRepo.existsById(id)){
             return;
         }
+        MUser user=userRepo.findById(id).get();
+        Set<UserRole>userRoles=user.getUserRoles();
+        for (UserRole userRole : userRoles) {
+            userRole.setUsers(null);
+            userRoleRepo.save(userRole);
+        }
+        user.setUserRoles(null);
+        userRepo.save(user);
         userRepo.deleteById(id);
     }
 

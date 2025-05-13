@@ -61,7 +61,8 @@ public class SecurityConfiguration {
             "/api/diagnostic/center/**",
             "/api/time/slot/**",
             "/api/lab/test/**",
-            "/api/time/slot/**"
+            "/api/time/slot/**",
+            "/delete/{id}"
     };
 
     @Bean
