@@ -36,6 +36,7 @@ public class DoctorMapper {
                 .password(passwordEncoder.encode(doctorDTO.getPassword()))
                 .name(doctorDTO.getDoctorName())
                 .gender(doctorDTO.getGender())
+                .contact(doctorDTO.getContactNumber())
                 .dateOfBirth(doctorDTO.getDateOfBirth())
                 .doctorProfile(doctorProfile)
                 .build();
@@ -60,6 +61,7 @@ public class DoctorMapper {
                 .degreesString(doctorProfile.getDegrees().toString())
                 .doctorName(doctorProfile.getUser().getName())
                 .email(doctorProfile.getUser().getEmail())
+                .contactNumber(doctorProfile.getUser().getContact())
                 .gender(doctorProfile.getUser().getGender())
                 .dateOfBirth(doctorProfile.getUser().getDateOfBirth())
                 .profilePictureUrl(doctorProfile.getProfilePictureUrl())

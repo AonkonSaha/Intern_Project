@@ -91,13 +91,13 @@ public class MainController {
         return ResponseEntity.ok("Logout successfully");
     }
 
-    @PostMapping("/update/profile")
-    public ResponseEntity<UserDTO> updateProfileWithOutPassword(@RequestBody UserDTO userDTO) throws IOException {
-
-        return ResponseEntity.ok(
-                userMapper.toUserDTO(userService.updatePatientWithOutPassword(userDTO))
-        );
-    }
+//    @PostMapping("/update/profile")
+//    public ResponseEntity<UserDTO> updateProfileWithOutPassword(@RequestBody UserDTO userDTO) throws IOException {
+//
+//        return ResponseEntity.ok(
+//                userMapper.toUserDTO(userService.updatePatientWithOutPassword(userDTO))
+//        );
+//    }
 
 
 }

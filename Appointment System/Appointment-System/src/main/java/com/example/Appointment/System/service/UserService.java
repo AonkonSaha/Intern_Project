@@ -88,22 +88,22 @@ public class UserService {
         return mUser.get();
     }
 
-    public MUser updatePatientWithOutPassword(UserDTO userDTO) throws IOException {
-        String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<MUser> mUser=userRepo.findByContact(patientContact);
-        if(mUser.isEmpty()){
-            return null;
-        }
-        String fileName = UUID.randomUUID() + "_" + userDTO.getProfilePicture().getOriginalFilename();
-        Path filePath = Paths.get(ProfileFolderPath, fileName);
-        Files.write(filePath, userDTO.getProfilePicture().getOriginalFilename().getBytes());
-
-        mUser.get().setEmail(userDTO.getEmail());
-        mUser.get().setDateOfBirth(userDTO.getDateOfBirth());
-        mUser.get().setGender(userDTO.getGender());
-        mUser.get().getPatientProfile().setPatientName(userDTO.getName());
-        mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+filePath.toString());
-        userRepo.save(mUser.get());
-        return mUser.get();
-    }
+//    public MUser updatePatientWithOutPassword(UserDTO userDTO) throws IOException {
+//        String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
+//        Optional<MUser> mUser=userRepo.findByContact(patientContact);
+//        if(mUser.isEmpty()){
+//            return null;
+//        }
+//        String fileName = UUID.randomUUID() + "_" + userDTO.getProfilePicture().getOriginalFilename();
+//        Path filePath = Paths.get(ProfileFolderPath, fileName);
+//        Files.write(filePath, userDTO.getProfilePicture().getOriginalFilename().getBytes());
+//
+//        mUser.get().setEmail(userDTO.getEmail());
+//        mUser.get().setDateOfBirth(userDTO.getDateOfBirth());
+//        mUser.get().setGender(userDTO.getGender());
+//        mUser.get().getPatientProfile().setPatientName(userDTO.getName());
+//        mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+filePath.toString());
+//        userRepo.save(mUser.get());
+//        return mUser.get();
+//    }
 }

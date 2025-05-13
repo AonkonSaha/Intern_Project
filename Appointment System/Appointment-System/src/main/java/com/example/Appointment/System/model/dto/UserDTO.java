@@ -39,5 +39,5 @@ public class UserDTO {
     private Boolean availabilityStatus;
     private String firstName;
     private String lastName;
-    private MultipartFile profilePicture;
+//    private MultipartFile profilePicture;
 }
