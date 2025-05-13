@@ -30,6 +30,9 @@ public class SecurityConfiguration {
             "/home",
             "/logout",
             "/signout",
+            "/update/profile",
+            "/fetch/user",
+            "/user/change-password"
 
     };
     public static final String[] DOCTOR_URLS = {

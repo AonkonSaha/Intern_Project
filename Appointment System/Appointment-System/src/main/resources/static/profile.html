@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/css/profile.css" />
     <script src="/js/auth.js"></script>
     <script src="/js/profile.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <style>
         body {
             display: flex;
@@ -216,13 +218,12 @@
     <a class="nav-item" href="/notifications.html">🔔 Notifications</a>
     <a class="nav-item" href="/history/history.html">📜 History</a>
 
-    <!-- Profile and Logout -->
     <div class="profile-container">
         <a href="/profile.html" class="user-profile" title="Go to My Profile">
-            <img src="/images/logo.jpg" alt="Profile">
-            <span id="first-name"></span>
+            <img alt="Profile" id="profile-pic-view" src="/images/logo.jpg">
+            <span id="first-name">User</span>
         </a>
-        <button  class="logout-btn" onclick="logout()" title="Logout">[-></button>
+        <button class="logout-btn" onclick="logout()" title="Logout">[-></button>
     </div>
 </div>
 
@@ -235,9 +236,9 @@
         <button class="tab" onclick="showTab('password')">Password</button>
     </div>
 
-    <!-- Tab Content: My Details -->
+    <!-- My Details Tab -->
     <div id="details" class="tab-content active">
-        <form class="profile-form">
+        <form class="profile-form" id="profileForm">
             <h3>Personal info</h3>
             <p class="form-subtitle">Update your photo and personal details here.</p>
 
@@ -255,7 +256,7 @@
 
             <div class="form-group">
                 <label for="fullName">Name</label>
-                <input type="text" id="fullName" placeholder="Jannatul Sayonara" />
+                <input type="text" id="fullName" placeholder="Enter your full name" />
             </div>
 
             <div class="form-group">
@@ -282,9 +283,9 @@
         </form>
     </div>
 
-    <!-- Tab Content: Password -->
+    <!-- Password Tab -->
     <div id="password" class="tab-content">
-        <form class="profile-form">
+        <form class="profile-form" id="passwordForm">
             <h3>Password settings</h3>
             <p class="form-subtitle">Update your password here.</p>
 
@@ -326,7 +327,153 @@
             reader.readAsDataURL(file);
         }
     }
-</script>
 
+    document.getElementById("profileForm").addEventListener("submit", async function (e) {
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            Toastify({
+                text: "You aren't logged in",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+            return;
+        }
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("fullName", document.getElementById("fullName").value);
+        formData.append("email", document.getElementById("email").value);
+        formData.append("dob", document.getElementById("dob").value);
+        formData.append("gender", document.getElementById("gender").value);
+
+        const photoFile = document.getElementById("photoUpload").files[0];
+        if (photoFile) formData.append("photo", photoFile);
+
+        try {
+            const res = await fetch('/update/profile', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            });
+
+            if (res.ok) {
+                Toastify({
+                    text: "Profile updated successfully!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#0d9814",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/profile.html';
+                }, 1000);
+            } else {
+                const error = await res.json();
+                alert("Error: " + (error.message || "Update failed"));
+            }
+        } catch (err) {
+            alert("Request error: " + err.message);
+        }
+    });
+
+    document.getElementById("passwordForm").addEventListener("submit", async function (e) {
+
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            Toastify({
+                text: "You aren't logged in",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+            return;
+        }
+
+        e.preventDefault();
+
+        const current = document.getElementById("currentPass").value;
+        const newPass = document.getElementById("newPass").value;
+        const confirm = document.getElementById("confirmPass").value;
+
+        if (newPass !== confirm) {
+            Toastify({
+                text: "New password and confirmation do not match.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            return;
+        }
+
+        try {
+            const res = await fetch('/user/change-password', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    password: current,
+                    newPassword: newPass,
+                    confirmPassword: confirm
+                })
+            });
+
+            if (res.ok) {
+                Toastify({
+                    text: "Password changed successfully!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#0d9814",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    document.getElementById("passwordForm").reset();
+                    window.location.href = '/profile.html';
+                }, 1000);
+            } else {
+                const error = await res.json();
+                Toastify({
+                    text: "Error: " + (error.message || "Password change failed"),
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#ef0303",
+                    stopOnFocus: true,
+                }).showToast();
+            }
+        } catch (err) {
+            Toastify({
+                text: "Request error: " + err.message,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#ef0303",
+                stopOnFocus: true,
+            }).showToast();
+        }
+    });
+</script>
 </body>
 </html>

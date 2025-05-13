@@ -2,6 +2,7 @@ package com.example.Appointment.System.controller;
 
 import com.example.Appointment.System.jwt.JwtUtils;
 import com.example.Appointment.System.model.dto.LoginDTO;
+import com.example.Appointment.System.model.dto.PasswordDTO;
 import com.example.Appointment.System.model.dto.PatientProfileDTO;
 import com.example.Appointment.System.model.dto.UserDTO;
 import com.example.Appointment.System.model.entity.MUser;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -121,11 +123,20 @@ public class UserAuthController {
 
     @PostMapping("/update/profile")
     @ResponseBody
-    public ResponseEntity<UserDTO> updateProfileWithOutPassword(@RequestBody PatientProfileDTO patientProfileDTO) throws IOException {
-
+    public ResponseEntity<?> updateProfileWithOutPassword(
+            @RequestParam String fullName,
+            @RequestParam String email,
+            @RequestParam String dob,
+            @RequestParam String gender,
+            @RequestParam(required = false) MultipartFile photo
+    ) throws IOException {
+       Set<String> genderSet=Set.of("male","female","other");
+       if(!genderSet.contains(gender.toLowerCase())){
+           return ResponseEntity.badRequest().body("Gender must be male,female or other");
+       }
         return ResponseEntity.ok(
-                userMapper.toUserDTO(userService.updatePatientWithOutPassword(patientProfileDTO))
-        );
+                userMapper.toUserDTO(userService.updatePatientWithOutPassword(
+                        fullName,email,dob,gender,photo)));
     }
 
     @DeleteMapping("/delete/{id}")
@@ -133,6 +144,35 @@ public class UserAuthController {
     public ResponseEntity<String> deleteUserById(@PathVariable Long id){
          userService.deleteUser(id);
          return ResponseEntity.ok("Deleted successfully");
+    }
+    @GetMapping("/fetch/user")
+    @ResponseBody
+    public ResponseEntity<?> fetchUser(){
+        String contact=SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!userService.isExitUserByContact(contact)){
+            return ResponseEntity.badRequest().body("User doesn't exit..");
+        }
+        return ResponseEntity.ok(userMapper.toUserDTO(userService.findUserByContact(contact)));
+    }
+
+    @PostMapping("/user/change-password")
+    @ResponseBody
+    public ResponseEntity<?> updateUserPassword(@RequestBody PasswordDTO passwordDTO){
+        String contact=SecurityContextHolder.getContext().getAuthentication().getName();
+        if (userService.isExitUserPassword(passwordDTO.getPassword())){
+            return ResponseEntity.badRequest().body("Current Password is incorrect..");
+        }
+        if(!userService.isExitUserByContact(contact)){
+            return ResponseEntity.badRequest().body("User doesn't exit..");
+        }
+        if (passwordDTO.getNewPassword()!=passwordDTO.getConfirmPassword()){
+            return ResponseEntity.badRequest().body("Password doesn't match..");
+        }
+        if (passwordDTO.getNewPassword().length()<8){
+            return ResponseEntity.badRequest().body("Password must not be less than 8 characters long..");
+        }
+        userService.updateUserPassword(contact,passwordDTO);
+        return ResponseEntity.ok("Password updated successfully");
     }
 
 

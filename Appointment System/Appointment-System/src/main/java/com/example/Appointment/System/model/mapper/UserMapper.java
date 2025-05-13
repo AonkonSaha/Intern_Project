@@ -43,6 +43,7 @@ public class UserMapper {
                 .name(mUser.getName())
                 .contact(mUser.getContact())
                 .gender(mUser.getGender())
+                .profilePictureUrl(mUser.getPatientProfile().getProfilePictureUrl())
                 .build();
     }
 

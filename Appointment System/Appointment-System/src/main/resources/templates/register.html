@@ -171,10 +171,30 @@
         </form>
 
         <div class="login-redirect">
-            Already have an account? <a th:href="@{/login}">Sign in</a>
+            Already have an account? <a th:href="@{/login}" id="loginLink">Sign in</a>
         </div>
     </div>
 </div>
+<script>
+    let formChanged = false;
+
+    const formElements = document.querySelectorAll("input, select");
+
+    formElements.forEach(element => {
+        element.addEventListener("input", () => {
+            formChanged = true;
+        });
+    });
+
+    document.getElementById("loginLink").addEventListener("click", function(event) {
+        if (formChanged) {
+            const confirmLeave = confirm("You have unsaved changes. Are you sure you want to leave and go to the login page?");
+            if (!confirmLeave) {
+                event.preventDefault();
+            }
+        }
+    });
+</script>
 
 </body>
 </html>

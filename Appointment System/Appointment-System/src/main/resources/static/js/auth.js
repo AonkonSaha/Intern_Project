@@ -304,6 +304,9 @@ function loadHomeDataTwo() {
                 window.location.href = '/home.html';
             },1000);
         });
+
+
+
 }
 function parseJwt(token) {
     const base64Url = token.split('.')[1];
@@ -316,3 +319,4 @@ function parseJwt(token) {
     );
     return JSON.parse(jsonPayload);
 }
+

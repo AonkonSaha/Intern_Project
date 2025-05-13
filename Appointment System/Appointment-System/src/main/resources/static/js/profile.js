@@ -1,5 +1,4 @@
-function loadProfileData(){
-
+async function loadProfileData() {
     const token = localStorage.getItem('jwt');
     if (!token) {
         Toastify({
@@ -16,6 +15,41 @@ function loadProfileData(){
         }, 1000);
         return;
     }
-    const name = document.getElementById("first-name").innerHTML =
-        `${parseJwt(token).userName}`;
-}
+    try {
+        const response = await fetch('/fetch/user', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' +token
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load profile data');
+        }
+
+        const data = await response.json();
+
+        const name = document.getElementById("first-name").innerHTML =data.name || "User";
+        const profilePic = document.getElementById("profile-pic-view").src =data.profilePictureUrl || "/images/logo.jpg";
+        document.getElementById('fullName').value = data.name || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('dob').value = data.dateOfBirth || '';
+        document.getElementById('gender').value = data.gender || '';
+
+        if (data.profilePictureUrl) {
+            document.getElementById('profilePreview').src = data.profilePictureUrl || "/images/logo.jpg";
+        }
+
+    } catch (error) {
+        if (!token) {
+            Toastify({
+                text: "Error loading profile: "+ error,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+    }
+}}

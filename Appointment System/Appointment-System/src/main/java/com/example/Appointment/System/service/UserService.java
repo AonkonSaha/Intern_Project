@@ -1,6 +1,7 @@
 package com.example.Appointment.System.service;
 
 
+import com.example.Appointment.System.model.dto.PasswordDTO;
 import com.example.Appointment.System.model.dto.PatientProfileDTO;
 import com.example.Appointment.System.model.dto.UserDTO;
 import com.example.Appointment.System.model.entity.MUser;
@@ -13,12 +14,15 @@ import com.example.Appointment.System.repository.UserRoleRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +30,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final PasswordEncoder passwordEncoder;
     @Value("${profile.image.folder.path}")
     public String ProfileFolderPath;
 
@@ -99,21 +104,47 @@ public class UserService {
         return mUser.get();
     }
 
-    public MUser updatePatientWithOutPassword(PatientProfileDTO patientProfileDTO) throws IOException {
+    public MUser updatePatientWithOutPassword(String fullName, String email, String dob, String gender, MultipartFile photo) throws IOException {
         String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<MUser> mUser=userRepo.findByContact(patientContact);
         if(mUser.isEmpty()){
             return null;
         }
-        String fileName = UUID.randomUUID() + "_" + patientProfileDTO.getProfilePicture().getOriginalFilename();
-        Path filePath = Paths.get(ProfileFolderPath, fileName);
-        Files.write(filePath, patientProfileDTO.getProfilePicture().getOriginalFilename().getBytes());
-        mUser.get().setEmail(patientProfileDTO.getEmail());
-        mUser.get().setDateOfBirth(patientProfileDTO.getDateOfBirth());
-        mUser.get().setGender(patientProfileDTO.getGender());
-        mUser.get().getPatientProfile().setPatientName(patientProfileDTO.getName());
-        mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+filePath.toString());
+        if(photo!=null && !photo.isEmpty()){
+            String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+            Path filePath = Paths.get(ProfileFolderPath, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, photo.getBytes());
+
+            mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+fileName);
+        }
+
+
+        mUser.get().setEmail(email);
+        mUser.get().setDateOfBirth(LocalDate.parse(dob));
+        mUser.get().setGender(gender);
+        mUser.get().setName(fullName);
+        mUser.get().getPatientProfile().setPatientName(fullName);
+        mUser.get().getPatientProfile().setDateOfBirth(LocalDate.parse(dob));
+        mUser.get().getPatientProfile().setUser(mUser.get());
         userRepo.save(mUser.get());
         return mUser.get();
+    }
+
+    public void  updateUserPassword(String contact, PasswordDTO passwordDTO) {
+        Optional<MUser> mUser=userRepo.findByContact(contact);
+        if(mUser.isEmpty()){
+            return ;
+        }
+        mUser.get().setPassword(passwordEncoder.encode(passwordDTO.getConfirmPassword()));
+    }
+
+    public boolean isExitUserPassword(String password) {
+        String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<MUser> mUser=userRepo.findByContact(patientContact);
+        if(mUser.isEmpty()){
+            return false;
+        }
+        return passwordEncoder.matches(password,mUser.get().getPassword());
     }
 }
