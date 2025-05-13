@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/lab/test/booking")
+@RequestMapping("/api/booking/lab/test")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class LabTestBookingController {

@@ -13,7 +13,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/time/slot")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class TimeSlotController {
     private final TimeSlotService timeSlotService;
 

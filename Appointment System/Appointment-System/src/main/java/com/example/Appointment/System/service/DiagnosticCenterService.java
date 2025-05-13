@@ -65,4 +65,8 @@ public class DiagnosticCenterService {
         }
         return diagnosticCenterRepo.findAll();
     }
+
+    public boolean isExitDianosticCenterName(String diagnosticCenterName) {
+        return diagnosticCenterRepo.existsByDiagnosticCenterName( diagnosticCenterName );
+    }
 }

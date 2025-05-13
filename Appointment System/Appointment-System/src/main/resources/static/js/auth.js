@@ -1,7 +1,6 @@
 function login() {
     const contact = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-
     fetch('/login', {
         method: 'POST',
         headers: {
@@ -62,9 +61,7 @@ function register() {
     const dateOfBirth = document.getElementById("dob").value;
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
-    // const role = document.getElementById("role").value;
 
-    // Basic password match check
     if (password !== confirmPassword) {
         Toastify({
             text: "Passwords do not match!",
@@ -119,7 +116,7 @@ function register() {
             console.error("Error during registration:", error);
             // alert("Registration failed: " + error.message);
             Toastify({
-                text: "Reistration failed. Please try again later.",
+                text: error.message,
                 duration: 3000,
                 close: true,
                 gravity: "top",
@@ -304,7 +301,7 @@ function loadHomeDataTwo() {
                 stopOnFocus: true,
             }).showToast();
             setTimeout(() => {
-                window.location.href = '/login';
+                window.location.href = '/home.html';
             },1000);
         });
 }

@@ -540,7 +540,7 @@
             }, 1000);
             return;
         }
-        fetch(`/api/lab/test/booking/fetch/all/history`, {
+        fetch(`/api/booking/lab/test/fetch/all/history`, {
             headers: {
                 method: 'GET',
                 'Authorization': 'Bearer ' + token
@@ -562,7 +562,7 @@
                     stopOnFocus: true,
                 }).showToast();
                 setTimeout(() => {
-                    window.location.href = '/login';
+                    window.location.href = '/lab/test.html';
                 }, 1000);
             });
     }
@@ -706,6 +706,18 @@
             .catch(error => {
                 select.innerHTML = `<option value="">Failed to load labs</option>`;
                 console.error("Error fetching labs:", error);
+                Toastify({
+                    text: "Error fetching Diagnostic Center data.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc2626",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/lab/test.html';
+                }, 1000);
             });
     }
 
@@ -732,7 +744,7 @@
         const name = document.getElementById("name-heading").innerHTML =
             `<h2>Welcome Back, ${parseJwt(token).userName}</h2>`;
 
-        fetch('/api/lab/testing/fetch/all', {
+        fetch('/api/lab/test/fetch/all', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -753,7 +765,7 @@
                     stopOnFocus: true,
                 }).showToast();
                 setTimeout(() => {
-                    window.location.href = '/login';
+                    window.location.href = '/lab/test.html';
                 }, 1000);
             });
 
@@ -799,7 +811,7 @@
     }
 
     function openModal(index) {
-        const doctor = allDoctors[index];
+        const doctor = allDoctors[index+(currentPage-1)*doctorsPerPage];
         selectedDoctor = doctor;
         // alert(doctor);
 
@@ -860,7 +872,7 @@
         };
 
         const token = localStorage.getItem('jwt');
-        fetch('/api/lab/test/booking/register', {
+        fetch('/api/booking/lab/test/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -896,6 +908,9 @@
                     backgroundColor: "#dc2626",
                     stopOnFocus: true,
                 }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/lab/test.html';
+                }, 1000);
             });
         closeModal();
     }

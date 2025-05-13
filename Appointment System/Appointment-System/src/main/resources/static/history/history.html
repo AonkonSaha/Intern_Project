@@ -331,7 +331,7 @@
 
             const [doctorRes, labRes] = await Promise.all([
                 fetch('/api/doctor/booking/fetch/all/history', { headers }),
-                fetch('/api/lab/test/booking/fetch/all/history', { headers })
+                fetch('/api/booking/lab/test/fetch/all/history', { headers })
             ]);
 
             const profileIconName = document.getElementById("first-name").innerHTML =
@@ -363,6 +363,9 @@
                 backgroundColor: "#dc2626",
                 stopOnFocus: true,
             }).showToast();
+            setTimeout(() => {
+                window.location.href = '/history/history.html';
+            }, 1000);
 
             console.error('Error fetching data:', error);
         }

@@ -42,7 +42,6 @@ public class UserMapper {
                 .email(mUser.getEmail())
                 .name(mUser.getName())
                 .contact(mUser.getContact())
-                .firstName(mUser.getPatientProfile().getPatientName().split(" ")[0])
                 .gender(mUser.getGender())
                 .build();
     }

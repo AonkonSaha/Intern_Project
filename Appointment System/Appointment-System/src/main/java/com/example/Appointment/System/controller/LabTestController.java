@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/lab/testing")
-@SecurityRequirement(name = "bearerAuth")
+@RequestMapping("/api/lab/test")
 @RequiredArgsConstructor
 public class LabTestController {
     private final LabTestService labTestService;
@@ -24,7 +23,13 @@ public class LabTestController {
         return "End Point Test";
     }
     @PostMapping("/register")
-    public ResponseEntity<LabTestDTO> registerLabTest(@RequestBody LabTestDTO labTestDTO){
+    public ResponseEntity<?> registerLabTest(@RequestBody LabTestDTO labTestDTO){
+        if(labTestDTO.getLabTestName().isEmpty()){
+            return ResponseEntity.badRequest().body("LabTest name can't be empty");
+        }
+        if(labTestService.isExitLabTestName(labTestDTO.getLabTestName())){
+            return ResponseEntity.badRequest().body("This labTest name already registered");
+        }
 
         return ResponseEntity.ok(labTestMapper.toLabTestDTO(labTestService.saveLabTest(
                         labTestMapper.toLabTest(labTestDTO))));

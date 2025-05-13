@@ -20,7 +20,7 @@ public class MUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull(message = "Email cannot be null")
+    @NotNull(message = "Name cannot be null")
     @Column(nullable = false)
     private String name;
     private String email;

@@ -26,13 +26,10 @@ public class SecurityConfiguration {
     public static final String[] PATIENT_URLS = {
             "/api/patient/**",
             "/api/doctor/booking/**",
-            "/api/lab/test/booking",
+            "/api/booking/lab/test/**",
             "/home",
             "/logout",
             "/signout",
-            "/api/doctor/**",
-            "/api/diagnostic/center/**",
-            "/api/time/slot/**"
 
     };
     public static final String[] DOCTOR_URLS = {
@@ -59,7 +56,12 @@ public class SecurityConfiguration {
             "/profile.html",
             "/doctor/**",
             "/lab/**",
-            "/history/**"
+            "/history/**",
+            "/api/doctor/**",
+            "/api/diagnostic/center/**",
+            "/api/time/slot/**",
+            "/api/lab/test/**",
+            "/api/time/slot/**"
     };
 
     @Bean

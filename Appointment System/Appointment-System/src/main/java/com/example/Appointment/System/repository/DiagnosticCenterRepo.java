@@ -22,4 +22,6 @@ public interface DiagnosticCenterRepo extends JpaRepository<DiagnosticCenter,Lon
                                              @Param("holdingNo") String holdingNo);
 
     Optional<DiagnosticCenter> findByDiagnosticCenterName(String diagnosticCenterName);
+
+    boolean existsByDiagnosticCenterName(String diagnosticCenterName);
 }

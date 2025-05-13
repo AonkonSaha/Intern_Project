@@ -21,7 +21,6 @@ public class DoctorBookingDTO {
     private Long doctorId;
     private Long patientId;
     private Long doctorBookingId;
-//    @JsonProperty(value = "doctor_name",required = true,defaultValue = "doctor_name")
     private String doctorName;
     private String licenseNumber;
     private String hospitalOrClinicName;

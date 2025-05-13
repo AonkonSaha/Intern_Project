@@ -1,6 +1,7 @@
 package com.example.Appointment.System.service;
 
 
+import com.example.Appointment.System.model.dto.PatientProfileDTO;
 import com.example.Appointment.System.model.dto.UserDTO;
 import com.example.Appointment.System.model.entity.MUser;
 import com.example.Appointment.System.model.entity.PatientProfile;
@@ -88,22 +89,21 @@ public class UserService {
         return mUser.get();
     }
 
-//    public MUser updatePatientWithOutPassword(UserDTO userDTO) throws IOException {
-//        String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
-//        Optional<MUser> mUser=userRepo.findByContact(patientContact);
-//        if(mUser.isEmpty()){
-//            return null;
-//        }
-//        String fileName = UUID.randomUUID() + "_" + userDTO.getProfilePicture().getOriginalFilename();
-//        Path filePath = Paths.get(ProfileFolderPath, fileName);
-//        Files.write(filePath, userDTO.getProfilePicture().getOriginalFilename().getBytes());
-//
-//        mUser.get().setEmail(userDTO.getEmail());
-//        mUser.get().setDateOfBirth(userDTO.getDateOfBirth());
-//        mUser.get().setGender(userDTO.getGender());
-//        mUser.get().getPatientProfile().setPatientName(userDTO.getName());
-//        mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+filePath.toString());
-//        userRepo.save(mUser.get());
-//        return mUser.get();
-//    }
+    public MUser updatePatientWithOutPassword(PatientProfileDTO patientProfileDTO) throws IOException {
+        String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<MUser> mUser=userRepo.findByContact(patientContact);
+        if(mUser.isEmpty()){
+            return null;
+        }
+        String fileName = UUID.randomUUID() + "_" + patientProfileDTO.getProfilePicture().getOriginalFilename();
+        Path filePath = Paths.get(ProfileFolderPath, fileName);
+        Files.write(filePath, patientProfileDTO.getProfilePicture().getOriginalFilename().getBytes());
+        mUser.get().setEmail(patientProfileDTO.getEmail());
+        mUser.get().setDateOfBirth(patientProfileDTO.getDateOfBirth());
+        mUser.get().setGender(patientProfileDTO.getGender());
+        mUser.get().getPatientProfile().setPatientName(patientProfileDTO.getName());
+        mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+filePath.toString());
+        userRepo.save(mUser.get());
+        return mUser.get();
+    }
 }

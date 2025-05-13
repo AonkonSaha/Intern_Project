@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/patient")
+@RequestMapping("/api/patient")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class PatientController {

@@ -3,6 +3,7 @@ package com.example.Appointment.System.service;
 import com.example.Appointment.System.model.dto.LabTestDTO;
 import com.example.Appointment.System.model.entity.LabTest;
 import com.example.Appointment.System.repository.LabTestRepo;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -52,5 +53,9 @@ public class LabTestService {
     public List<LabTest> getAllLabTest() {
 
         return labTestRepo.findAll();
+    }
+
+    public boolean isExitLabTestName( String labTestName) {
+        return labTestRepo.existsByLabTestName(labTestName);
     }
 }

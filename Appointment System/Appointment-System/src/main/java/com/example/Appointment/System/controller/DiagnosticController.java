@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/diagnostic/center")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class DiagnosticController {
     private final DiagnosticCenterService diagnosticCenterService;
     private final DiagnosticMapper diagnosticMapper;
@@ -25,8 +24,28 @@ public class DiagnosticController {
         return ResponseEntity.ok("End Point Test");
     }
     @PostMapping("/register")
-    public ResponseEntity<DiagnosticDTO> registerDiagnostic(DiagnosticDTO diagnosticDTO){
-
+    public ResponseEntity<?> registerDiagnostic(DiagnosticDTO diagnosticDTO){
+     if(diagnosticCenterService.isExitDianosticCenterName(diagnosticDTO.getDiagnosticCenterName())){
+         return ResponseEntity.badRequest().body("DiagnosticCenterName already Exit");
+     }
+     if(diagnosticDTO.getCity().isEmpty()){
+         return ResponseEntity.badRequest().body("City can't be empty");
+     }
+     if(diagnosticDTO.getCountry().isEmpty()){
+         return ResponseEntity.badRequest().body("Country can't be empty");
+     }
+     if (diagnosticDTO.getAddress().isEmpty()){
+         return ResponseEntity.badRequest().body("Address can't be empty");
+     }
+     if (diagnosticDTO.getRoadNo().isEmpty()){
+         return ResponseEntity.badRequest().body("RoadNo can't be empty");
+     }
+     if (diagnosticDTO.getHoldingNo().isEmpty()){
+         return ResponseEntity.badRequest().body("HoldingNo can't be empty");
+     }
+     if (diagnosticDTO.getDiagnosticCenterName().isEmpty()){
+         return ResponseEntity.badRequest().body("DiagnosticCenterName can't be empty");
+     }
         return ResponseEntity.ok(
                 diagnosticMapper.toDiagnosticDTO(diagnosticCenterService.saveDiagnosticCenter(
                         diagnosticMapper.toDiagnosticCenter(diagnosticDTO)
@@ -59,9 +78,9 @@ public class DiagnosticController {
         );
     }
     @GetMapping("/fetch/all")
-    public ResponseEntity<Map<String,List<DiagnosticDTO>>> fetchAllDiagnosticCenter() throws DiagnosticCenterNotFoundException {
+    public ResponseEntity<?> fetchAllDiagnosticCenter() throws DiagnosticCenterNotFoundException {
         if(diagnosticCenterService.getAllDiagnosticCenter().isEmpty()){
-            throw new DiagnosticCenterNotFoundException("DiagnosticCenter doesn't exit");
+            return ResponseEntity.badRequest().body("Diagnostic Center doesn't exit");
         }
         return ResponseEntity.ok(
                 Map.of("clinics",diagnosticMapper.toDiagnosticDTOS(diagnosticCenterService.getAllDiagnosticCenter())));
