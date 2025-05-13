@@ -9,14 +9,24 @@ import com.example.Appointment.System.model.mapper.UserMapper;
 import com.example.Appointment.System.repository.PatientRepo;
 import com.example.Appointment.System.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    @Value("${profile.image.folder.path}")
+    public String ProfileFolderPath;
+
     private final UserRepo userRepo;
     private final PatientRepo patientRepo;
     private final UserMapper userMapper;
@@ -75,6 +85,25 @@ public class UserService {
         if(mUser.isEmpty()){
             return null;
         }
+        return mUser.get();
+    }
+
+    public MUser updatePatientWithOutPassword(UserDTO userDTO) throws IOException {
+        String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<MUser> mUser=userRepo.findByContact(patientContact);
+        if(mUser.isEmpty()){
+            return null;
+        }
+        String fileName = UUID.randomUUID() + "_" + userDTO.getProfilePicture().getOriginalFilename();
+        Path filePath = Paths.get(ProfileFolderPath, fileName);
+        Files.write(filePath, userDTO.getProfilePicture().getOriginalFilename().getBytes());
+
+        mUser.get().setEmail(userDTO.getEmail());
+        mUser.get().setDateOfBirth(userDTO.getDateOfBirth());
+        mUser.get().setGender(userDTO.getGender());
+        mUser.get().getPatientProfile().setPatientName(userDTO.getName());
+        mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+filePath.toString());
+        userRepo.save(mUser.get());
         return mUser.get();
     }
 }

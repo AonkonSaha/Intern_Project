@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,6 +89,14 @@ public class MainController {
         user.setIsActive(false);
         userService.saveUser(user);
         return ResponseEntity.ok("Logout successfully");
+    }
+
+    @PostMapping("/update/profile")
+    public ResponseEntity<UserDTO> updateProfileWithOutPassword(@RequestBody UserDTO userDTO) throws IOException {
+
+        return ResponseEntity.ok(
+                userMapper.toUserDTO(userService.updatePatientWithOutPassword(userDTO))
+        );
     }
 
 

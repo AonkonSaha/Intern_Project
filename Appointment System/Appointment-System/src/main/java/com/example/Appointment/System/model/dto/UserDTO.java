@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Transient;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,4 +39,5 @@ public class UserDTO {
     private Boolean availabilityStatus;
     private String firstName;
     private String lastName;
+    private MultipartFile profilePicture;
 }
