@@ -386,7 +386,7 @@
             selectedDoctor=null;
             container.innerHTML += `
         <div class="card">
-          <img src="${doctor.labTestImageUrl}" alt="${doctor.labTestName}">
+          <img src="${doctor.labTestImageUrl && doctor.labTestImageUrl.includes('/')?doctor.labTestImageUrl :'/images/logo.jpg'}" alt="${doctor.labTestName}">
           <h3>${doctor.labTestName}</h3>
           <button onclick="openModal(${i})">LabTest Book</button>
         </div>`;

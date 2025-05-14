@@ -333,7 +333,7 @@
       selectedDoctor=null;
       container.innerHTML += `
         <div class="card">
-          <img src="${doctor.profilePictureUrl}" alt="${doctor.doctorName}">
+          <img src="${doctor.profilePictureUrl && doctor.profilePictureUrl.includes('/')?doctor.profilePictureUrl:'/images/logo.jpg'} " alt="${doctor.doctorName}">
           <h3>${doctor.doctorName}</h3>
           <p>${doctor.degreesString}</p>
           <div class="specialty">${doctor.designation}</div>
