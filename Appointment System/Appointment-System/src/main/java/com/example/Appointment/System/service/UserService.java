@@ -115,11 +115,8 @@ public class UserService {
             Path filePath = Paths.get(ProfileFolderPath, fileName);
             Files.createDirectories(filePath.getParent());
             Files.write(filePath, photo.getBytes());
-
             mUser.get().getPatientProfile().setProfilePictureUrl("/images/patient/"+fileName);
         }
-
-
         mUser.get().setEmail(email);
         mUser.get().setDateOfBirth(LocalDate.parse(dob));
         mUser.get().setGender(gender);
@@ -137,6 +134,7 @@ public class UserService {
             return ;
         }
         mUser.get().setPassword(passwordEncoder.encode(passwordDTO.getConfirmPassword()));
+        userRepo.save(mUser.get());
     }
 
     public boolean isExitUserPassword(String password) {

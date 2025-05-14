@@ -322,12 +322,53 @@
             setTimeout(() => {
                 window.location.href = '/login';
             }, 1000);
-            return;
         }
-        const profileIconName = document.getElementById("first-name").innerHTML =
-            `${parseJwt(token).userName}`;
-        const name = document.getElementById("name-heading").innerHTML =
-            `<h2>Welcome Back, ${parseJwt(token).userName}</h2>`;
+        const decodedToken = parseJwt(token);
+        if (!decodedToken || decodedToken.exp<Math.floor(Date.now() / 1000)) {
+            localStorage.removeItem('jwt');
+            Toastify({
+                text: "You are logged out by our system.Please login again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+        }
+
+        //////// /fetch/user
+
+        fetch('/fetch/user', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                const profileIconName = document.getElementById("first-name").innerHTML =data.name;
+                const profileIcon = document.getElementById("profile-pic-view").src =data.profilePictureUrl || "/images/logo.jpg";
+                const name = document.getElementById("name-heading").innerHTML =
+                    `<h2>Welcome Back, ${data.name}</h2>`;
+            })
+            .catch(() => {
+                Toastify({
+                    text: "User Name Failed Loading!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc2626",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/home.html';
+                }, 1000);
+            });
+
 
         fetch('/api/lab/test/fetch/all', {
             headers: {
@@ -398,8 +439,6 @@
     function openModal(index) {
         const doctor = allDoctors[index+(currentPage-1)*doctorsPerPage];
         selectedDoctor = doctor;
-        // alert(doctor);
-
         document.getElementById("modalImage").src = doctor.labTestImageUrl;
         document.getElementById("modalName").innerText = doctor.labTestName;
         document.getElementById("modalDegree").innerText = doctor.labTestName;

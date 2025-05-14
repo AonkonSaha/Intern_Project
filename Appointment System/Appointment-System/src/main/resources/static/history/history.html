@@ -70,21 +70,54 @@
     async function fetchHistoryData() {
         try {
             const token = localStorage.getItem('jwt');
+            const decodedToken = parseJwt(token);
+            if (!token) {
+                    Toastify({
+                        text: "You are logged out by our system.Please login again.",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "#dc2626",
+                        stopOnFocus: true,
+                    }).showToast();
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1000);
+
+            }
+            if (!decodedToken || decodedToken.exp<Math.floor(Date.now() / 1000)) {
+                localStorage.removeItem('jwt');
+                Toastify({
+                    text: "You are logged out by our system.Please login again.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc2626",
+                    stopOnFocus: true,
+                }).showToast();
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1000);
+            }
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             };
 
-            const [doctorRes, labRes] = await Promise.all([
+            const [doctorRes, labRes,userName] = await Promise.all([
                 fetch('/api/doctor/booking/fetch/all/history', { headers }),
-                fetch('/api/booking/lab/test/fetch/all/history', { headers })
+                fetch('/api/booking/lab/test/fetch/all/history', { headers }),
+                fetch('/fetch/user', { headers })
             ]);
-
-            const profileIconName = document.getElementById("first-name").innerHTML =
-                `${parseJwt(token).userName}`;
 
             const doctorResJson = await doctorRes.json();
             const labResJson = await labRes.json();
+            const user= await userName.json();
+
+            const profileIconName = document.getElementById("first-name").innerHTML =user.name;
+            const profileIcon = document.getElementById("profile-pic-view").src =user.profilePictureUrl || "/images/logo.jpg";
 
             doctorData = doctorResJson.doctorBookingHistories || [];
             labData = labResJson.labTestsBook || [];

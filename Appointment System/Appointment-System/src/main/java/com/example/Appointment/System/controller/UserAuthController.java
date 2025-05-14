@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Controller
@@ -158,14 +159,15 @@ public class UserAuthController {
     @PostMapping("/user/change-password")
     @ResponseBody
     public ResponseEntity<?> updateUserPassword(@RequestBody PasswordDTO passwordDTO){
+
         String contact=SecurityContextHolder.getContext().getAuthentication().getName();
-        if (userService.isExitUserPassword(passwordDTO.getPassword())){
+        if (!passwordEncoder.matches(passwordDTO.getPassword(), userService.findUserByContact(contact).getPassword())){
             return ResponseEntity.badRequest().body("Current Password is incorrect..");
         }
         if(!userService.isExitUserByContact(contact)){
             return ResponseEntity.badRequest().body("User doesn't exit..");
         }
-        if (passwordDTO.getNewPassword()!=passwordDTO.getConfirmPassword()){
+        if (!Objects.equals(passwordDTO.getNewPassword(), passwordDTO.getConfirmPassword())){
             return ResponseEntity.badRequest().body("Password doesn't match..");
         }
         if (passwordDTO.getNewPassword().length()<8){

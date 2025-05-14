@@ -345,6 +345,24 @@
             }, 1000);
             return;
         }
+
+        const decodedToken = parseJwt(token);
+        if (!decodedToken || decodedToken.exp<Math.floor(Date.now() / 1000)) {
+            localStorage.removeItem('jwt');
+            Toastify({
+                text: "You are logged out by our system.Please login again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+        }
+
         e.preventDefault();
         const formData = new FormData();
         formData.append("fullName", document.getElementById("fullName").value);
@@ -403,6 +421,27 @@
             return;
         }
 
+        const decodedToken = parseJwt(token);
+        if (!decodedToken || decodedToken.exp<Math.floor(Date.now() / 1000)) {
+            localStorage.removeItem('jwt');
+            Toastify({
+                text: "You are logged out by our system.Please login again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc2626",
+                stopOnFocus: true,
+            }).showToast();
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+        }
+
+
+
+
+
         e.preventDefault();
 
         const current = document.getElementById("currentPass").value;
@@ -451,9 +490,9 @@
                     window.location.href = '/profile.html';
                 }, 1000);
             } else {
-                const error = await res.json();
+                const error = await res.text();
                 Toastify({
-                    text: "Error: " + (error.message || "Password change failed"),
+                    text: "Error: " + (error || "Password change failed"),
                     duration: 3000,
                     close: true,
                     gravity: "top",
@@ -464,7 +503,7 @@
             }
         } catch (err) {
             Toastify({
-                text: "Request error: " + err.message,
+                text: "Request error: " + err,
                 duration: 3000,
                 close: true,
                 gravity: "top",

@@ -13,8 +13,28 @@ async function loadProfileData() {
         setTimeout(() => {
             window.location.href = '/login';
         }, 1000);
-        return;
     }
+
+
+    const decodedToken = parseJwt(token);
+    if (!decodedToken || decodedToken.exp<Math.floor(Date.now() / 1000)) {
+        localStorage.removeItem('jwt');
+        Toastify({
+            text: "You are logged out by our system.Please login again.",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#dc2626",
+            stopOnFocus: true,
+        }).showToast();
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 1000);
+    }
+
+
+
     try {
         const response = await fetch('/fetch/user', {
             method: 'GET',
