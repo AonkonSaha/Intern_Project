@@ -27,7 +27,6 @@ public class DiagnosticMapper {
                 .zipCode(diagnosticDTO.getZipCode())
                 .build();
 
-
     }
     public  DiagnosticDTO toDiagnosticDTO(DiagnosticCenter diagnosticCenter) {
         return DiagnosticDTO.builder()

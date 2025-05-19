@@ -10,10 +10,7 @@ import lombok.Data;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @Builder
@@ -24,7 +21,7 @@ public class DoctorBookingDTO {
     private String doctorName;
     private String licenseNumber;
     private String hospitalOrClinicName;
-    private List<String> degrees=new ArrayList<>();
+    private Set<String> degrees=new HashSet<>();
     private String designation;
     private String note;
     private String status;

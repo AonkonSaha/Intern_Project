@@ -309,9 +309,6 @@ function loadHomeDataTwo() {
                 backgroundColor: "#dc2626",
                 stopOnFocus: true,
             }).showToast();
-            setTimeout(() => {
-                window.location.href = '/home.html';
-            }, 1000);
         });
 
 
@@ -346,9 +343,6 @@ function loadHomeDataTwo() {
                 backgroundColor: "#dc2626",
                 stopOnFocus: true,
             }).showToast();
-            setTimeout(() => {
-                window.location.href = '/home.html';
-            },1000);
         });
 
 

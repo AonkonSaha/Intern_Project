@@ -16,4 +16,5 @@ public interface DoctorAppointmentDateRepo extends JpaRepository<DoctorAppointme
             "WHERE dp.id = :doctorId AND d.appointmentDate = :date")
     List<String> findTimeSlotsByDoctorIdAndDate(@Param("doctorId") Long doctorId,
                                                 @Param("date") LocalDate date);
+
 }

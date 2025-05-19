@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -37,7 +38,7 @@ public class UserDTO {
     private Integer yearsOfExperience;
     private String hospitalOrClinicName;
     private String languagesSpoken;
-    private List<String> degrees;
+    private Set<String> degrees;
     private Double rating;
     private Boolean availabilityStatus;
 }

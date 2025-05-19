@@ -25,7 +25,13 @@ public class DoctorProfile {
     private String hospitalOrClinicName;
     private String profilePictureUrl;
     private String languagesSpoken;
-    private List<String> degrees=new ArrayList<>();
+
+
+    @ElementCollection
+    @CollectionTable(name = "doctor_degrees", joinColumns = @JoinColumn(name = "doctor_id"))
+    @Column(name = "degree")
+    private Set<String> degrees=new HashSet<>();
+
     private Double rating;
     private Boolean availabilityStatus;
 

@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @Builder
@@ -31,7 +28,7 @@ public class DoctorDTO {
     private String address;
     private String languagesSpoken;
     @NotNull
-    private List<String> degrees=new ArrayList<>();
+    private Set<String> degrees=new HashSet<>();
     @NotNull
     private String gender;
     private Boolean availabilityStatus;
