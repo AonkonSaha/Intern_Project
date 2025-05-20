@@ -1,5 +1,5 @@
 <h1> Exploration of Dependency Injection, Inversion of Control, and Proxy Classes</h1>
-<h3>
+<p>
 Objective:</br>
 To gain a deeper understanding of the Dependency Injection principle and the Inversion of Control concept, and to explore the role of proxy classes within modern frameworks such as Spring.</br>
 
@@ -60,4 +60,4 @@ Observed how Spring resolves interface-based dependencies at runtime and injects
 Experimented with AOP configurations to see how proxy classes work in real applications.</br>
 
 
-</h3>
+</p>
