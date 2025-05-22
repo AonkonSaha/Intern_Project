@@ -3,6 +3,7 @@ package com.example.Appointment.System.controller;
 import com.example.Appointment.System.exception.PatientNotFoundException;
 import com.example.Appointment.System.model.dto.PatientDTO;
 import com.example.Appointment.System.model.mapper.PatientMapper;
+import com.example.Appointment.System.service.Imp.PatientServiceImp;
 import com.example.Appointment.System.service.PatientService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;

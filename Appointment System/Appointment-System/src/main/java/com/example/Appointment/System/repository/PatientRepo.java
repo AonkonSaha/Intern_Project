@@ -17,11 +17,4 @@ public interface PatientRepo extends JpaRepository<PatientProfile,Long> {
   @Query("SELECT pp FROM PatientProfile pp WHERE pp.user.contact = :patientContact")
   Optional<PatientProfile> findByPatientContact(@Param("patientContact") String patientContact);
 
-//   @Query("SELECT pt FROM PatientProfile pt" +
-//           " WHERE pt.patientName = :patientName" +
-//           " AND pt.email = :email AND pt.mobileNumber = :contact ")
-//   Optional<PatientProfile> findPatient(@Param("patientName") String patientName,
-//                                        @Param("email") String email,
-//                                        @Param("contact") String contact
-//                                 );
 }

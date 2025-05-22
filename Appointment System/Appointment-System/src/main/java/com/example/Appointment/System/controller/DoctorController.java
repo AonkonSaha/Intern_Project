@@ -4,8 +4,8 @@ import com.example.Appointment.System.exception.DoctorNotFoundException;
 import com.example.Appointment.System.model.dto.DoctorDTO;
 import com.example.Appointment.System.model.mapper.DoctorMapper;
 import com.example.Appointment.System.service.DoctorService;
-import com.example.Appointment.System.service.UserService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.example.Appointment.System.service.Imp.DoctorServiceImp;
+import com.example.Appointment.System.service.Imp.UserServiceImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +20,11 @@ import java.util.Set;
 public class DoctorController {
     private final DoctorService doctorService;
     private final DoctorMapper doctorMapper;
-    private final UserService userService;
+    private final UserServiceImp userServiceImp;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerDoctor(@RequestBody DoctorDTO doctorDTO){
-        if(userService.isExitUserByContact(doctorDTO.getContactNumber())){
+        if(userServiceImp.isExitUserByContact(doctorDTO.getContactNumber())){
             return ResponseEntity.badRequest().body("This Mobile Number already registered by another user");
         }
         if (doctorDTO.getContactNumber().length()!=11){

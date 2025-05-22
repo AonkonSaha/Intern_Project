@@ -1,11 +1,10 @@
 package com.example.Appointment.System.controller;
 
 import com.example.Appointment.System.model.dto.TimeSlotDTO;
+import com.example.Appointment.System.service.Imp.TimeSlotServiceImp;
 import com.example.Appointment.System.service.TimeSlotService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -37,7 +36,7 @@ public class TimeSlotController {
     public ResponseEntity<Map<String,TimeSlotDTO>> getTimeSlot(){
         long timeSlotId=1;
         return ResponseEntity.ok(
-                Map.of("timeSlots",timeSlotService.getTimeSlot(timeSlotId)
+                Map.of("timeSlots", timeSlotService.getTimeSlot(timeSlotId)
         ));
 
     }

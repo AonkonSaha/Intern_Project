@@ -28,7 +28,6 @@ public class LabTestBookingMapper {
     private final PatientRepo patientRepo;
     private final LabTestRepo labTestRepo;
     public LabTestBooking toLabTestBooking(LabTestBookingDTO labTestBookingDTO) throws LabTestBookingNotFoundException, PatientNotFoundException {
-        System.out.println("-------------------->labId: "+labTestBookingDTO.getLabId()+" labTestId: "+labTestBookingDTO.getLabTestId());
           Optional<PatientProfile> patient=patientRepo.findByPatientContact(SecurityContextHolder.getContext().getAuthentication().getName());
           Optional<DiagnosticCenter>diagnosticCenter=diagnosticCenterRepo.findById(labTestBookingDTO.getLabId());
           Optional<LabTest> labTest=labTestRepo.findById(labTestBookingDTO.getLabTestId());

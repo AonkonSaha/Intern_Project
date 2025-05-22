@@ -4,6 +4,7 @@ import com.example.Appointment.System.exception.LabTestBookingNotFoundException;
 import com.example.Appointment.System.exception.PatientNotFoundException;
 import com.example.Appointment.System.model.dto.LabTestBookingDTO;
 import com.example.Appointment.System.model.mapper.LabTestBookingMapper;
+import com.example.Appointment.System.service.Imp.LabTestBookingServiceImp;
 import com.example.Appointment.System.service.LabTestBookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;

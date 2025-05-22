@@ -1,6 +1,6 @@
 package com.example.Appointment.System.config.security;
 
-import com.example.Appointment.System.service.CustomUserDetailsService;
+import com.example.Appointment.System.service.Imp.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -3,13 +3,15 @@ package com.example.Appointment.System.controller;
 import com.example.Appointment.System.jwt.JwtUtils;
 import com.example.Appointment.System.model.dto.LoginDTO;
 import com.example.Appointment.System.model.dto.PasswordDTO;
-import com.example.Appointment.System.model.dto.PatientProfileDTO;
 import com.example.Appointment.System.model.dto.UserDTO;
 import com.example.Appointment.System.model.entity.MUser;
 import com.example.Appointment.System.model.mapper.PatientMapper;
 import com.example.Appointment.System.model.mapper.UserMapper;
+import com.example.Appointment.System.service.Imp.PatientServiceImp;
+import com.example.Appointment.System.service.Imp.UserServiceImp;
 import com.example.Appointment.System.service.PatientService;
 import com.example.Appointment.System.service.UserService;
+import com.example.Appointment.System.service.UserValidationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +34,10 @@ import java.util.Set;
 public class UserAuthController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final PatientMapper patientMapper;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
-    private final PatientService patientService;
     private final PasswordEncoder passwordEncoder;
+    private final UserValidationService userValidationService;
 
     @GetMapping("/")
     public String startPage(HttpServletRequest request){
@@ -61,29 +62,12 @@ public class UserAuthController {
         return ResponseEntity.ok(userMapper.toUserDTO(userService.findUserByContact(SecurityContextHolder.getContext().getAuthentication().getName())));
     }
 
-
     @PostMapping("/register")
     @ResponseBody
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO){
-        if(userService.isExitUserByContact(userDTO.getContact())){
-            return ResponseEntity.badRequest().body("This Contact Number is already exit..");
-        }
-        if (userDTO.getContact().isEmpty()){
-            return ResponseEntity.badRequest().body("Mobile Number can't be empty");
-        }
-        if (userDTO.getContact().length() != 11 ){
-            return ResponseEntity.badRequest().body("Mobile Number must be 11 digits");
-        }
-        if (userDTO.getPassword().length() < 8 ){
-            return ResponseEntity.badRequest().body("Password must be at least 8 characters long");
-        }
-        if(!userDTO.getEmail().contains("@")){
-            return ResponseEntity.badRequest().body("Email must contain @");
-        }
-        Set<String> gender=Set.of("male","female","other");
-        if(!gender.contains(userDTO.getGender().toLowerCase())){
-            return ResponseEntity.badRequest().body("Gender must be male,female or other");
-        }
+       if(!userService.validateUserDetails(userDTO).isEmpty()){
+           return ResponseEntity.badRequest().body(userService.validateUserDetails(userDTO));
+       }
         return ResponseEntity.ok(
                 userMapper.toUserDTO(userService.saveUser(userMapper.toUser(userDTO)))
         );
@@ -94,18 +78,16 @@ public class UserAuthController {
         if(!userService.isExitUserByContact(loginDTO.getContact())){
             return ResponseEntity.badRequest().body("User doesn't exit..");
         }
-        if(passwordEncoder.matches(loginDTO.getPassword(),userService.findUserByContact(loginDTO.getContact()).getPassword())==false){
+        if(!passwordEncoder.matches(loginDTO.getPassword(), userService.findUserByContact(loginDTO.getContact()).getPassword())){
             return ResponseEntity.badRequest().body("Password is incorrect..");
         }
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getContact(),loginDTO.getPassword())).isAuthenticated();
-        MUser user=userService.findUserByContact(loginDTO.getContact());
+                new UsernamePasswordAuthenticationToken(loginDTO.getContact(),loginDTO.getPassword()));
+        MUser user= userService.findUserByContact(loginDTO.getContact());
         String token=jwtUtils.generateToken(user.getName(),loginDTO.getContact());
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
         user.setIsActive(true);
         userService.saveUser(user);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("token",token));
     }
     @PostMapping("/signout")
     @ResponseBody
@@ -116,7 +98,7 @@ public class UserAuthController {
         }
         String token = authHeader.substring(7);
         String contact=jwtUtils.extractContact(token);
-        MUser user=userService.findUserByContact(contact);
+        MUser user= userService.findUserByContact(contact);
         user.setIsActive(false);
         userService.saveUser(user);
         return ResponseEntity.ok("Logout successfully");
@@ -131,9 +113,8 @@ public class UserAuthController {
             @RequestParam String gender,
             @RequestParam(required = false) MultipartFile photo
     ) throws IOException {
-       Set<String> genderSet=Set.of("male","female","other");
-       if(!genderSet.contains(gender.toLowerCase())){
-           return ResponseEntity.badRequest().body("Gender must be male,female or other");
+       if(!userValidationService.isValidGender(gender).isEmpty()){
+           return ResponseEntity.badRequest().body(userValidationService.isValidGender(gender));
        }
         return ResponseEntity.ok(
                 userMapper.toUserDTO(userService.updatePatientWithOutPassword(
@@ -143,7 +124,7 @@ public class UserAuthController {
     @DeleteMapping("/delete/{id}")
     @ResponseBody
     public ResponseEntity<String> deleteUserById(@PathVariable Long id){
-         userService.deleteUser(id);
+        userService.deleteUser(id);
          return ResponseEntity.ok("Deleted successfully");
     }
     @GetMapping("/fetch/user")
@@ -164,14 +145,14 @@ public class UserAuthController {
         if (!passwordEncoder.matches(passwordDTO.getPassword(), userService.findUserByContact(contact).getPassword())){
             return ResponseEntity.badRequest().body("Current Password is incorrect..");
         }
-        if(!userService.isExitUserByContact(contact)){
-            return ResponseEntity.badRequest().body("User doesn't exit..");
+        if(!userValidationService.isExitUserByContact(contact).isEmpty()){
+            return ResponseEntity.badRequest().body(userValidationService.isExitUserByContact(contact));
         }
         if (!Objects.equals(passwordDTO.getNewPassword(), passwordDTO.getConfirmPassword())){
             return ResponseEntity.badRequest().body("Password doesn't match..");
         }
-        if (passwordDTO.getNewPassword().length()<8){
-            return ResponseEntity.badRequest().body("Password must not be less than 8 characters long..");
+        if (!userValidationService.isValidUserPasswordLength(passwordDTO.getNewPassword()).isEmpty()){
+            return ResponseEntity.badRequest().body(userValidationService.isValidUserPasswordLength(passwordDTO.getNewPassword()));
         }
         userService.updateUserPassword(contact,passwordDTO);
         return ResponseEntity.ok("Password updated successfully");

@@ -4,12 +4,11 @@ import com.example.Appointment.System.exception.DiagnosticCenterNotFoundExceptio
 import com.example.Appointment.System.model.dto.DiagnosticDTO;
 import com.example.Appointment.System.model.mapper.DiagnosticMapper;
 import com.example.Appointment.System.service.DiagnosticCenterService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.example.Appointment.System.service.Imp.DiagnosticCenterServiceImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
