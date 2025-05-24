@@ -20,10 +20,6 @@ public class LabTestServiceImp implements LabTestService {
         labTestRepo.save(labTest);
         return labTest;
     }
-    @Override
-    public boolean isExitLabTestById(Long id) {
-        return labTestRepo.existsById(id);
-    }
 
     @Override
     public LabTest getLabTestById(Long id) {
@@ -36,7 +32,7 @@ public class LabTestServiceImp implements LabTestService {
 
     @Override
     public void removeLabTestById(Long id) {
-        if(!isExitLabTestById(id)){
+        if(!labTestRepo.existsById(id)){
             return;
         }
         labTestRepo.deleteById(id);
@@ -60,8 +56,4 @@ public class LabTestServiceImp implements LabTestService {
         return labTestRepo.findAll();
     }
 
-    @Override
-    public boolean isExitLabTestName( String labTestName) {
-        return labTestRepo.existsByLabTestName(labTestName);
-    }
 }

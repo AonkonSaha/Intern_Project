@@ -22,13 +22,6 @@ public class DoctorServiceImp  implements DoctorService {
         doctorRepo.save(doctorProfile);
         return doctorProfile;
     }
-
-    @Override
-    public boolean isExitDoctorById(Long id) {
-        return doctorRepo.existsById(id);
-    }
-
-
     @Override
     public DoctorProfile updateDoctorById(Long id, DoctorDTO doctorDTO) {
         Optional<DoctorProfile> doctor=doctorRepo.findById(id);

@@ -5,6 +5,9 @@ import com.example.Appointment.System.model.dto.LabTestDTO;
 import com.example.Appointment.System.model.mapper.LabTestMapper;
 import com.example.Appointment.System.service.Imp.LabTestServiceImp;
 import com.example.Appointment.System.service.LabTestService;
+import com.example.Appointment.System.service.LabTestValidationService;
+import com.example.Appointment.System.service.ValidationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,28 +18,27 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/lab/test")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class LabTestController {
     private final LabTestService labTestService;
     private final LabTestMapper labTestMapper;
+    private final ValidationService validationService;
+    private final LabTestValidationService labTestValidationService;
     @RequestMapping("/test")
     public String test(){
         return "End Point Test";
     }
     @PostMapping("/register")
     public ResponseEntity<?> registerLabTest(@RequestBody LabTestDTO labTestDTO){
-        if(labTestDTO.getLabTestName().isEmpty()){
-            return ResponseEntity.badRequest().body("LabTest name can't be empty");
+        if(!validationService.validateLabTestDetails(labTestDTO).isEmpty()){
+            return ResponseEntity.badRequest().body(validationService.validateLabTestDetails(labTestDTO));
         }
-        if(labTestService.isExitLabTestName(labTestDTO.getLabTestName())){
-            return ResponseEntity.badRequest().body("This labTest name already registered");
-        }
-
         return ResponseEntity.ok(labTestMapper.toLabTestDTO(labTestService.saveLabTest(
                         labTestMapper.toLabTest(labTestDTO))));
     }
     @GetMapping("/fetch/{id}")
     public ResponseEntity<LabTestDTO> fetchLabTestById(@RequestBody Long id){
-        if(!labTestService.isExitLabTestById(id)){
+        if(!labTestValidationService.isExitLabTestById(id)){
             throw new LabTestNotFoundException("LabTest doesn't exit");
         }
         return ResponseEntity.ok(labTestMapper.toLabTestDTO(
@@ -45,7 +47,7 @@ public class LabTestController {
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteLabTestById(@PathVariable("id") Long id){
-        if(!labTestService.isExitLabTestById(id)){
+        if(!labTestValidationService.isExitLabTestById(id)){
             throw new LabTestNotFoundException("LabTest doesn't exit");
         }
         labTestService.removeLabTestById(id);
@@ -53,7 +55,7 @@ public class LabTestController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<LabTestDTO> updateLabTestById(@PathVariable("id") Long id,@RequestBody LabTestDTO labTestDTO){
-        if(!labTestService.isExitLabTestById(id)){
+        if(!labTestValidationService.isExitLabTestById(id)){
             throw new LabTestNotFoundException("LabTest doesn't exit");
         }
         return ResponseEntity.ok(labTestMapper.toLabTestDTO(
@@ -62,7 +64,6 @@ public class LabTestController {
     }
     @GetMapping("/fetch/all")
     public ResponseEntity<Map<String, List<LabTestDTO>>> fetchAllLabTests(){
-
         return ResponseEntity.ok(Map.of("labTests",labTestMapper.toLabTestDTOS(labTestService.getAllLabTest())));
     }
 

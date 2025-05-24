@@ -1,7 +1,7 @@
 package com.example.Appointment.System.jwt.filter;
 
 import com.example.Appointment.System.exception.UserNotFoundException;
-import com.example.Appointment.System.jwt.JwtUtils;
+import com.example.Appointment.System.jwt.utils.JwtUtils;
 import com.example.Appointment.System.model.entity.MUser;
 import com.example.Appointment.System.repository.UserRepo;
 import jakarta.servlet.FilterChain;

@@ -2,10 +2,12 @@ package com.example.Appointment.System.service;
 
 import com.example.Appointment.System.model.dto.DoctorBookingDTO;
 import com.example.Appointment.System.model.entity.DoctorBooking;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Service
 public interface DoctorBookingService {
 
      DoctorBooking saveDoctorBooking(DoctorBooking doctorBooking);

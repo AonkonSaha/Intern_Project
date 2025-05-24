@@ -2,9 +2,12 @@ package com.example.Appointment.System.service;
 
 import com.example.Appointment.System.model.dto.PatientDTO;
 import com.example.Appointment.System.model.entity.PatientProfile;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+@Service
 public interface PatientService {
 
     PatientProfile savePatient(PatientProfile patientProfile);

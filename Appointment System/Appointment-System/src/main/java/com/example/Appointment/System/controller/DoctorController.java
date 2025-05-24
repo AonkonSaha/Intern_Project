@@ -6,6 +6,9 @@ import com.example.Appointment.System.model.mapper.DoctorMapper;
 import com.example.Appointment.System.service.DoctorService;
 import com.example.Appointment.System.service.Imp.DoctorServiceImp;
 import com.example.Appointment.System.service.Imp.UserServiceImp;
+import com.example.Appointment.System.service.UserValidationService;
+import com.example.Appointment.System.service.ValidationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,63 +20,43 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/doctor")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class DoctorController {
     private final DoctorService doctorService;
     private final DoctorMapper doctorMapper;
     private final UserServiceImp userServiceImp;
+    private final UserValidationService userValidationService;
+    private final ValidationService validationService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerDoctor(@RequestBody DoctorDTO doctorDTO){
-        if(userServiceImp.isExitUserByContact(doctorDTO.getContactNumber())){
-            return ResponseEntity.badRequest().body("This Mobile Number already registered by another user");
-        }
-        if (doctorDTO.getContactNumber().length()!=11){
-            return ResponseEntity.badRequest().body("Mobile Number must be 11 digits");
-        }
-        if(doctorDTO.getDesignation().isEmpty()){
-            return ResponseEntity.badRequest().body("Designation can't be empty");
-        }
-        if (doctorDTO.getDegrees().isEmpty()){
-            return ResponseEntity.badRequest().body("Degrees/Degree List can't be empty");
-        }
-        if(doctorDTO.getContactNumber().isEmpty()){
-            return ResponseEntity.badRequest().body("Mobile number can't be empty");
-        }
-        if (doctorDTO.getDoctorName().isEmpty()){
-            return ResponseEntity.badRequest().body("Doctor name can't be empty");
-        }
-        if(doctorDTO.getPassword().length()<8){
-            return ResponseEntity.badRequest().body("Doctor password must be at least 8 characters long");
-        }
-        if(!doctorDTO.getEmail().contains("@")){
-            return ResponseEntity.badRequest().body("Email must contain @");
-        }
-        Set<String> gender=Set.of("male","female","other");
-        if(!gender.contains(doctorDTO.getGender().toLowerCase())){
-            return ResponseEntity.badRequest().body("Gender must be Male,Female or Other");
+        if(!validationService.validateDoctorDetails(doctorDTO).isEmpty()){
+            return ResponseEntity.badRequest().body(validationService.validateDoctorDetails(doctorDTO));
         }
         return ResponseEntity.ok(doctorMapper.toDoctorDTO(
                 doctorService.saveDoctor(doctorMapper.toDoctor(doctorDTO))
         ));}
     @GetMapping("/fetch/{id}")
     public ResponseEntity<?>fetchDoctorById(@PathVariable("id") Long id) throws DoctorNotFoundException {
-        if(!doctorService.isExitDoctorById(id)){
+        if(!userValidationService.isExitUserById(id)){
             return ResponseEntity.badRequest().body("Doctor doesn't exit");
         }
         return ResponseEntity.ok(doctorMapper.toDoctorDTO(
                 doctorService.getDoctorById(id)));
     }
     @PutMapping("/update/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> updateDoctorById(@PathVariable("id") Long id,@RequestBody DoctorDTO doctorDTO) throws DoctorNotFoundException{
-        if(!doctorService.isExitDoctorById(id)){
+        if(!userValidationService.isExitUserById(id)){
             return ResponseEntity.badRequest().body("Doctor doesn't exit");
         }
         return ResponseEntity.ok(doctorMapper.toDoctorDTO(
                 doctorService.updateDoctorById(id,doctorDTO)));
     }
     @DeleteMapping("/delete/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<String> deleteDoctorById(@PathVariable("id") Long id) throws DoctorNotFoundException{
-        if(!doctorService.isExitDoctorById(id)){
+        if(!userValidationService.isExitUserById(id)){
             return ResponseEntity.badRequest().body("Doctor doesn't exit");
         }
         doctorService.deleteDoctorByDoctorId(id);

@@ -1,6 +1,9 @@
 package com.example.Appointment.System.service.Imp;
 
 
+import com.example.Appointment.System.jwt.utils.JwtUtils;
+import com.example.Appointment.System.jwt.utils.RequestUtils;
+import com.example.Appointment.System.model.dto.LoginDTO;
 import com.example.Appointment.System.model.dto.PasswordDTO;
 import com.example.Appointment.System.model.dto.UserDTO;
 import com.example.Appointment.System.model.entity.MUser;
@@ -10,8 +13,14 @@ import com.example.Appointment.System.repository.PatientRepo;
 import com.example.Appointment.System.repository.UserRepo;
 import com.example.Appointment.System.repository.UserRoleRepo;
 import com.example.Appointment.System.service.UserService;
+import com.example.Appointment.System.service.UserValidationService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,8 +45,9 @@ public class UserServiceImp implements UserService {
     private final PatientRepo patientRepo;
     private final UserMapper userMapper;
     private final UserRoleRepo userRoleRepo;
-    private final UserValidationServiceImp userValidationServiceImp;
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final UserValidationService userValidationService;
     @Override
     public MUser saveUser(MUser user) {
         userRepo.save(user);
@@ -45,17 +55,24 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public MUser getUserByName(String username) {
-        Optional<MUser> user=userRepo.findByName(username);
-        if(user==null){
-            return null;
-        }
-        return user.get();
+    public String authenticateUser(MUser user,LoginDTO loginDTO) {
+
+       Authentication authentication= authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getContact(),loginDTO.getPassword()));
+        String token=jwtUtils.generateToken(user.getName(),loginDTO.getContact());
+        user.setIsActive(true);
+        saveUser(user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return token;
     }
 
     @Override
-    public boolean isExitUserById(Long id) {
-        return userRepo.existsById(id);
+    public MUser getUserByName(String username) {
+        Optional<MUser> user=userRepo.findByName(username);
+        if(user.isEmpty()){
+            return null;
+        }
+        return user.get();
     }
 
     @Override
@@ -96,11 +113,6 @@ public class UserServiceImp implements UserService {
             return null;
         }
         return mUser.get();
-    }
-
-    @Override
-    public boolean isExitUserByContact(String contact) {
-        return userRepo.existsByContact(contact);
     }
 
     @Override
@@ -156,36 +168,10 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public boolean isExitUserPassword(String password) {
-        String patientContact= SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<MUser> mUser=userRepo.findByContact(patientContact);
-        if(mUser.isEmpty()){
-            return false;
-        }
-        return passwordEncoder.matches(password,mUser.get().getPassword());
-    }
-
-    @Override
-    public String validateUserDetails(UserDTO userDTO) {
-       if(!userValidationServiceImp.isExitUserByContact(userDTO.getContact()).isEmpty()){
-           return userValidationServiceImp.isExitUserByContact(userDTO.getContact());
-       }
-       if(!userValidationServiceImp.isEmptyUserContact(userDTO.getContact()).isEmpty()){
-           return userValidationServiceImp.isEmptyUserContact(userDTO.getContact());
-       }
-       if(!userValidationServiceImp.isValidUserContactLength(userDTO.getContact()).isEmpty()){
-           return userValidationServiceImp.isValidUserContactLength(userDTO.getContact());
-       }
-       if(!userValidationServiceImp.isValidUserPasswordLength(userDTO.getPassword()).isEmpty()){
-           return userValidationServiceImp.isValidUserPasswordLength(userDTO.getPassword());
-       }
-       if(!userValidationServiceImp.isValidEmailFormat(userDTO.getEmail()).isEmpty()){
-           return userValidationServiceImp.isValidEmailFormat(userDTO.getEmail());
-       }
-       if(!userValidationServiceImp.isValidGender(userDTO.getGender()).isEmpty()){
-           return userValidationServiceImp.isValidGender(userDTO.getGender());
-       }
-
-        return "";
+    public void logoutUser(String contact) {
+        MUser user= findUserByContact(contact);
+        user.setIsActive(false);
+        saveUser(user);
+        SecurityContextHolder.clearContext();
     }
 }

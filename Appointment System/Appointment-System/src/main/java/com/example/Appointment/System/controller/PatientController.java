@@ -25,7 +25,6 @@ public class PatientController {
                 patientService.savePatient(patientMapper.toPatient(patientDTO))));
     }
    @GetMapping("/fetch/{id}")
-   @SecurityRequirement(name = "bearerAuth")
    public ResponseEntity<PatientDTO> fetchPatientById(@PathVariable("id") Long id) throws PatientNotFoundException {
        if(!patientService.isExitPatientById(id)){
             throw new PatientNotFoundException("Patient doesn't exit");
@@ -34,7 +33,6 @@ public class PatientController {
                patientService.getPatientById(id)));
    }
    @PostMapping("/delete/{id}")
-   @SecurityRequirement(name = "bearerAuth")
    public ResponseEntity<String> deletePatientById(@PathVariable("id") Long id) throws PatientNotFoundException {
        if(!patientService.isExitPatientById(id)){
            throw new PatientNotFoundException("Patient doesn't exit");
@@ -43,7 +41,6 @@ public class PatientController {
        return ResponseEntity.ok("Patient deleted successfully");
    }
    @PutMapping("/update/{id}")
-   @SecurityRequirement(name = "bearerAuth")
    public ResponseEntity<PatientDTO> updatePatientById(@PathVariable("id") Long id,PatientDTO patientDTO) throws PatientNotFoundException {
         if(!patientService.isExitPatientById(id)){
             throw new PatientNotFoundException("Patient doesn't exit");
@@ -52,7 +49,6 @@ public class PatientController {
                 patientService.updatePatientByPatientId(id,patientDTO)));
    }
    @GetMapping("fetch/all")
-   @SecurityRequirement(name = "bearerAuth")
    public ResponseEntity<List<PatientDTO>> fetchAllPatients() throws PatientNotFoundException {
         if(patientService.getAllPatient().isEmpty()){
             throw new PatientNotFoundException("Patient doesn't exit");

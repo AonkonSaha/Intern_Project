@@ -1,6 +1,7 @@
 package com.example.Appointment.System.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class LabTest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull(message = "LabTest cannot be null")
+    @Column(nullable = false,unique = true)
     private String labTestName;
     private String description;
     private String labTestImageUrl;

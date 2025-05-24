@@ -1,3 +1,4 @@
+-------------------------------Default USER----------------------------------------
 INSERT IGNORE INTO users (id, name, email, contact, password, gender, date_of_birth, is_active)
 VALUES (
            1,
@@ -11,7 +12,9 @@ VALUES (
        );
 
 INSERT IGNORE INTO user_roles (id, role) VALUES (1, 'PATIENT');
+INSERT IGNORE INTO user_roles (id, role) VALUES (2, 'ADMIN');
 INSERT IGNORE INTO user_vs_role (role_id, user_id) VALUES (1, 1);
+INSERT IGNORE INTO user_vs_role (role_id, user_id) VALUES (2, 1);
 
 INSERT IGNORE INTO patients (id, address, date_of_birth, patient_name, profile_picture_url, user_id)
 VALUES (

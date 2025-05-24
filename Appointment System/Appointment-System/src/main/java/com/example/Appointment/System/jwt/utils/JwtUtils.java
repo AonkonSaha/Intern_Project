@@ -1,4 +1,4 @@
-package com.example.Appointment.System.jwt;
+package com.example.Appointment.System.jwt.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

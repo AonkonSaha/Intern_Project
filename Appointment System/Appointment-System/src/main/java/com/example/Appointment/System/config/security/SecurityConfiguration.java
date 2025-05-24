@@ -16,19 +16,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-
-
     @Autowired
     JwtAuthFilter jwtAuthFilter;
     public static final String[] ADMIN_URLS = {
-            "/api/user/role/**"
+            "/api/user/role/**",
+            "/api/doctor/register",
+            "/api/doctor/update/**",
+            "/api/doctor/delete/**",
+            "/api/diagnostic/center/register",
+            "/api/diagnostic/center/delete/**",
+            "/api/diagnostic/center/update/**",
+            "/api/lab/test/register",
+            "/api/lab/test/delete/**",
+            "/api/lab/test/update/**",
+            "/api/time/slot/register",
+            "/api/time/slot/update/**",
     };
     public static final String[] PATIENT_URLS = {
             "/api/patient/**",
             "/api/doctor/booking/**",
             "/api/booking/lab/test/**",
+            "/api/doctor/fetch/**",
+            "/api/diagnostic/center/fetch/**",
             "/home",
-            "/logout",
             "/signout",
             "/update/profile",
             "/fetch/user",
@@ -40,9 +50,6 @@ public class SecurityConfiguration {
     };
 
     public static final String[] PUBLIC_URLS = {
-            "/api/user/signup",
-            "/api/user/signin",
-            "/api/user/signout",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-ui.html",
@@ -57,14 +64,11 @@ public class SecurityConfiguration {
             "/login.html",
             "/register.html",
             "/profile.html",
-            "/doctor/**",
-            "/lab/**",
-            "/history/**",
-            "/api/doctor/**",
-            "/api/diagnostic/center/**",
-            "/api/time/slot/**",
-            "/api/lab/test/**",
-            "/api/time/slot/**",
+            "/doctor/appointment.html",
+            "/lab/test.html",
+            "/history/history.html",
+            "/api/time/slot/fetch/**",
+            "/api/lab/test/fetch/all",
             "/delete/{id}"
     };
 

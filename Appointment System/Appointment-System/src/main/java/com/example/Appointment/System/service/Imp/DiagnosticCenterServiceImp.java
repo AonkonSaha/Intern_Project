@@ -20,10 +20,7 @@ public class DiagnosticCenterServiceImp implements DiagnosticCenterService {
         return diagnosticCenter;
     }
 
-    @Override
-    public boolean isExitDianosticCenterById(Long id) {
-        return diagnosticCenterRepo.existsById(id);
-    }
+
 
     @Override
     public DiagnosticCenter getDiagnosticCenterById(Long id) {
@@ -36,7 +33,7 @@ public class DiagnosticCenterServiceImp implements DiagnosticCenterService {
 
     @Override
     public void removeDiagnosticCenter(Long id) {
-        if(!isExitDianosticCenterById(id)){
+        if(!diagnosticCenterRepo.existsById(id)){
             return;
         }
         diagnosticCenterRepo.deleteById(id);
