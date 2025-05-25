@@ -64,17 +64,14 @@ public class UserAuthController {
     @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDTO){
-
         MUser user= userService.findUserByContact(loginDTO.getContact());
         if(user==null){
             return ResponseEntity.badRequest().body("User doesn't exit..");
         }
-
         if(!userValidationService.isExitUserPassword(loginDTO.getContact(),loginDTO.getPassword())){
             return ResponseEntity.badRequest().body("Password is incorrect..");
         }
-        String token=userService.authenticateUser(user,loginDTO);
-        return ResponseEntity.ok(Map.of("token",token));
+        return ResponseEntity.ok(Map.of("token",userService.authenticateUser(user,loginDTO)));
     }
     @PostMapping("/signout")
     @ResponseBody
@@ -83,15 +80,8 @@ public class UserAuthController {
         if(request==null){
             return ResponseEntity.badRequest().body("HttpServletRequest Object is empty");
         }
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+        String token = request.getHeader("Authorization").substring(7);
         String contact=jwtUtils.extractContact(token);
-        if (!authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().body("Invalid token");
-        }
-        if(!userValidationService.isExitUserByContact(contact)){
-            return ResponseEntity.badRequest().body("User Contact doesn't exit");
-        }
         userService.logoutUser(contact);
         return ResponseEntity.ok("Logout successfully");
     }
@@ -111,7 +101,7 @@ public class UserAuthController {
        if(!userValidationService.isValidEmailFormat(email)){
            return ResponseEntity.badRequest().body("Email must contain @");
        }
-        return ResponseEntity.ok(
+       return ResponseEntity.ok(
                 userMapper.toUserDTO(userService.updatePatientWithOutPassword(
                         fullName,email,dob,gender,photo)));
     }

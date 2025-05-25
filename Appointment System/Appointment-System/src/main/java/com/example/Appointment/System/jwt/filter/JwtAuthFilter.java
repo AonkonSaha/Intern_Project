@@ -32,25 +32,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         System.out.println("I am in Auth Filter");
         String authHeader = request.getHeader("Authorization");
         String requestURI = request.getRequestURI();
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-
         String token = authHeader.substring(7);
         String contact = jwtUtils.extractContact(token);
-
         if (contact != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(contact);
             Optional<MUser> user = userRepo.findByContact(contact);
-            if(user.isEmpty())
-            {
-                throw new UserNotFoundException("User doesn't exit..");
+            if(user.isEmpty()) {
+                throw new IllegalArgumentException("User doesn't exit..");
             }
             if (user.get().getIsActive() && jwtUtils.validateToken(token, contact)) {
                 System.out.println("Inner auth filter");
