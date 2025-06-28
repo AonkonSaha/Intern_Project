@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,11 +36,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         System.out.println("I am in Auth Filter");
         String authHeader = request.getHeader("Authorization");
         String requestURI = request.getRequestURI();
+
+        System.out.println(requestURI);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+
         String token = authHeader.substring(7);
+
+
         String contact = jwtUtils.extractContact(token);
         if (contact != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(contact);
@@ -47,7 +53,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if(user.isEmpty()) {
                 throw new IllegalArgumentException("User doesn't exit..");
             }
+
             if (user.get().getIsActive() && jwtUtils.validateToken(token, contact)) {
+                System.out.println("Token---------------------: "+ token);
+
                 System.out.println("Inner auth filter");
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
